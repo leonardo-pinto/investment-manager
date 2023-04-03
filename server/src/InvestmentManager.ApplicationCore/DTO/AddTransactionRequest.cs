@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace InvestmentManager.ApplicationCore.DTO
 {
     /// <summary>
-    /// DTO for inserting a new transaction
+    /// DTO for creating a new transaction
     /// </summary>
     public class AddTransactionRequest
     {
