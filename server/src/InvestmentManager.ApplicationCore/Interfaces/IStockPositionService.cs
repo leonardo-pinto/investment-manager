@@ -12,9 +12,9 @@ namespace InvestmentManager.ApplicationCore.Interfaces
         /// </summary>
         /// <param name="addStockPositionRequest">AddStockPosition request type</param>
         /// <returns>Returns the position details</returns>
-        Task<StockPositionResponse>? CreateStockPosition(AddStockPositionRequest addStockPositionRequest);
+        Task<StockPositionResponse?> CreateStockPosition(AddStockPositionRequest addStockPositionRequest);
 
-        Task<StockPositionResponse>? UpdateStockPosition(UpdateStockPositionRequest updateStockPositionRequest);
+        Task<StockPositionResponse?> UpdateStockPosition(UpdateStockPositionRequest updateStockPositionRequest);
 
         /// <summary>
         /// Get all stock positions of a given user
@@ -27,6 +27,6 @@ namespace InvestmentManager.ApplicationCore.Interfaces
         /// </summary>
         /// <param name="positionId">Position id of the stock</param>
         /// <returns>Returns a StockPositionResponse type</returns>
-        Task<StockPositionResponse>? GetSingleStockPosition(string positionId);
+        Task<StockPositionResponse?> GetSingleStockPosition(string positionId);
     }
 }
