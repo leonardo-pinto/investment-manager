@@ -78,14 +78,9 @@ namespace InvestmentManager.ApplicationCore.Services
             return stockPositionsResponse;
         }
 
-        async public Task<StockPositionResponse?> GetSingleStockPosition(Guid? positionId)
+        async public Task<StockPositionResponse?> GetSingleStockPosition(Guid positionId)
         {
-            if (positionId == null)
-            {
-                throw new ArgumentNullException(nameof(positionId));
-            }
-          
-            StockPosition? stockPosition = await _stockPositionRepository.GetSingleStockPosition(positionId.Value);
+            StockPosition? stockPosition = await _stockPositionRepository.GetSingleStockPosition(positionId);
 
             if (stockPosition == null)
             {

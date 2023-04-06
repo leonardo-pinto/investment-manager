@@ -32,6 +32,6 @@ namespace InvestmentManager.ApplicationCore.Interfaces
         /// </summary>
         /// <param name="positionId">Position id of the stock</param>
         /// <returns>Returns a StockPositionResponse type</returns>
-        Task<StockPositionResponse?> GetSingleStockPosition(Guid? positionId);
+        Task<StockPositionResponse?> GetSingleStockPosition(Guid positionId);
     }
 }
