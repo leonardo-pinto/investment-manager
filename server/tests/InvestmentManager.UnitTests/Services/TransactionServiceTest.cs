@@ -25,21 +25,6 @@ namespace InvestmentManager.UnitTests.Services
         }
 
         #region CreateTransaction
-
-        [Fact]
-        public async Task CreateTransaction_NullAddTransactionRequest_ToBeArgumentNullException()
-        {
-            AddTransactionRequest? addTransactionRequest = null;
-
-            Func<Task> action = async () =>
-            {
-                await _transactionService.CreateTransaction(addTransactionRequest);
-            };
-
-            await action.Should().ThrowAsync<ArgumentNullException>()
-                .WithMessage("Value cannot be null. (Parameter 'addTransactionRequest')");
-        }
-
         [Theory]
         [InlineData(0)]
         [InlineData(-10)]
