@@ -34,6 +34,14 @@ namespace InvestmentManager.ApplicationCore.Domain.Entities
         /// </summary>
         public double Cost { get; set; }
 
+        public double UpdateAveragePrice(int increasedQuantity, double newPrice)
+        {
+            double newCost = increasedQuantity * newPrice;
+            double currCost = Quantity * AveragePrice;
+            int totalQuantity = increasedQuantity + Quantity;
+            return (newCost + currCost) / totalQuantity;
+        }
+
         public StockPositionResponse ToStockPositionResponse(double price)
         {
             return new StockPositionResponse()
