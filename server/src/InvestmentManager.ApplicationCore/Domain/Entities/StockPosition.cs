@@ -1,5 +1,4 @@
-﻿using InvestmentManager.ApplicationCore.DTO;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace InvestmentManager.ApplicationCore.Domain.Entities
 {
@@ -33,22 +32,5 @@ namespace InvestmentManager.ApplicationCore.Domain.Entities
         /// The cost of the stock position (Quantity * AveragePrice)
         /// </summary>
         public double Cost { get; set; }
-
-        public StockPositionResponse ToStockPositionResponse(double price)
-        {
-            return new StockPositionResponse()
-            { 
-                PositionId = PositionId,
-                Symbol = Symbol,
-                Quantity = Quantity,
-                AveragePrice = AveragePrice,
-                Cost = Cost,
-                Price = price,
-                MarketValue = Quantity * price,
-                PercentualGain = ((price/AveragePrice)-1),
-                MonetaryGain = ((Quantity * price) - Cost)
-            };
-
-        }
     }
 }

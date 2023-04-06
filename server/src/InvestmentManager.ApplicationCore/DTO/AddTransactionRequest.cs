@@ -1,5 +1,4 @@
-﻿using InvestmentManager.ApplicationCore.Domain.Entities;
-using InvestmentManager.ApplicationCore.Enums;
+﻿using InvestmentManager.ApplicationCore.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace InvestmentManager.ApplicationCore.DTO
@@ -10,13 +9,13 @@ namespace InvestmentManager.ApplicationCore.DTO
     public class AddTransactionRequest
     {
         /// <summary>
-        /// Position id of the stock position for the given transaction
+        /// Position id  for the given transaction
         /// </summary>
-        [Required(ErrorMessage = "Position ID can't be null or empty")]
-        public Guid PositionId { get; set; }
+        [Required(ErrorMessage = "Position id can't be null or empty")]
+        public string PositionId { get; set; }
 
         /// <summary>
-        /// Unique stock symbol of the transaction
+        /// Unique Symbol of the transaction
         /// </summary>
         [Required(ErrorMessage = "Transaction symbol can't be null or empty")]
         public string Symbol { get; set; }
@@ -32,7 +31,7 @@ namespace InvestmentManager.ApplicationCore.DTO
         /// The price of the transaction
         /// </summary>
         [Required(ErrorMessage = "Transaction price can't be null or empty")]
-        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0.01")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Quantity must be greater than 0.01")]
         public double Price { get; set; }
 
         /// <summary>
@@ -47,19 +46,5 @@ namespace InvestmentManager.ApplicationCore.DTO
         /// </summary>
         [Required(ErrorMessage = "Invalid transaction type")]
         public TransactionType TransactionType { get; set; }
-
-        public Transaction ToTransaction()
-        {
-            return new Transaction()
-            {
-                PositionId = PositionId,
-                Symbol = Symbol,
-                Quantity = Quantity,
-                Price = Price,
-                Cost = Quantity * Price,
-                DateAndTimeOfTransaction = DateAndTimeOfTransaction,
-                TransactionType = TransactionType.ToString()
-            };
-        }
     }
 }

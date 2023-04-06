@@ -6,11 +6,6 @@
     public class StockPositionResponse
     {
         /// <summary>
-        /// Unique stock position id
-        /// </summary>
-        public Guid PositionId { get; set; }
-
-        /// <summary>
         /// Unique symbol of the stock position
         /// </summary>
         public string Symbol { get; set; }

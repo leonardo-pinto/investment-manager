@@ -13,7 +13,8 @@ namespace InvestmentManager.ApplicationCore.Interfaces
         /// Add a transaction to the data base
         /// </summary>
         /// <param name="transaction">Transaction object to add</param>
-        Task AddTransaction(Transaction transaction);
+        /// <returns>Returns the transaction object after adding to the database</returns>
+        Task<Transaction> AddTransaction(Transaction transaction);
 
 
         /// <summary>
@@ -21,6 +22,6 @@ namespace InvestmentManager.ApplicationCore.Interfaces
         /// </summary>
         /// <param name="positionId">Position id</param>
         /// <returns>Returns a list containing all transactions</returns>
-        Task<List<Transaction>> GetTransactionByStockPositionId(Guid positionId);
+        Task<List<TransactionResponse>?> GetTransactionByStockPositionId(string positionId);
     }
 }
