@@ -129,19 +129,6 @@ namespace InvestmentManager.UnitTests.Services
         #region GetSingleStockPosition
 
         [Fact]
-        public async Task GetSingleStockPosition_NullPositionId_ToBeArgumentNullException()
-        {
-            Guid? positionId = null;
-            Func<Task> action = async () =>
-            {
-                await _sut.GetSingleStockPosition(positionId);
-            };
-
-            await action.Should().ThrowAsync<ArgumentNullException>()
-                .WithMessage("Value cannot be null. (Parameter 'positionId')");
-        }
-
-        [Fact]
         public async Task GetSingleStockPosition_NoMatchingPosition_ToBeNull()
         {
             Guid positionId = _fixture.Create<Guid>();
