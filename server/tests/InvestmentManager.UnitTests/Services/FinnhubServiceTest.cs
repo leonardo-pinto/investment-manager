@@ -27,31 +27,24 @@ namespace InvestmentManager.UnitTests.Services
         async public Task GetStockPriceQuote_InvalidStockSymbol_ToBeArgumentException()
         {
             string stockSymbol = _fixture.Create<string>();
-            Dictionary<string, object> invalidSymbolReturn = new Dictionary<string, object>()
-            {
-                { "c", 0 }
-            };
 
             _finnhubRepositoryMock
                 .Setup(temp => temp.GetStockPriceQuote(It.IsAny<string>()))
-                .ReturnsAsync(invalidSymbolReturn);
+                .ReturnsAsync(0);
 
             Func<Task> action = async () =>
             {
                 await _sut.GetStockPriceQuote(stockSymbol);
             };
 
-            await action.Should().ThrowAsync<ArgumentException>().WithMessage("Invalid stock symbol");
+            await action.Should().ThrowAsync<ArgumentException>().WithMessage($"{stockSymbol} is an invalid stock symbol");
         }
 
         [Fact]
         async public Task GetStockPriceQuote_ValidData_ToBeSuccessful()
         {
             string stockSymbol = _fixture.Create<string>();
-            Dictionary<string, object> validSymbolReturn = new Dictionary<string, object>()
-            {
-                { "c", 199.90 }
-            };
+            double validSymbolReturn = _fixture.Create<double>();
 
             _finnhubRepositoryMock
                 .Setup(temp => temp.GetStockPriceQuote(It.IsAny<string>()))
@@ -59,12 +52,44 @@ namespace InvestmentManager.UnitTests.Services
 
             double stockQuote = await _sut.GetStockPriceQuote(stockSymbol);
 
-            stockQuote.Should().Be((double)validSymbolReturn["c"]);
+            stockQuote.Should().Be(validSymbolReturn);
+        }
+
+        #endregion 
+
+        #region GetMultipleStockPriceQuote
+
+        [Fact]
+        async public Task GetMultipleStockPriceQuote_ValidData_ToBeSuccessful()
+        {
+            List<string> stockSymbols = new()
+            {
+                "ABC", "DEF", "GHI"
+            };
+
+            double ABCStockQuote = _fixture.Create<double>();
+            double DEFStockQuote = _fixture.Create<double>();
+            double GHIStockQuote = _fixture.Create<double>();
+
+            Dictionary<string, double> stockPricesDictExpected = new()
+            {
+                { "ABC", ABCStockQuote },
+                { "DEF", DEFStockQuote },
+                { "GHI", GHIStockQuote }
+            };
+
+            _finnhubRepositoryMock
+                .SetupSequence(temp => temp.GetStockPriceQuote(It.IsAny<string>()))
+                .ReturnsAsync(ABCStockQuote)
+                .ReturnsAsync(DEFStockQuote)
+                .ReturnsAsync(GHIStockQuote);
+
+            Dictionary<string, double> stockPricesDict = await _sut.GetMultipleStockPriceQuote(stockSymbols);
+
+            stockPricesDict.Should().BeEquivalentTo(stockPricesDictExpected);
         }
 
         #endregion
-  
-
         public void Dispose()
         {
             _mockRepository.VerifyAll();
