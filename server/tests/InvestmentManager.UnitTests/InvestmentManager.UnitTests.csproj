@@ -25,8 +25,4 @@
     <ProjectReference Include="..\..\src\InvestmentManager.ApplicationCore\InvestmentManager.ApplicationCore.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Entities\" />
-  </ItemGroup>
-
 </Project>
