@@ -8,17 +8,17 @@ namespace InvestmentManager.ApplicationCore.Interfaces
     public interface ITransactionService
     {
         /// <summary>
-        /// Add a new transaction
+        /// Create a transaction for an existing stock position
         /// </summary>
-        /// <param name="addTransactionRequest">Transaction to add</param>
-        /// <returns>Returns the transaction details</returns>
-        Task<TransactionResponse> AddTransactionRequest(AddTransactionRequest addTransactionRequest);
+        /// <param name="addTransaction">Transaction to add</param>
+        /// <returns>Transaction details</returns>
+        Task<TransactionResponse> CreateTransaction(AddTransactionRequest addTransactionRequest);
 
         /// <summary>
         /// Get all the transactions for a given stock position
         /// </summary>
         /// <param name="positionId">Position id</param>
         /// <returns>Returns a list containing all transactions for the given position id</returns>
-        Task<List<TransactionResponse>?> GetTransactionHistory(string positionId);
+        Task<List<TransactionResponse>> GetTransactionHistory(Guid positionId);
     }
 }
