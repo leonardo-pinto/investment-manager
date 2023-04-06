@@ -102,26 +102,7 @@ namespace InvestmentManager.UnitTests.Services
             stockPositionResponse?.PositionId.Should().NotBe(Guid.Empty);
             stockPositionResponse.Should().BeEquivalentTo(stockPositionResponseExpected);
         }
-
-
-        [Fact]
-        public async Task CreateStockPosition_InvalidStockSymbol_ToBeArgumentException()
-        {
-            AddStockPositionRequest? addStockPositionRequest = _fixture.Build<AddStockPositionRequest>().Create();
-            double price = 0;
-
-            _finnhubServiceMock
-                .Setup(temp => temp.GetStockPriceQuote(It.IsAny<string>()))
-                .ReturnsAsync(price);
-
-
-            Func<Task> action = async () =>
-            {
-                await _sut.CreateStockPosition(addStockPositionRequest);
-            };
-
-            await action.Should().ThrowAsync<ArgumentException>(); ;
-        }
+       
         #endregion
 
         #region GetSingleStockPosition

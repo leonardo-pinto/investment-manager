@@ -30,11 +30,6 @@ namespace InvestmentManager.ApplicationCore.Services
             // add exception handling
             double stockPrice = await _finnhubService.GetStockPriceQuote(addStockPositionRequest.Symbol);
 
-            if (stockPrice == 0)
-            {
-                throw new ArgumentException();
-            }
-
             StockPosition stockPosition = addStockPositionRequest.ToStockPosition();
             stockPosition.PositionId = Guid.NewGuid();
 
