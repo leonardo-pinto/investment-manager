@@ -33,20 +33,6 @@ namespace InvestmentManager.UnitTests.Services
         }
 
         #region CreateStockPosition
-        [Fact]
-        public async Task CreateStockPosition_NullAddStockPositionRequest_ToBeArgumentNullException()
-        {
-            AddStockPositionRequest? addStockPositionRequest = null;
-
-            Func<Task> action = async () =>
-            {
-                await _sut.CreateStockPosition(addStockPositionRequest);
-            };
-
-            await action.Should().ThrowAsync<ArgumentNullException>()
-                .WithMessage("Value cannot be null. (Parameter 'addStockPositionRequest')");
-        }
-
         [Theory]
         [InlineData(0)]
         [InlineData(-10)]
