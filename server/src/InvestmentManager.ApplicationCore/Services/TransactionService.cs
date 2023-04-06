@@ -16,11 +16,6 @@ namespace InvestmentManager.ApplicationCore.Services
 
         public async Task<TransactionResponse> CreateTransaction(AddTransactionRequest addTransactionRequest)
         {
-            if (addTransactionRequest == null)
-            {
-                throw new ArgumentNullException(nameof(addTransactionRequest));
-            }
-
             ValidationHelper.ModelValidation(addTransactionRequest);
 
             Transaction transaction = addTransactionRequest.ToTransaction();
