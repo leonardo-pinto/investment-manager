@@ -13,21 +13,17 @@ namespace InvestmentManager.ApplicationCore.Services
             _finnhubRepository = finnhubRepository;
         }
 
-        public async Task<double> GetStockPriceQuote(string stockSymbol)
+        async public Task<double> GetStockPriceQuote(string stockSymbol)
         {
-            Dictionary<string, object> responseDictionary = await _finnhubRepository.GetStockPriceQuote(stockSymbol);
+            double stockPriceQuote = await _finnhubRepository.GetStockPriceQuote(stockSymbol);
 
             // if the stock symbol is invalid, the api returns "c" as 0 (int type)
-            if (responseDictionary["c"] is int @int)
+            if (stockPriceQuote == 0)
             {
-                if (@int == 0)
-                {
-                    throw new ArgumentException("Invalid stock symbol");
-                }
+                throw new ArgumentException($"{stockSymbol} is an invalid stock symbol");
             }
 
-            double stockPrice = (double)responseDictionary["c"];
-            return stockPrice;
+            return stockPriceQuote;
             //catch (InvalidOperationException ex)
             //{
             //    // do something with repository exceptions
@@ -35,9 +31,17 @@ namespace InvestmentManager.ApplicationCore.Services
             //}
         }
 
-        public Task<Dictionary<string, double>> GetMultipleStockPriceQuote(List<string> stockSymbols)
+        async public Task<Dictionary<string, double>> GetMultipleStockPriceQuote(List<string> stockSymbols)
         {
-            throw new NotImplementedException();
+            Dictionary<string, double> stockSymbolQuoteDict = new();
+
+            foreach (string stockSymbol in stockSymbols)
+            {
+                double stockPriceQuote = await GetStockPriceQuote(stockSymbol);
+                stockSymbolQuoteDict.Add(stockSymbol, stockPriceQuote);
+            }
+
+            return stockSymbolQuoteDict;
         }
 
     }
