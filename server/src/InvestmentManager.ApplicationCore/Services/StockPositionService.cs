@@ -25,14 +25,8 @@ namespace InvestmentManager.ApplicationCore.Services
 
         async public Task<StockPositionResponse> CreateStockPosition(AddStockPositionRequest addStockPositionRequest)
         {
-            if (addStockPositionRequest == null)
-            {
-                throw new ArgumentNullException(nameof(addStockPositionRequest));
-            }
-
             ValidationHelper.ModelValidation(addStockPositionRequest);
 
-         
             // add exception handling
             double stockPrice = await _finnhubService.GetStockPriceQuote(addStockPositionRequest.Symbol);
 
