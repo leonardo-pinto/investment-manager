@@ -21,7 +21,7 @@ namespace InvestmentManager.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<StockPosition> UpdateStockPosition(StockPosition stockPosition)
+        public async Task UpdateStockPosition(StockPosition stockPosition)
         {
             throw new NotImplementedException();
         }

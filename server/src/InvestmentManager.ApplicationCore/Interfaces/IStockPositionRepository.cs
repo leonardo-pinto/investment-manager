@@ -17,8 +17,7 @@ namespace InvestmentManager.ApplicationCore.Interfaces
         /// Updates a stock position object 
         /// </summary>
         /// <param name="stockPosition">Stock position to update</param>
-        /// <returns>Returns the stock position object after updating</returns>
-        Task<StockPosition> UpdateStockPosition(StockPosition stockPosition);
+        Task UpdateStockPosition(StockPosition stockPosition);
 
         /// <summary>
         /// Returns all stock position in the database
