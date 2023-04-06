@@ -11,7 +11,7 @@ namespace InvestmentManager.ApplicationCore.Interfaces
         /// Get a stock current price quote
         /// </summary>
         /// <param name="stockSymbol">Stock symbol to search</param>
-        /// <returns>Dictionary containing details such as current price, change in price, percentage change, and etc</returns>
-        Task<Dictionary<string, object>> GetStockPriceQuote(string stockSymbol);
+        /// <returns>Current price of the stock</returns>
+        Task<double> GetStockPriceQuote(string stockSymbol);
     }
 }
