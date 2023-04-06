@@ -55,7 +55,7 @@ namespace InvestmentManager.ApplicationCore.Services
             List<StockPositionResponse> stockPositionsResponse = new();
             List<StockPosition> stockPositions = await _stockPositionRepository.GetAllStockPositions();
 
-            if(!stockPositions.Any())
+            if (!stockPositions.Any())
             {
                 return stockPositionsResponse;
             }
@@ -94,9 +94,45 @@ namespace InvestmentManager.ApplicationCore.Services
             return stockPosition.ToStockPositionResponse(stockPrice);
         }
 
-        public Task<StockPositionResponse?> UpdateStockPosition(UpdateStockPositionRequest updateStockPositionRequest)
+        async public Task<StockPositionResponse?> UpdateStockPosition(UpdateStockPositionRequest updateStockPositionRequest)
         {
-            throw new NotImplementedException();
+            ValidationHelper.ModelValidation(updateStockPositionRequest);
+
+            StockPosition? matchingStockPosition = await _stockPositionRepository.GetSingleStockPosition(updateStockPositionRequest.PositionId);
+
+            if (matchingStockPosition == null)
+            {
+                throw new ArgumentException("Invalid position id");
+            }
+
+            if (updateStockPositionRequest.TransactionType == TransactionType.Buy)
+            {
+                matchingStockPosition.AveragePrice =
+                    matchingStockPosition.UpdateAveragePrice(
+                        updateStockPositionRequest.Quantity, updateStockPositionRequest.Price);
+                matchingStockPosition.Quantity += updateStockPositionRequest.Quantity;
+            }
+            else
+            {
+                if (updateStockPositionRequest.Quantity > matchingStockPosition.Quantity)
+                {
+                    throw new ArgumentException("The stock quantity to be sold is greater than the current stock quantity.");
+                }
+                matchingStockPosition.Quantity -= updateStockPositionRequest.Quantity;
+            }
+
+            matchingStockPosition.Cost = matchingStockPosition.Quantity * matchingStockPosition.AveragePrice;
+
+            await _stockPositionRepository.UpdateStockPosition(matchingStockPosition);
+
+            AddTransactionRequest addTransactionRequest
+                = updateStockPositionRequest.ToAddTransactionRequest(updateStockPositionRequest.PositionId, updateStockPositionRequest.TransactionType);
+
+            await _transactionService.CreateTransaction(addTransactionRequest);
+
+            double stockPrice = await _finnhubService.GetStockPriceQuote(matchingStockPosition.Symbol);
+
+            return matchingStockPosition.ToStockPositionResponse(stockPrice);
         }
     }
 }
