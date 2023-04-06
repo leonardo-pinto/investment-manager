@@ -8,11 +8,10 @@ namespace InvestmentManager.ApplicationCore.Interfaces
     public interface IStockPositionRepository
     {
         /// <summary>
-        /// Add a stock position to the data base
+        /// Create a stock position to the data base
         /// </summary>
         /// <param name="stockPosition">Stock position object to add</param>
-        /// <returns>Returns the stock position object after adding to the database</returns>
-        Task<StockPosition> AddStockPosition(StockPosition stockPosition);
+        Task CreateStockPosition(StockPosition stockPosition);
 
         /// <summary>
         /// Updates a stock position object 
@@ -32,6 +31,6 @@ namespace InvestmentManager.ApplicationCore.Interfaces
         /// </summary>
         /// <param name="positionId">Id of the given stock position</param>
         /// <returns>A stock position object or null</returns>
-        Task<StockPosition?> GetSingleStockPosition(string positionId);
+        Task<StockPosition?> GetSingleStockPosition(Guid positionId);
     }
 }

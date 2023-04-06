@@ -35,6 +35,6 @@ namespace InvestmentManager.ApplicationCore.DTO
         /// <summary>
         /// The type of the transaction (buy or sell)
         /// </summary>
-        public TransactionType TransactionType { get; set; }
+        public string? TransactionType { get; set; }
     }
 }
