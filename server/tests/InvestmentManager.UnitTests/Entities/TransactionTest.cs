@@ -18,6 +18,7 @@ namespace InvestmentManager.UnitTests.Entities
 
         #region ToTransactionResponse
 
+        [Fact]
         public void ToTransactionResponse_ToBeSuccessful()
         {
             Transaction transaction = _fixture.Build<Transaction>().Create();
