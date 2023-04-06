@@ -17,6 +17,7 @@ namespace InvestmentManager.UnitTests.DTO
 
         #region ToStockPosition
 
+        [Fact]
         public void ToStockPosition_ToBeSuccessful()
         {
             AddStockPositionRequest addStockPositionRequest = 
@@ -36,6 +37,7 @@ namespace InvestmentManager.UnitTests.DTO
 
         #region ToAddTransactionRequest
 
+        [Fact]
         public void ToAddTransactionRequest_ToBeSuccessful()
         {
             Guid positionId = _fixture.Create<Guid>();
