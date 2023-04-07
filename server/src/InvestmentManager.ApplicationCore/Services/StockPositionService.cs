@@ -3,6 +3,7 @@ using InvestmentManager.ApplicationCore.DTO;
 using InvestmentManager.ApplicationCore.Helpers;
 using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Enums;
+using InvestmentManager.ApplicationCore.Exceptions;
 
 namespace InvestmentManager.ApplicationCore.Services
 {
@@ -97,7 +98,7 @@ namespace InvestmentManager.ApplicationCore.Services
 
             if (matchingStockPosition == null)
             {
-                throw new ArgumentException("Invalid position id");
+                throw new InvalidPositionIdException("Invalid position id"); 
             }
 
             if (updateStockPositionRequest.TransactionType == TransactionType.Buy)
@@ -111,7 +112,7 @@ namespace InvestmentManager.ApplicationCore.Services
             {
                 if (updateStockPositionRequest.Quantity > matchingStockPosition.Quantity)
                 {
-                    throw new ArgumentException("The stock quantity to be sold is greater than the current stock quantity.");
+                    throw new InvalidStockQuantityException("The stock quantity to be sold is greater than the current stock position quantity.");
                 }
                 matchingStockPosition.Quantity -= updateStockPositionRequest.Quantity;
             }
