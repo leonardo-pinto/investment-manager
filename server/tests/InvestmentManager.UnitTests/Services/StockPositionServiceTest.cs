@@ -451,7 +451,7 @@ namespace InvestmentManager.UnitTests.Services
             };
 
             await action.Should().ThrowAsync<ArgumentException>()
-                .WithMessage("The stock quantity to be sold is greater than the current stock quantity.");
+                .WithMessage("The stock quantity to be sold is greater than the current stock position quantity.");
         }
 
         #endregion
