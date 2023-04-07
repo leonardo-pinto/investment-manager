@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using FluentAssertions;
+using InvestmentManager.ApplicationCore.Exceptions;
 using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Services;
 using Moq;
@@ -37,8 +38,32 @@ namespace InvestmentManager.UnitTests.Services
                 await _sut.GetStockPriceQuote(stockSymbol);
             };
 
-            await action.Should().ThrowAsync<ArgumentException>().WithMessage($"{stockSymbol} is an invalid stock symbol");
+            await action
+                .Should()
+                .ThrowAsync<ArgumentException>()
+                .WithMessage($"{stockSymbol} is an invalid stock symbol");
         }
+
+        [Fact]
+        async public Task GetStockPriceQuote_WhenFinnhubRepositoryThrows_ToBeFinnhubException()
+        {
+            string stockSymbol = _fixture.Create<string>();
+
+            _finnhubRepositoryMock
+                .Setup(temp => temp.GetStockPriceQuote(It.IsAny<string>()))
+                .ThrowsAsync(new InvalidOperationException("No response from server"));
+
+            Func<Task> action = async () =>
+            {
+                await _sut.GetStockPriceQuote(stockSymbol);
+            };
+
+            await action
+                .Should()
+                .ThrowAsync<FinnhubException>()
+                .WithMessage($"Unable to retrieve stock price quote.");
+        }
+
 
         [Fact]
         async public Task GetStockPriceQuote_ValidData_ToBeSuccessful()
