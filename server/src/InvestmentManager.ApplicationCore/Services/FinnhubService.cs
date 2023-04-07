@@ -1,5 +1,6 @@
 ﻿
 
+using InvestmentManager.ApplicationCore.Exceptions;
 using InvestmentManager.ApplicationCore.Interfaces;
 
 namespace InvestmentManager.ApplicationCore.Services
@@ -15,20 +16,23 @@ namespace InvestmentManager.ApplicationCore.Services
 
         async public Task<double> GetStockPriceQuote(string stockSymbol)
         {
-            double stockPriceQuote = await _finnhubRepository.GetStockPriceQuote(stockSymbol);
-
-            // if the stock symbol is invalid, the api returns "c" as 0 (int type)
-            if (stockPriceQuote == 0)
+            try
             {
-                throw new ArgumentException($"{stockSymbol} is an invalid stock symbol");
-            }
+                double stockPriceQuote = await _finnhubRepository.GetStockPriceQuote(stockSymbol);
 
-            return stockPriceQuote;
-            //catch (InvalidOperationException ex)
-            //{
-            //    // do something with repository exceptions
-            //    throw new Exception("Catch from single stock quote");
-            //}
+                // if the stock symbol is invalid, the api returns "c" as 0 (int type)
+                if (stockPriceQuote == 0)
+                {
+                    throw new InvalidStockSymbolException($"{stockSymbol} is an invalid stock symbol");
+                }
+
+                return stockPriceQuote;
+            }
+            catch (InvalidOperationException ex)
+            {
+                FinnhubException finnhubException = new FinnhubException("Unable to retrieve stock price quote.", ex);
+                throw finnhubException;
+            }
         }
 
         async public Task<Dictionary<string, double>> GetMultipleStockPriceQuote(List<string> stockSymbols)
