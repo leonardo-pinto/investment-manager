@@ -98,7 +98,7 @@ namespace InvestmentManager.ApplicationCore.Services
 
             if (matchingStockPosition == null)
             {
-                throw new InvalidPositionIdException("Invalid position id"); 
+                return null; 
             }
 
             if (updateStockPositionRequest.TransactionType == TransactionType.Buy)
