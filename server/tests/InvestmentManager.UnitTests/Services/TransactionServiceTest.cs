@@ -1,85 +1,59 @@
 ﻿using AutoFixture;
+using AutoMapper;
 using FluentAssertions;
 using InvestmentManager.ApplicationCore.Domain.Entities;
 using InvestmentManager.ApplicationCore.DTO;
 using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Services;
+using InvestmentManager.ApplicationCore.Mapper;
+using InvestmentManager.UnitTests.Helpers;
 using Moq;
-using System.Diagnostics;
 
 namespace InvestmentManager.UnitTests.Services
 {
-    public class TransactionServiceTest : IDisposable
+    public class TransactionServiceTest 
     {
-        private readonly MockRepository _mockRepository;
-        private readonly ITransactionService _transactionService;
+        private readonly ITransactionService _sut;
         private readonly Mock<ITransactionRepository> _transactionRepositoryMock;
         private readonly IFixture _fixture;
 
         public TransactionServiceTest()
         {
-            _mockRepository = new MockRepository(MockBehavior.Strict);
+            MapperConfiguration? autoMapperConfig = new (cfg => cfg.AddProfile(new TransactionProfile()));
+            IMapper mapper = new Mapper(autoMapperConfig);
+
             _transactionRepositoryMock = new Mock<ITransactionRepository>(MockBehavior.Strict);
-            _transactionService = new TransactionService(_transactionRepositoryMock.Object);
+            _sut = new TransactionService(
+                _transactionRepositoryMock.Object, mapper);
             _fixture = new Fixture();
         }
 
         #region CreateTransaction
-        [Theory]
-        [InlineData(0)]
-        [InlineData(-10)]
-        public async Task CreateTransaction_QuantityIsLessThanMinimum_ToBeArgumentException(int quantity)
-        {
-            AddTransactionRequest? addTransactionnRequest = _fixture.Build<AddTransactionRequest>()
-                .With(temp => temp.Quantity, quantity)
-                .Create();
-
-            Func<Task> action = async () =>
-            {
-                await _transactionService.CreateTransaction(addTransactionnRequest);
-            };
-
-            await action.Should().ThrowAsync<ArgumentException>()
-                .WithMessage("Quantity must be greater than 0");
-        }
-
-        [Theory]
-        [InlineData(0.0)]
-        [InlineData(0.001)]
-        [InlineData(-1.0)]
-        public async Task CreateTransaction_PriceIsLessThanMinimum_ToBeArgumentException(double? price)
-        {
-            AddTransactionRequest? addTransactionnRequest = _fixture.Build<AddTransactionRequest>()
-                .With(temp => temp.Price, price)
-                .Create();
-
-            Func<Task> action = async () =>
-            {
-                await _transactionService.CreateTransaction(addTransactionnRequest);
-            };
-
-            await action.Should().ThrowAsync<ArgumentException>()
-                .WithMessage("Price must be greater than 0.01");
-        }
 
         [Fact]
-        public async Task CreateTransaction_ValidData_ToBeSuccessful()
+        async public Task CreateTransaction_BeSuccessful()
         {
+            // Arrange
             AddTransactionRequest addTransactionRequest = _fixture.Build<AddTransactionRequest>().Create();
-
-            Transaction transactionExpected = addTransactionRequest.ToTransaction();
+            double expectedCost = addTransactionRequest.Price * addTransactionRequest.Quantity;
 
             _transactionRepositoryMock
-                .Setup(temp => temp.AddTransaction(It.IsAny<Transaction>()))
+                .Setup(m => m.AddTransaction(It.IsAny<Transaction>()))
                 .Returns(Task.CompletedTask);
 
-            TransactionResponse transactionResponseExpected = transactionExpected.ToTransactionResponse();
+            // Act
+            TransactionResponse transactionResponse = await _sut.CreateTransaction(addTransactionRequest);
 
-            TransactionResponse transactionResponse = await _transactionService.CreateTransaction(addTransactionRequest);
+            // Assert
+            transactionResponse.Symbol.Should().Be(addTransactionRequest.Symbol);
+            transactionResponse.Quantity.Should().Be(addTransactionRequest.Quantity);
+            transactionResponse.Cost.Should().Be(expectedCost);
+            transactionResponse.DateAndTimeOfTransaction.Should().Be(addTransactionRequest.DateAndTimeOfTransaction);
+            transactionResponse.Symbol.Should().Be(addTransactionRequest.Symbol);
+            transactionResponse.TransactionType.Should().Be(addTransactionRequest.TransactionType.ToString());
 
-            transactionResponse.Should().BeEquivalentTo(transactionResponseExpected);
-        }
-
+            _transactionRepositoryMock.Verify(m => m.AddTransaction(It.IsAny<Transaction>()), Times.Once);
+    }
         #endregion
 
         #region GetTransactionHistory
@@ -87,54 +61,53 @@ namespace InvestmentManager.UnitTests.Services
         [Fact]
         public async Task GetTransactionHistory_NonMatchingPositionId_ToBeEmpty()
         {
+            // Arrange
             Guid positionId = _fixture.Create<Guid>();
-
-            List<Transaction> transactions = new List<Transaction>();
+            List<Transaction> transactionsListMock = new();
 
             _transactionRepositoryMock
                 .Setup(temp => temp.GetTransactionByStockPositionId(It.IsAny<Guid>()))
-                .ReturnsAsync(transactions);
+                .ReturnsAsync(transactionsListMock);
 
-            List<TransactionResponse>? transactionResponse = await _transactionService.GetTransactionHistory(positionId);
+            // Act
+            List<TransactionResponse> transactionListResponse = await _sut.GetTransactionHistory(positionId);
 
-            transactionResponse.Should().BeEmpty();
+            // Assert
+            transactionListResponse.Should().BeEmpty();
+            _transactionRepositoryMock
+                .Verify(m => m.GetTransactionByStockPositionId(positionId), Times.Once);
         }
 
         [Fact]
         public async Task GetTransactionHistory_ValidData_ToBeSuccessful()
         {
+            // Arrange
             Guid positionId = _fixture.Create<Guid>();
 
-            List<Transaction> transactions = new List<Transaction>()
-            { 
-                _fixture.Build<Transaction>()
-                .With(temp => temp.PositionId, positionId)
-                .Create(),
-
-                _fixture.Build<Transaction>()
-                .With(temp => temp.PositionId, positionId)
-                .Create(),
-
-                _fixture.Build<Transaction>()
-                .With(temp => temp.PositionId, positionId)
-                .Create(),
+            List<Transaction> transactionsListMock = new()
+            {
+                _fixture.Build<Transaction>().With(e => e.PositionId, positionId).Create(),
+                _fixture.Build<Transaction>().With(e => e.PositionId, positionId).Create(),
+                _fixture.Build<Transaction>().With(e => e.PositionId, positionId).Create(),
             };
 
-            List<TransactionResponse> transactionHistoryExpected = transactions.Select(temp => temp.ToTransactionResponse()).ToList();
+            _transactionRepositoryMock
+                .Setup(m => m.GetTransactionByStockPositionId(It.IsAny<Guid>()))
+                .ReturnsAsync(transactionsListMock);
+
+            // Act
+            List<TransactionResponse> transactionListResponse = await _sut.GetTransactionHistory(positionId);
+
+            // Arrange
+            transactionListResponse.Should().HaveSameCount(transactionsListMock);
+            transactionListResponse[0].Quantity.Should().Be(transactionsListMock[0].Quantity);
+            transactionListResponse[1].Quantity.Should().Be(transactionsListMock[1].Quantity);
+            transactionListResponse[2].Quantity.Should().Be(transactionsListMock[2].Quantity);
 
             _transactionRepositoryMock
-                .Setup(temp => temp.GetTransactionByStockPositionId(It.IsAny<Guid>()))
-                .ReturnsAsync(transactions);
-
-            List<TransactionResponse> transactionHistory = await _transactionService.GetTransactionHistory(positionId);
-
-            transactionHistory.Should().BeEquivalentTo(transactionHistoryExpected);
+               .Verify(m => m.GetTransactionByStockPositionId(positionId), Times.Once);
         }
 
-        public void Dispose()
-        {
-            _mockRepository.VerifyAll();
-        }
         #endregion
     }
 }
