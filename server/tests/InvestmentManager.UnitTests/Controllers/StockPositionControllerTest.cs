@@ -6,6 +6,7 @@ using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Mapper;
 using InvestmentManager.ApplicationCore.Services;
 using InvestmentManager.Web.Controllers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -104,7 +105,6 @@ namespace InvestmentManager.UnitTests.Controllers
 
         #endregion
 
-
         #region GetAllStockPositions
         [Fact]
         async public Task GetAllStockPositions_ToBeOk()
@@ -131,5 +131,58 @@ namespace InvestmentManager.UnitTests.Controllers
         }
 
         #endregion
+
+        #region GetSingleStockPosition
+
+        [Fact]
+        async public Task GetSingleStockPosition_WhenPositionIdIsInvalid_ToBeBadRequest()
+        {
+            // Arrange
+            Guid guidId = _fixture.Create<Guid>();
+            string id = guidId.ToString();
+
+            _stockPositionServiceMock
+                .Setup(m => m.GetSingleStockPosition(It.IsAny<Guid>()))
+                .ReturnsAsync(null as StockPositionResponse);
+
+            // Act
+            IActionResult response = await _sut.GetSingleStockPosition(id);
+
+            // Assert
+            response.Should().BeOfType<BadRequestObjectResult>();
+            response.As<BadRequestObjectResult>().Value.Should().Be("Invalid position id");
+            _stockPositionServiceMock.Verify(m => m.GetSingleStockPosition(Guid.Parse(id)), Times.Once);
+
+        }
+
+        [Fact]
+        async public Task GetSingleStockPosition_ToBeOk()
+        {
+            // Arrange
+            Guid guidId = _fixture.Create<Guid>();
+            string id = guidId.ToString();
+            StockPositionResponse stockPositionResponse = _fixture.Build<StockPositionResponse>().Create();
+
+            _stockPositionServiceMock
+                .Setup(m => m.GetSingleStockPosition(It.IsAny<Guid>()))
+                .ReturnsAsync(stockPositionResponse);
+
+            // Act
+            IActionResult response = await _sut.GetSingleStockPosition(id);
+
+            // Assert
+            response.Should().BeOfType<OkObjectResult>();
+            response.As<OkObjectResult>().Value.Should().Be(stockPositionResponse);
+            _stockPositionServiceMock.Verify(m => m.GetSingleStockPosition(Guid.Parse(id)), Times.Once);
+        }
+        #endregion
+    //    StockPositionResponse? stockPositionResponse = await _stockPositionService.GetSingleStockPosition(positionId);
+
+    //        if (stockPositionResponse == null)
+    //        {
+    //            return Problem(detail: "Invalid position id", statusCode: 404);
+    //}
+
+    //        return Ok(stockPositionResponse);
     }
 }
