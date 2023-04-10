@@ -9,18 +9,6 @@ namespace InvestmentManager.ApplicationCore.DTO
     public class UpdateStockPositionRequest
     {
         /// <summary>
-        /// Id of the stock position
-        /// </summary>
-        [Required(ErrorMessage = "Position id can't be null or empty")]
-        public Guid PositionId { get; set; }
-
-        /// <summary>
-        /// Unique symbol of the stock position
-        /// </summary>
-        [Required(ErrorMessage = "Stock symbol can't be null or empty")]
-        public string Symbol { get; set; }
-
-        /// <summary>
         /// Quantity of the stock
         /// </summary>
         [Required(ErrorMessage = "Quantity can't be null or empty")]
@@ -42,23 +30,5 @@ namespace InvestmentManager.ApplicationCore.DTO
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime DateAndTimeOfStockPosition { get; set; }
-
-        /// <summary>
-        /// Converts the current object of AddStockPositionRequest
-        /// into a new object of AddTransactionRequest type
-        /// </summary>
-        /// <returns></returns>
-        //public AddTransactionRequest ToAddTransactionRequest(Guid positionId, TransactionType transactionType)
-        //{
-        //    return new AddTransactionRequest()
-        //    {
-        //        PositionId = positionId,
-        //        Symbol = Symbol,
-        //        Quantity = Quantity,
-        //        Price = Price,
-        //        DateAndTimeOfTransaction = DateAndTimeOfStockPosition,
-        //        TransactionType = transactionType
-        //    };
-        //}
     }
 }
