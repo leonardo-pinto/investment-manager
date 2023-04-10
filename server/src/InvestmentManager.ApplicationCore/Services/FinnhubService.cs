@@ -20,12 +20,6 @@ namespace InvestmentManager.ApplicationCore.Services
             {
                 double stockPriceQuote = await _finnhubRepository.GetStockPriceQuote(stockSymbol);
 
-                // if the stock symbol is invalid, the api returns "c" as 0 (int type)
-                if (stockPriceQuote == 0)
-                {
-                    throw new InvalidStockSymbolException($"{stockSymbol} is an invalid stock symbol");
-                }
-
                 return stockPriceQuote;
             }
             catch (InvalidOperationException ex)
