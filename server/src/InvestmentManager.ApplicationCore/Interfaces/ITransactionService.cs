@@ -15,10 +15,9 @@ namespace InvestmentManager.ApplicationCore.Interfaces
         Task<TransactionResponse> CreateTransaction(AddTransactionRequest addTransactionRequest);
 
         /// <summary>
-        /// Get all the transactions for a given stock position
+        /// Get all the transactions
         /// </summary>
-        /// <param name="positionId">Position id</param>
-        /// <returns>Returns a list containing all transactions for the given position id</returns>
-        Task<List<TransactionResponse>> GetTransactionHistory(Guid positionId);
+        /// <returns>Returns a list containing all transactions</returns>
+        Task<List<TransactionResponse>> GetAllTransactions();
     }
 }
