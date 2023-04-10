@@ -6,8 +6,8 @@ using InvestmentManager.ApplicationCore.DTO;
 using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Services;
 using InvestmentManager.ApplicationCore.Mapper;
-using InvestmentManager.UnitTests.Helpers;
 using Moq;
+using InvestmentManager.UnitTests.Helpers;
 
 namespace InvestmentManager.UnitTests.Services
 {
@@ -19,7 +19,7 @@ namespace InvestmentManager.UnitTests.Services
 
         public TransactionServiceTest()
         {
-            MapperConfiguration? autoMapperConfig = new (cfg => cfg.AddProfile(new TransactionProfile()));
+            MapperConfiguration? autoMapperConfig = new (cfg => cfg.AddProfile(new MappingProfile()));
             IMapper mapper = new Mapper(autoMapperConfig);
 
             _transactionRepositoryMock = new Mock<ITransactionRepository>(MockBehavior.Strict);
@@ -31,14 +31,14 @@ namespace InvestmentManager.UnitTests.Services
         #region CreateTransaction
 
         [Fact]
-        async public Task CreateTransaction_BeSuccessful()
+        async public Task CreateTransaction_ToBeSuccessful()
         {
             // Arrange
             AddTransactionRequest addTransactionRequest = _fixture.Build<AddTransactionRequest>().Create();
-            double expectedCost = addTransactionRequest.Price * addTransactionRequest.Quantity;
+            double expectedCost = MockHelper.ExpectedCost(addTransactionRequest.Quantity, addTransactionRequest.Price);
 
             _transactionRepositoryMock
-                .Setup(m => m.AddTransaction(It.IsAny<Transaction>()))
+                .Setup(m => m.CreateTransaction(It.IsAny<Transaction>()))
                 .Returns(Task.CompletedTask);
 
             // Act
@@ -47,56 +47,34 @@ namespace InvestmentManager.UnitTests.Services
             // Assert
             transactionResponse.Symbol.Should().Be(addTransactionRequest.Symbol);
             transactionResponse.Quantity.Should().Be(addTransactionRequest.Quantity);
+            transactionResponse.Price.Should().Be(addTransactionRequest.Price);
             transactionResponse.Cost.Should().Be(expectedCost);
             transactionResponse.DateAndTimeOfTransaction.Should().Be(addTransactionRequest.DateAndTimeOfTransaction);
-            transactionResponse.Symbol.Should().Be(addTransactionRequest.Symbol);
             transactionResponse.TransactionType.Should().Be(addTransactionRequest.TransactionType.ToString());
 
-            _transactionRepositoryMock.Verify(m => m.AddTransaction(It.IsAny<Transaction>()), Times.Once);
+            _transactionRepositoryMock.Verify(m => m.CreateTransaction(It.IsAny<Transaction>()), Times.Once);
     }
         #endregion
 
-        #region GetTransactionHistory
+        #region GetAllTransactions
 
         [Fact]
-        public async Task GetTransactionHistory_NonMatchingPositionId_ToBeEmpty()
+        public async Task GetAllTransactions_ToBeSuccessful()
         {
             // Arrange
-            Guid positionId = _fixture.Create<Guid>();
-            List<Transaction> transactionsListMock = new();
-
-            _transactionRepositoryMock
-                .Setup(temp => temp.GetTransactionByStockPositionId(It.IsAny<Guid>()))
-                .ReturnsAsync(transactionsListMock);
-
-            // Act
-            List<TransactionResponse> transactionListResponse = await _sut.GetTransactionHistory(positionId);
-
-            // Assert
-            transactionListResponse.Should().BeEmpty();
-            _transactionRepositoryMock
-                .Verify(m => m.GetTransactionByStockPositionId(positionId), Times.Once);
-        }
-
-        [Fact]
-        public async Task GetTransactionHistory_ValidData_ToBeSuccessful()
-        {
-            // Arrange
-            Guid positionId = _fixture.Create<Guid>();
-
             List<Transaction> transactionsListMock = new()
             {
-                _fixture.Build<Transaction>().With(e => e.PositionId, positionId).Create(),
-                _fixture.Build<Transaction>().With(e => e.PositionId, positionId).Create(),
-                _fixture.Build<Transaction>().With(e => e.PositionId, positionId).Create(),
+                _fixture.Build<Transaction>().Create(),
+                _fixture.Build<Transaction>().Create(),
+                _fixture.Build<Transaction>().Create(),
             };
 
             _transactionRepositoryMock
-                .Setup(m => m.GetTransactionByStockPositionId(It.IsAny<Guid>()))
+                .Setup(m => m.GetAllTransactions())
                 .ReturnsAsync(transactionsListMock);
 
             // Act
-            List<TransactionResponse> transactionListResponse = await _sut.GetTransactionHistory(positionId);
+            List<TransactionResponse> transactionListResponse = await _sut.GetAllTransactions();
 
             // Arrange
             transactionListResponse.Should().HaveSameCount(transactionsListMock);
@@ -105,9 +83,8 @@ namespace InvestmentManager.UnitTests.Services
             transactionListResponse[2].Quantity.Should().Be(transactionsListMock[2].Quantity);
 
             _transactionRepositoryMock
-               .Verify(m => m.GetTransactionByStockPositionId(positionId), Times.Once);
+               .Verify(m => m.GetAllTransactions(), Times.Once);
         }
-
         #endregion
     }
 }
