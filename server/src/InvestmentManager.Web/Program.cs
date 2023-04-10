@@ -2,13 +2,19 @@ using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Services;
 using InvestmentManager.ApplicationCore.Mapper;
 using InvestmentManager.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
+using InvestmentManager.Infrastructure.AppDbContext;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationDbContext"));
+});
+
 builder.Services.AddAutoMapper(typeof(MappingProfile));
-//builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Verify which method to add services to the container
 builder.Services.AddTransient<IStockPositionService, StockPositionService>(); 
@@ -17,7 +23,7 @@ builder.Services.AddTransient<IFinnhubService, FinnhubService>();
 builder.Services.AddTransient<IStockPositionRepository, StockPositionRepository>();
 builder.Services.AddTransient<ITransactionRepository, TransactionRepository>();
 builder.Services.AddTransient<IFinnhubRepository, FinnhubRepository>();
-// Add services to the container.
+
 
 var app = builder.Build();
 
