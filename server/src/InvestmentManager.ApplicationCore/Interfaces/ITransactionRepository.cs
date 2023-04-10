@@ -1,6 +1,5 @@
 ﻿
 using InvestmentManager.ApplicationCore.Domain.Entities;
-using InvestmentManager.ApplicationCore.DTO;
 
 namespace InvestmentManager.ApplicationCore.Interfaces
 {
@@ -10,17 +9,16 @@ namespace InvestmentManager.ApplicationCore.Interfaces
     public interface ITransactionRepository
     {
         /// <summary>
-        /// Add a transaction to the data base
+        /// Create a transaction to the data base
         /// </summary>
         /// <param name="transaction">Transaction object to add</param>
-        Task AddTransaction(Transaction transaction);
+        Task CreateTransaction(Transaction transaction);
 
 
         /// <summary>
-        /// Get all the transaction for a given stock position
+        /// Get all the transactions
         /// </summary>
-        /// <param name="positionId">Position id</param>
         /// <returns>Returns a list containing all transactions</returns>
-        Task<List<Transaction>> GetTransactionByStockPositionId(Guid positionId);
+        Task<List<Transaction>> GetAllTransactions();
     }
 }
