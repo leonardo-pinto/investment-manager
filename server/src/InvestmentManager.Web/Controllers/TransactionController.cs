@@ -15,10 +15,10 @@ namespace InvestmentManager.Web.Controllers
             _transactionService = transactionService;
         }
 
-        [HttpGet("{positionId}")]
-        async public Task<IActionResult> GetAllTransactionsByPositionId(Guid positionId)
+        [HttpGet]
+        async public Task<IActionResult> GetAllTransactions()
         {
-            List<TransactionResponse> transactionHistory = await _transactionService.GetTransactionHistory(positionId);
+            List<TransactionResponse> transactionHistory = await _transactionService.GetAllTransactions();
 
             return Ok(transactionHistory);
         }
