@@ -29,13 +29,15 @@ namespace InvestmentManager.Web.Controllers
         }
 
         [HttpGet("{positionId}")]
-        async public Task<IActionResult> GetSingleStockPosition(Guid positionId)
+        async public Task<IActionResult> GetSingleStockPosition(string id)
         {
+            Guid positionId = Guid.Parse(id);
+
             StockPositionResponse? stockPositionResponse = await _stockPositionService.GetSingleStockPosition(positionId);
 
             if (stockPositionResponse == null)
             {
-                return Problem(detail: "Invalid position id", statusCode: 404);
+                return BadRequest("Invalid position id");
             }
 
             return Ok(stockPositionResponse);
