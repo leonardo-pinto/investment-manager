@@ -48,17 +48,17 @@ namespace InvestmentManager.ApplicationCore.DTO
         /// into a new object of AddTransactionRequest type
         /// </summary>
         /// <returns></returns>
-        public AddTransactionRequest ToAddTransactionRequest(Guid positionId, TransactionType transactionType)
-        {
-            return new AddTransactionRequest()
-            {
-                PositionId = positionId,
-                Symbol = Symbol,
-                Quantity = Quantity,
-                Price = Price,
-                DateAndTimeOfTransaction = DateAndTimeOfStockPosition,
-                TransactionType = transactionType
-            };
-        }
+        //public AddTransactionRequest ToAddTransactionRequest(Guid positionId, TransactionType transactionType)
+        //{
+        //    return new AddTransactionRequest()
+        //    {
+        //        PositionId = positionId,
+        //        Symbol = Symbol,
+        //        Quantity = Quantity,
+        //        Price = Price,
+        //        DateAndTimeOfTransaction = DateAndTimeOfStockPosition,
+        //        TransactionType = transactionType
+        //    };
+        //}
     }
 }

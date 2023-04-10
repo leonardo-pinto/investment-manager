@@ -4,46 +4,42 @@ using InvestmentManager.ApplicationCore.Helpers;
 using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Enums;
 using InvestmentManager.ApplicationCore.Exceptions;
+using AutoMapper;
 
 namespace InvestmentManager.ApplicationCore.Services
 {
     public class StockPositionService : IStockPositionService
     {
-        private readonly ITransactionService _transactionService;
         private readonly IFinnhubService _finnhubService;
         private readonly IStockPositionRepository _stockPositionRepository;
+        private readonly IMapper _mapper;
 
         public StockPositionService(
-            ITransactionService transactionService,
             IFinnhubService finnhubService,
-            IStockPositionRepository stockPositionRepository)
+            IStockPositionRepository stockPositionRepository,
+            IMapper mapper)
         {
-            _transactionService = transactionService;
             _finnhubService = finnhubService;
             _stockPositionRepository = stockPositionRepository;
-
+            _mapper = mapper;
         }
 
         async public Task<StockPositionResponse> CreateStockPosition(AddStockPositionRequest addStockPositionRequest)
         {
-            ValidationHelper.ModelValidation(addStockPositionRequest);
+            // add logic if something went wrong in the creation
 
             // add exception handling
-            double stockPrice = await _finnhubService.GetStockPriceQuote(addStockPositionRequest.Symbol);
+            double currentStockPrice = await _finnhubService.GetStockPriceQuote(addStockPositionRequest.Symbol);
 
-            StockPosition stockPosition = addStockPositionRequest.ToStockPosition();
-            stockPosition.PositionId = Guid.NewGuid();
+            // return null if it is invalid symbol
+
+            StockPosition stockPosition = _mapper.Map<StockPosition>(addStockPositionRequest);
+            stockPosition.CurrentPrice = currentStockPrice;
 
             await _stockPositionRepository.CreateStockPosition(stockPosition);
 
-            AddTransactionRequest addTransactionRequest
-                = addStockPositionRequest.ToAddTransactionRequest(stockPosition.PositionId, TransactionType.Buy);
-
-            // add exception handling
-            // delete position if transaction gave error???
-            await _transactionService.CreateTransaction(addTransactionRequest);
-
-            return stockPosition.ToStockPositionResponse(stockPrice);
+            StockPositionResponse stockPositionResponse = _mapper.Map<StockPositionResponse>(stockPosition);
+            return stockPositionResponse;
         }
 
         async public Task<List<StockPositionResponse>?> GetAllStockPositions()
@@ -66,9 +62,9 @@ namespace InvestmentManager.ApplicationCore.Services
                 int stockPositionSymbolIndex = stockPositions
                     .FindIndex(stockPosition => stockPosition.Symbol == entry.Key);
 
-                stockPositionsResponse
-                    .Add(stockPositions[stockPositionSymbolIndex]
-                    .ToStockPositionResponse(entry.Value));
+                StockPositionResponse stockPositionResponse = _mapper.Map<StockPositionResponse>(stockPositions[stockPositionSymbolIndex]);
+
+                stockPositionResponse.CurrentPrice = entry.Value;
             }
 
             return stockPositionsResponse;
@@ -84,16 +80,13 @@ namespace InvestmentManager.ApplicationCore.Services
             }
 
             double stockPrice = await _finnhubService.GetStockPriceQuote(stockPosition.Symbol);
-            // if it exists, get update price
-            // check if stockPrice is 0???
+            stockPosition.CurrentPrice = stockPrice;
 
-            return stockPosition.ToStockPositionResponse(stockPrice);
+            return _mapper.Map<StockPositionResponse>(stockPosition);
         }
 
         async public Task<StockPositionResponse?> UpdateStockPosition(UpdateStockPositionRequest updateStockPositionRequest)
         {
-            ValidationHelper.ModelValidation(updateStockPositionRequest);
-
             StockPosition? matchingStockPosition = await _stockPositionRepository.GetSingleStockPosition(updateStockPositionRequest.PositionId);
 
             if (matchingStockPosition == null)
@@ -120,15 +113,12 @@ namespace InvestmentManager.ApplicationCore.Services
             matchingStockPosition.Cost = matchingStockPosition.Quantity * matchingStockPosition.AveragePrice;
 
             await _stockPositionRepository.UpdateStockPosition(matchingStockPosition);
-
-            AddTransactionRequest addTransactionRequest
-                = updateStockPositionRequest.ToAddTransactionRequest(updateStockPositionRequest.PositionId, updateStockPositionRequest.TransactionType);
-
-            await _transactionService.CreateTransaction(addTransactionRequest);
-
             double stockPrice = await _finnhubService.GetStockPriceQuote(matchingStockPosition.Symbol);
+            matchingStockPosition.CurrentPrice = stockPrice;
 
-            return matchingStockPosition.ToStockPositionResponse(stockPrice);
+            StockPositionResponse stockPositionResponse = _mapper.Map<StockPositionResponse>(matchingStockPosition);
+
+            return stockPositionResponse;
         }
     }
 }

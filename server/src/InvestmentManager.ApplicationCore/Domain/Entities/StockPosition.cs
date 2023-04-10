@@ -30,6 +30,11 @@ namespace InvestmentManager.ApplicationCore.Domain.Entities
         public double AveragePrice { get; set; }
 
         /// <summary>
+        /// The current stock price quote
+        /// </summary>
+        public double CurrentPrice { get; set; }
+
+        /// <summary>
         /// The cost of the stock position (Quantity * AveragePrice)
         /// </summary>
         public double Cost { get; set; }
@@ -40,23 +45,6 @@ namespace InvestmentManager.ApplicationCore.Domain.Entities
             double currCost = Quantity * AveragePrice;
             int totalQuantity = increasedQuantity + Quantity;
             return (newCost + currCost) / totalQuantity;
-        }
-
-        public StockPositionResponse ToStockPositionResponse(double price)
-        {
-            return new StockPositionResponse()
-            { 
-                PositionId = PositionId,
-                Symbol = Symbol,
-                Quantity = Quantity,
-                AveragePrice = AveragePrice,
-                Cost = Cost,
-                Price = price,
-                MarketValue = Quantity * price,
-                PercentualGain = ((price/AveragePrice)-1),
-                MonetaryGain = ((Quantity * price) - Cost)
-            };
-
         }
     }
 }

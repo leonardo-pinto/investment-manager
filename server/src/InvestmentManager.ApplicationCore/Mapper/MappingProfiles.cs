@@ -5,9 +5,9 @@ using InvestmentManager.ApplicationCore.Enums;
 
 namespace InvestmentManager.ApplicationCore.Mapper
 {
-    public class StockPositionProfile : Profile
+    public class MappingProfile : Profile
     {
-        public StockPositionProfile()
+        public MappingProfile()
         {
             CreateMap<AddStockPositionRequest, StockPosition>()
                 .ForMember(
@@ -30,13 +30,7 @@ namespace InvestmentManager.ApplicationCore.Mapper
                 .ForMember(
                     dest => dest.MonetaryGain,
                     opt => opt.MapFrom(src => Helpers.CalculateMonetaryGain(src.Quantity, src.CurrentPrice, src.AveragePrice)));
-        }
-    }
-
-    public class TransactionProfile : Profile
-    {
-        public TransactionProfile()
-        {
+    
             CreateMap<AddStockPositionRequest, AddTransactionRequest>()
                 .ForMember(
                     dest => dest.Price,

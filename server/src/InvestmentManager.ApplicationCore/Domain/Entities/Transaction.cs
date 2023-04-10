@@ -49,19 +49,5 @@ namespace InvestmentManager.ApplicationCore.Domain.Entities
         /// Type of the transaction (buy or sell)
         /// </summary>
         public string TransactionType { get; set; }
-
-        public TransactionResponse ToTransactionResponse()
-        {
-            return new TransactionResponse()
-            { 
-                Symbol = Symbol,
-                Quantity = Quantity,
-                Price = Price,
-                Cost = Cost,
-                DateAndTimeOfTransaction = DateAndTimeOfTransaction,
-                TransactionType = TransactionType
-            };
-
-        }
     }
 }

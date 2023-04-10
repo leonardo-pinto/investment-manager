@@ -32,43 +32,9 @@ namespace InvestmentManager.ApplicationCore.DTO
         /// <summary>
         /// The date and time of the stock position
         /// </summary>
+        [Required(ErrorMessage = "Date and time of stock position can't be null or empty")]
         [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
+        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime DateAndTimeOfStockPosition { get; set; }
-
-        /// <summary>
-        /// Converts the current object of AddStockPositionRequest into a new object
-        /// of StockPosition type
-        /// </summary>
-        /// <returns>A new object of StockPosition class</returns>
-        public StockPosition ToStockPosition()
-        {
-            return new StockPosition()
-            {
-                Symbol = Symbol,
-                Quantity = Quantity,
-                AveragePrice = AveragePrice,
-                Cost = Quantity * AveragePrice
-            };
-        }
-
-        /// <summary>
-        /// Converts the current object of AddStockPositionRequest
-        /// into a new object of AddTransactionRequest type
-        /// </summary>
-        /// <returns></returns>
-
-        public AddTransactionRequest ToAddTransactionRequest(Guid positionId, TransactionType transactionType)
-        {
-            return new AddTransactionRequest()
-            { 
-                PositionId = positionId,
-                Symbol = Symbol,
-                Quantity = Quantity,
-                Price = AveragePrice,
-                DateAndTimeOfTransaction = DateAndTimeOfStockPosition,
-                TransactionType = transactionType
-            };
-        }
     }
 }

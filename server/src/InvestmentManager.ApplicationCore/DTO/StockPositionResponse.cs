@@ -33,7 +33,7 @@
         /// <summary>
         /// Current stock price based on latest quote
         /// </summary>
-        public double Price { get; set; }
+        public double CurrentPrice { get; set; }
 
         /// <summary>
         /// Current stock market value (Quantity * Price)

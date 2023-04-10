@@ -4,6 +4,7 @@ using FluentAssertions;
 using InvestmentManager.ApplicationCore.DTO;
 using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Mapper;
+using InvestmentManager.ApplicationCore.Services;
 using InvestmentManager.Web.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -103,22 +104,32 @@ namespace InvestmentManager.UnitTests.Controllers
 
         #endregion
 
-        //[Fact]
-        //async public Task GetAllStockPositions_WithoutStockPosition_ToBeOkEmpty()
-        //{
-        //    // Arrange
-        //    _stockPositionServiceMock
-        //        .Setup(m => m.GetAllStockPositions())
-        //        .ReturnsAsync(new List<StockPositionResponse>());
 
-        //    // Act
-        //    IActionResult response = await _sut.GetAllStockPositions();
+        #region GetAllStockPositions
+        [Fact]
+        async public Task GetAllStockPositions_ToBeOk()
+        {
+            // Arrange
+            List<StockPositionResponse> stockPositionResponse = new()
+            {
+                _fixture.Build<StockPositionResponse>().Create(),
+                _fixture.Build<StockPositionResponse>().Create(),
+                _fixture.Build<StockPositionResponse>().Create(),
+            };
 
-        //    // Assert
-        //    response.Should().BeOfType<OkObjectResult>()
-        //        .Which.Value.Should().BeEquivalentTo(new List<StockPositionResponse>());
+            _stockPositionServiceMock
+                .Setup(m => m.GetAllStockPositions())
+                .ReturnsAsync(stockPositionResponse);
 
-        //    _stockPositionServiceMock.Verify(m => m.GetAllStockPositions(), Times.Once());
-        //}
+            // Act
+            IActionResult response = await _sut.GetAllStockPositions();
+
+            // Assert
+            response.Should().BeOfType<OkObjectResult>();
+            response.As<OkObjectResult>().Value.Should().Be(stockPositionResponse);
+            _stockPositionServiceMock.Verify(m => m.GetAllStockPositions(), Times.Once);
+        }
+
+        #endregion
     }
 }

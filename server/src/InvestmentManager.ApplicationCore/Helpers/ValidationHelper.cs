@@ -9,7 +9,7 @@ namespace InvestmentManager.ApplicationCore.Helpers
         /// </summary>
         /// <param name="obj">Model object to validate</param>
         /// /// <exception cref="ArgumentException">When one or more validation errors found</exception>
-        internal static void ModelValidation(object obj)
+        public static void ModelValidation(object obj)
         {
             ValidationContext validationContext = new ValidationContext(obj);
             List<ValidationResult> validationResults = new List<ValidationResult>();

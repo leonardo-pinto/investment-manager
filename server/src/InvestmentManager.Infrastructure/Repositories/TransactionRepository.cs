@@ -1,5 +1,4 @@
 ﻿using InvestmentManager.ApplicationCore.Domain.Entities;
-using InvestmentManager.ApplicationCore.DTO;
 using InvestmentManager.ApplicationCore.Interfaces;
 
 namespace InvestmentManager.Infrastructure.Repositories
@@ -8,10 +7,17 @@ namespace InvestmentManager.Infrastructure.Repositories
     {
         public Task AddTransaction(Transaction transaction)
         {
+            // add to db
+            // save changes
             throw new NotImplementedException();
         }
 
-        public Task<List<Transaction>> GetTransactionByStockPositionId(Guid positionId)
+        public Task CreateTransaction(Transaction transaction)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Transaction>> GetAllTransactions()
         {
             throw new NotImplementedException();
         }

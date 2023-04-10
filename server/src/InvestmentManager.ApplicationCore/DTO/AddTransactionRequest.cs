@@ -48,18 +48,6 @@ namespace InvestmentManager.ApplicationCore.DTO
         [Required(ErrorMessage = "Invalid transaction type")]
         public TransactionType TransactionType { get; set; }
 
-        public Transaction ToTransaction()
-        {
-            return new Transaction()
-            {
-                PositionId = PositionId,
-                Symbol = Symbol,
-                Quantity = Quantity,
-                Price = Price,
-                Cost = Quantity * Price,
-                DateAndTimeOfTransaction = DateAndTimeOfTransaction,
-                TransactionType = TransactionType.ToString()
-            };
-        }
+        
     }
 }
