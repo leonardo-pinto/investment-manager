@@ -93,6 +93,8 @@ namespace InvestmentManager.UnitTests.Controllers
 
             // Assert
             result.Should().BeOfType<CreatedAtActionResult>();
+            result.As<CreatedAtActionResult>().RouteValues["positionId"].Should().Be(stockPositionResponse?.PositionId);
+            result.As<CreatedAtActionResult>().Value.Should().BeEquivalentTo(stockPositionResponse);
             _stockPositionServiceMock
                 .Verify(m => m.CreateStockPosition(addStockPositionRequest), Times.Once);
             _transactionServiceMock
