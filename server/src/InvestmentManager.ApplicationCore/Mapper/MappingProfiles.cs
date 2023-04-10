@@ -2,6 +2,7 @@
 using InvestmentManager.ApplicationCore.Domain.Entities;
 using InvestmentManager.ApplicationCore.DTO;
 using InvestmentManager.ApplicationCore.Enums;
+using InvestmentManager.ApplicationCore.Helpers;
 
 namespace InvestmentManager.ApplicationCore.Mapper
 {
@@ -12,7 +13,7 @@ namespace InvestmentManager.ApplicationCore.Mapper
             CreateMap<AddStockPositionRequest, StockPosition>()
                 .ForMember(
                     dest => dest.Cost,
-                    opt => opt.MapFrom(src => Helpers.CalculateCost(src.Quantity, src.AveragePrice)))
+                    opt => opt.MapFrom(src => FinancialMetrics.CalculateCost(src.Quantity, src.AveragePrice)))
                 .ForMember(
                     dest => dest.PositionId,
                     opt => opt.MapFrom(src => Guid.NewGuid())
@@ -21,15 +22,15 @@ namespace InvestmentManager.ApplicationCore.Mapper
             CreateMap<StockPosition, StockPositionResponse>()
                 .ForMember(
                     dest => dest.MarketValue,
-                    opt => opt.MapFrom(src => Helpers.CalculateMarketValue(src.Quantity, src.CurrentPrice))
+                    opt => opt.MapFrom(src => FinancialMetrics.CalculateMarketValue(src.Quantity, src.CurrentPrice))
                 )
                 .ForMember(
                     dest => dest.PercentualGain,
-                    opt => opt.MapFrom(src => Helpers.CalculatePercentualGain(src.CurrentPrice, src.AveragePrice))
+                    opt => opt.MapFrom(src => FinancialMetrics.CalculatePercentualGain(src.CurrentPrice, src.AveragePrice))
                 )
                 .ForMember(
                     dest => dest.MonetaryGain,
-                    opt => opt.MapFrom(src => Helpers.CalculateMonetaryGain(src.Quantity, src.CurrentPrice, src.AveragePrice)));
+                    opt => opt.MapFrom(src => FinancialMetrics.CalculateMonetaryGain(src.Quantity, src.CurrentPrice, src.AveragePrice)));
     
             CreateMap<AddStockPositionRequest, AddTransactionRequest>()
                 .ForMember(
@@ -53,7 +54,7 @@ namespace InvestmentManager.ApplicationCore.Mapper
                     opt => opt.MapFrom(src => Guid.NewGuid()))
                 .ForMember(
                     dest => dest.Cost,
-                    opt => opt.MapFrom(src => Helpers.CalculateCost(src.Quantity, src.Price)))
+                    opt => opt.MapFrom(src => FinancialMetrics.CalculateCost(src.Quantity, src.Price)))
                 .ForMember(
                     dest => dest.TransactionType,
                     opt => opt.MapFrom(src => src.TransactionType.ToString()));
@@ -62,24 +63,5 @@ namespace InvestmentManager.ApplicationCore.Mapper
         }
     }
 
-    static public class Helpers {
-        static internal double CalculateMonetaryGain(int quantity, double currentPrice, double averagePrice)
-        {
-            double cost = quantity * averagePrice;
-            return ((quantity * currentPrice) - cost);
-        }
-
-        static internal double CalculatePercentualGain(double currentPrice, double averagePrice)
-        {
-            return ((currentPrice / averagePrice) - 1) * 100;
-        }
-        static internal double CalculateMarketValue(int quantity, double price)
-        {
-            return quantity * price;
-        }
-        static internal double CalculateCost(int quantity, double price)
-        {
-            return quantity * price;
-        }
-    }
+   
 }

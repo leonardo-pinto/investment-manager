@@ -52,7 +52,6 @@ namespace InvestmentManager.Web.Controllers
             }
 
             StockPositionResponse? stockPositionResponse = await _stockPositionService.CreateStockPosition(addStockPositionRequest);
-
            
             if (stockPositionResponse == null)
             {
