@@ -39,12 +39,18 @@ namespace InvestmentManager.ApplicationCore.Domain.Entities
         /// </summary>
         public double Cost { get; set; }
 
+        /// <summary>
+        /// Calculates an updated average price
+        /// </summary>
+        /// <param name="increasedQuantity">Number of new stocks</param>
+        /// <param name="newPrice">Price of new stocks</param>
+        /// <returns>Upated average price based on stock previous quantity and price</returns>
+
         public double UpdateAveragePrice(int increasedQuantity, double newPrice)
         {
-            double newCost = increasedQuantity * newPrice;
-            double currCost = Quantity * AveragePrice;
             int totalQuantity = increasedQuantity + Quantity;
-            return (newCost + currCost) / totalQuantity;
+            double averagePrice = ((Quantity * AveragePrice) + (increasedQuantity * newPrice)) / totalQuantity;
+            return Math.Round(averagePrice, 2);
         }
     }
 }
