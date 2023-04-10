@@ -1,6 +1,5 @@
 ﻿using InvestmentManager.ApplicationCore.Domain.Entities;
 using InvestmentManager.ApplicationCore.DTO;
-using InvestmentManager.ApplicationCore.Helpers;
 using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Enums;
 using InvestmentManager.ApplicationCore.Exceptions;
@@ -24,14 +23,11 @@ namespace InvestmentManager.ApplicationCore.Services
             _mapper = mapper;
         }
 
-        async public Task<StockPositionResponse> CreateStockPosition(AddStockPositionRequest addStockPositionRequest)
+        async public Task<StockPositionResponse?> CreateStockPosition(AddStockPositionRequest addStockPositionRequest)
         {
-            // add logic if something went wrong in the creation
-
-            // add exception handling
             double currentStockPrice = await _finnhubService.GetStockPriceQuote(addStockPositionRequest.Symbol);
 
-            // return null if it is invalid symbol
+            if (currentStockPrice == 0) return null;
 
             StockPosition stockPosition = _mapper.Map<StockPosition>(addStockPositionRequest);
             stockPosition.CurrentPrice = currentStockPrice;
@@ -42,7 +38,7 @@ namespace InvestmentManager.ApplicationCore.Services
             return stockPositionResponse;
         }
 
-        async public Task<List<StockPositionResponse>?> GetAllStockPositions()
+        async public Task<List<StockPositionResponse>> GetAllStockPositions()
         {
             List<StockPositionResponse> stockPositionsResponse = new();
             List<StockPosition> stockPositions = await _stockPositionRepository.GetAllStockPositions();
@@ -56,18 +52,9 @@ namespace InvestmentManager.ApplicationCore.Services
 
             Dictionary<string, double> stockPriceDict = await _finnhubService.GetMultipleStockPriceQuote(stockSymbols);
 
-            foreach (KeyValuePair<string, double> entry in stockPriceDict)
-            {
-                // get index of stockPosition with the given stockSymbol
-                int stockPositionSymbolIndex = stockPositions
-                    .FindIndex(stockPosition => stockPosition.Symbol == entry.Key);
+            stockPositions = UpdateStockPriceListBySymbol(stockPriceDict, stockPositions);
 
-                StockPositionResponse stockPositionResponse = _mapper.Map<StockPositionResponse>(stockPositions[stockPositionSymbolIndex]);
-
-                stockPositionResponse.CurrentPrice = entry.Value;
-            }
-
-            return stockPositionsResponse;
+            return stockPositions.Select(e => _mapper.Map<StockPositionResponse>(e)).ToList();
         }
 
         async public Task<StockPositionResponse?> GetSingleStockPosition(Guid positionId)
@@ -85,40 +72,45 @@ namespace InvestmentManager.ApplicationCore.Services
             return _mapper.Map<StockPositionResponse>(stockPosition);
         }
 
-        async public Task<StockPositionResponse?> UpdateStockPosition(UpdateStockPositionRequest updateStockPositionRequest)
+        async public Task<StockPositionResponse?> UpdateStockPosition(UpdateStockPositionRequest updateStockPositionRequest, Guid positionId)
         {
-            StockPosition? matchingStockPosition = await _stockPositionRepository.GetSingleStockPosition(updateStockPositionRequest.PositionId);
+            StockPosition? matchingStock = await _stockPositionRepository.GetSingleStockPosition(positionId);
 
-            if (matchingStockPosition == null)
-            {
-                return null; 
-            }
-
+            if (matchingStock == null) return null;
+          
             if (updateStockPositionRequest.TransactionType == TransactionType.Buy)
             {
-                matchingStockPosition.AveragePrice =
-                    matchingStockPosition.UpdateAveragePrice(
+                matchingStock.AveragePrice =
+                    matchingStock.UpdateAveragePrice(
                         updateStockPositionRequest.Quantity, updateStockPositionRequest.Price);
-                matchingStockPosition.Quantity += updateStockPositionRequest.Quantity;
+                matchingStock.Quantity += updateStockPositionRequest.Quantity;
             }
             else
             {
-                if (updateStockPositionRequest.Quantity > matchingStockPosition.Quantity)
+                if (updateStockPositionRequest.Quantity > matchingStock.Quantity)
                 {
                     throw new InvalidStockQuantityException("The stock quantity to be sold is greater than the current stock position quantity.");
                 }
-                matchingStockPosition.Quantity -= updateStockPositionRequest.Quantity;
+                matchingStock.Quantity -= updateStockPositionRequest.Quantity;
             }
 
-            matchingStockPosition.Cost = matchingStockPosition.Quantity * matchingStockPosition.AveragePrice;
+            matchingStock.Cost = matchingStock.Quantity * matchingStock.AveragePrice;
+            matchingStock.CurrentPrice = await _finnhubService.GetStockPriceQuote(matchingStock.Symbol);
+            await _stockPositionRepository.UpdateStockPosition(matchingStock);
 
-            await _stockPositionRepository.UpdateStockPosition(matchingStockPosition);
-            double stockPrice = await _finnhubService.GetStockPriceQuote(matchingStockPosition.Symbol);
-            matchingStockPosition.CurrentPrice = stockPrice;
+            return _mapper.Map<StockPositionResponse>(matchingStock);
+        }
 
-            StockPositionResponse stockPositionResponse = _mapper.Map<StockPositionResponse>(matchingStockPosition);
-
-            return stockPositionResponse;
+        public List<StockPosition> UpdateStockPriceListBySymbol(Dictionary<string, double> stockPriceDict, List<StockPosition> stockPositions)
+        {
+            foreach (KeyValuePair<string, double> entry in stockPriceDict)
+            {
+                // get index of stockPosition with the given stockSymbol
+                int index = stockPositions
+                    .FindIndex(stockPosition => stockPosition.Symbol == entry.Key);
+                stockPositions[index].CurrentPrice = entry.Value;
+            }
+            return stockPositions;
         }
     }
 }
