@@ -24,29 +24,9 @@ namespace InvestmentManager.UnitTests.Controllers
         #region GetAllTransactionsByPositionId
 
         [Fact]
-        async public Task GetAllTransactionsByPositionId_NonMatchingPositionId_ToBeOkEmpty()
+        async public Task GetAllTransactionsByPositionId_ToBeOkWithTransactions()
         {
             // Arrange
-            Guid positionId = _fixture.Create<Guid>();
-            _transactionServiceMock
-                .Setup(m => m.GetTransactionHistory(positionId))
-                .ReturnsAsync(new List<TransactionResponse>());
-
-            // Act
-            IActionResult transactions = await _sut.GetAllTransactionsByPositionId(positionId);
-
-            // Assert
-            transactions.Should().BeOfType<OkObjectResult>()
-                .Which.Value.Should().BeEquivalentTo(new List<TransactionResponse>());
-
-            _transactionServiceMock.Verify(m => m.GetTransactionHistory(positionId), Times.Once());
-        }
-
-        [Fact]
-        async public Task GetAllTransactionsByPositionId_MatchingPositionId_ToBeOkWithTransactions()
-        {
-            // Arrange
-            Guid positionId = _fixture.Create<Guid>();
             List<TransactionResponse> transactionResponseMock = new ()
             {
                 _fixture.Build<TransactionResponse>().Create(),
@@ -56,18 +36,17 @@ namespace InvestmentManager.UnitTests.Controllers
             };
 
             _transactionServiceMock
-                .Setup(m => m.GetTransactionHistory(It.IsAny<Guid>()))
+                .Setup(m => m.GetAllTransactions())
                 .ReturnsAsync(transactionResponseMock);
 
             // Act
-            IActionResult transactionResponse = await _sut.GetAllTransactionsByPositionId(positionId);
+            IActionResult transactionResponse = await _sut.GetAllTransactions();
 
             // Assert
             transactionResponse.Should().BeOfType<OkObjectResult>()
                 .Which.Value.Should().BeEquivalentTo(transactionResponseMock);
-            _transactionServiceMock.Verify(m => m.GetTransactionHistory(positionId), Times.Once);
+            _transactionServiceMock.Verify(m => m.GetAllTransactions(), Times.Once);
         }
-
         #endregion
     }
 }
