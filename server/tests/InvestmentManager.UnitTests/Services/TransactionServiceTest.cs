@@ -7,7 +7,7 @@ using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Services;
 using InvestmentManager.ApplicationCore.Mapper;
 using Moq;
-using InvestmentManager.UnitTests.Helpers;
+using InvestmentManager.ApplicationCore.Helpers;
 
 namespace InvestmentManager.UnitTests.Services
 {
@@ -35,7 +35,7 @@ namespace InvestmentManager.UnitTests.Services
         {
             // Arrange
             AddTransactionRequest addTransactionRequest = _fixture.Build<AddTransactionRequest>().Create();
-            double expectedCost = MockHelper.ExpectedCost(addTransactionRequest.Quantity, addTransactionRequest.Price);
+            double expectedCost = FinancialMetrics.CalculateCost(addTransactionRequest.Quantity, addTransactionRequest.Price);
 
             _transactionRepositoryMock
                 .Setup(m => m.CreateTransaction(It.IsAny<Transaction>()))
