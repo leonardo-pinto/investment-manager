@@ -1,6 +1,6 @@
-﻿using InvestmentManager.ApplicationCore.Domain.Entities;
+﻿using AutoMapper;
+using InvestmentManager.ApplicationCore.Domain.Entities;
 using InvestmentManager.ApplicationCore.DTO;
-using InvestmentManager.ApplicationCore.Helpers;
 using InvestmentManager.ApplicationCore.Interfaces;
 
 namespace InvestmentManager.ApplicationCore.Services
@@ -8,31 +8,34 @@ namespace InvestmentManager.ApplicationCore.Services
     public class TransactionService : ITransactionService
     {
         private readonly ITransactionRepository _transactionRepository;
+        private readonly IMapper _mapper;
 
-        public TransactionService(ITransactionRepository transactionRepository)
+        public TransactionService(
+            ITransactionRepository transactionRepository,
+            IMapper mapper
+        )
         {
             _transactionRepository = transactionRepository;
+            _mapper = mapper;
         }
 
         public async Task<TransactionResponse> CreateTransaction(AddTransactionRequest addTransactionRequest)
         {
-            ValidationHelper.ModelValidation(addTransactionRequest);
+            Transaction transaction = _mapper.Map<Transaction>(addTransactionRequest);
+            await _transactionRepository.CreateTransaction(transaction);
 
-            Transaction transaction = addTransactionRequest.ToTransaction();
-
-            // think about exceptions
-            await _transactionRepository.AddTransaction(transaction);
-
-            TransactionResponse transactionResponse = transaction.ToTransactionResponse();
+            TransactionResponse transactionResponse = _mapper.Map<TransactionResponse>(transaction);
 
             return transactionResponse;
         }
 
-        public async Task<List<TransactionResponse>> GetTransactionHistory(Guid positionId)
+        public async Task<List<TransactionResponse>> GetAllTransactions()
         {
-            // think about null and exceptions
-            List<Transaction> transactions = await _transactionRepository.GetTransactionByStockPositionId(positionId);
-            return transactions.Select(temp => temp.ToTransactionResponse()).ToList();
+            List<Transaction> transactions = await _transactionRepository.GetAllTransactions();
+
+            List<TransactionResponse> transactionsResponse = transactions.Select(_mapper.Map<TransactionResponse>).ToList();
+
+            return transactionsResponse;
         }
 
     }
