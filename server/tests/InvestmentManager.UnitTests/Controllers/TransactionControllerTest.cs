@@ -21,10 +21,10 @@ namespace InvestmentManager.UnitTests.Controllers
             _fixture = new Fixture();
         }
 
-        #region GetAllTransactionsByPositionId
+        #region GetAllTransactions
 
         [Fact]
-        async public Task GetAllTransactionsByPositionId_ToBeOkWithTransactions()
+        async public Task GetAllTransactions_ToBeOkWithTransactions()
         {
             // Arrange
             List<TransactionResponse> transactionResponseMock = new ()
