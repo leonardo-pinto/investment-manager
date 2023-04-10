@@ -28,7 +28,7 @@ namespace InvestmentManager.Web.Controllers
             return Ok(stockPositionResponse);
         }
 
-        [HttpGet("{positionId}")]
+        [HttpGet("{id}")]
         async public Task<IActionResult> GetSingleStockPosition(string id)
         {
             Guid positionId = Guid.Parse(id);
@@ -71,14 +71,20 @@ namespace InvestmentManager.Web.Controllers
            );
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateStockPosition(UpdateStockPositionRequest updateStockPositionRequest)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateStockPosition(UpdateStockPositionRequest updateStockPositionRequest, string id)
         {
-            StockPositionResponse? stockPositionResponse = await _stockPositionService.UpdateStockPosition(updateStockPositionRequest);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            Guid positionId = Guid.Parse(id);
+            StockPositionResponse? stockPositionResponse = await _stockPositionService.UpdateStockPosition(updateStockPositionRequest, positionId);
 
             if (stockPositionResponse == null)
             {
-                return Problem(detail: "Invalid position id", statusCode: 404);
+                return BadRequest("Invalid position id");
             }
 
             AddTransactionRequest addTransactionRequest = _mapper.Map<AddTransactionRequest>(updateStockPositionRequest);
