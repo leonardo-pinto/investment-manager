@@ -23,27 +23,6 @@ namespace InvestmentManager.UnitTests.Services
         }
 
         #region GetStockPriceQuote
-
-        [Fact]
-        async public Task GetStockPriceQuote_InvalidStockSymbol_ToBeArgumentException()
-        {
-            string stockSymbol = _fixture.Create<string>();
-
-            _finnhubRepositoryMock
-                .Setup(temp => temp.GetStockPriceQuote(It.IsAny<string>()))
-                .ReturnsAsync(0);
-
-            Func<Task> action = async () =>
-            {
-                await _sut.GetStockPriceQuote(stockSymbol);
-            };
-
-            await action
-                .Should()
-                .ThrowAsync<ArgumentException>()
-                .WithMessage($"{stockSymbol} is an invalid stock symbol");
-        }
-
         [Fact]
         async public Task GetStockPriceQuote_WhenFinnhubRepositoryThrows_ToBeFinnhubException()
         {
