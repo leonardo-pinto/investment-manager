@@ -1,25 +1,28 @@
 ﻿using InvestmentManager.ApplicationCore.Domain.Entities;
 using InvestmentManager.ApplicationCore.Interfaces;
+using InvestmentManager.Infrastructure.AppDbContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace InvestmentManager.Infrastructure.Repositories
 {
     public class TransactionRepository : ITransactionRepository
     {
-        public Task AddTransaction(Transaction transaction)
+        private readonly ApplicationDbContext _db;
+
+        public TransactionRepository(ApplicationDbContext db)
         {
-            // add to db
-            // save changes
-            throw new NotImplementedException();
+            _db = db;
         }
 
-        public Task CreateTransaction(Transaction transaction)
+        public async Task CreateTransaction(Transaction transaction)
         {
-            throw new NotImplementedException();
+            _db.Transactions.Add(transaction);
+            await _db.SaveChangesAsync();
         }
 
-        public Task<List<Transaction>> GetAllTransactions()
+        public async Task<List<Transaction>> GetAllTransactions()
         {
-            throw new NotImplementedException();
+            return await _db.Transactions.ToListAsync();
         }
     }
 }
