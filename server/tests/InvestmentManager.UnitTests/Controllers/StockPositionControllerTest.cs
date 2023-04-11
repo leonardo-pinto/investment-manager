@@ -96,7 +96,7 @@ namespace InvestmentManager.UnitTests.Controllers
 
             // Assert
             result.Should().BeOfType<CreatedAtActionResult>();
-            result.As<CreatedAtActionResult>()?.RouteValues["positionId"].Should().Be(stockPositionResponse?.PositionId);
+            result.As<CreatedAtActionResult>()?.RouteValues["id"].Should().Be(stockPositionResponse?.PositionId);
             result.As<CreatedAtActionResult>().Value.Should().BeEquivalentTo(stockPositionResponse);
             _stockPositionServiceMock
                 .Verify(m => m.CreateStockPosition(addStockPositionRequest), Times.Once);
@@ -139,7 +139,7 @@ namespace InvestmentManager.UnitTests.Controllers
         async public Task GetSingleStockPosition_WhenPositionIdIsInvalid_ToBeBadRequest()
         {
             // Arrange
-            string id = MockHelper.GenerateValidGuidString();
+            Guid id = _fixture.Create<Guid>();
 
             _stockPositionServiceMock
                 .Setup(m => m.GetSingleStockPosition(It.IsAny<Guid>()))
@@ -151,7 +151,7 @@ namespace InvestmentManager.UnitTests.Controllers
             // Assert
             response.Should().BeOfType<BadRequestObjectResult>();
             response.As<BadRequestObjectResult>().Value.Should().Be("Invalid position id");
-            _stockPositionServiceMock.Verify(m => m.GetSingleStockPosition(Guid.Parse(id)), Times.Once);
+            _stockPositionServiceMock.Verify(m => m.GetSingleStockPosition(id), Times.Once);
 
         }
 
@@ -159,7 +159,7 @@ namespace InvestmentManager.UnitTests.Controllers
         async public Task GetSingleStockPosition_ToBeOk()
         {
             // Arrange
-            string id = MockHelper.GenerateValidGuidString();
+            Guid id = _fixture.Create<Guid>();
             StockPositionResponse stockPositionResponse = _fixture.Build<StockPositionResponse>().Create();
 
             _stockPositionServiceMock
@@ -172,7 +172,7 @@ namespace InvestmentManager.UnitTests.Controllers
             // Assert
             response.Should().BeOfType<OkObjectResult>();
             response.As<OkObjectResult>().Value.Should().Be(stockPositionResponse);
-            _stockPositionServiceMock.Verify(m => m.GetSingleStockPosition(Guid.Parse(id)), Times.Once);
+            _stockPositionServiceMock.Verify(m => m.GetSingleStockPosition(id), Times.Once);
         }
         #endregion
 
@@ -190,7 +190,7 @@ namespace InvestmentManager.UnitTests.Controllers
             _sut.ModelState.AddModelError("Quantity", "Quantity must be greater than 0");
 
             // Act
-            IActionResult result = await _sut.UpdateStockPosition(updateStockPositionRequest, "any");
+            IActionResult result = await _sut.UpdateStockPosition(updateStockPositionRequest);
 
             // Assert
             result
@@ -203,39 +203,40 @@ namespace InvestmentManager.UnitTests.Controllers
         async public Task UpdateStockPosition_WhenPositionIdIsInvalid_ToBeBadRequest()
         {
             // Arrange
-            string id = MockHelper.GenerateValidGuidString();
+            Guid id = _fixture.Create<Guid>();
 
             UpdateStockPositionRequest updateStockPositionRequest =
                 _fixture.Build<UpdateStockPositionRequest>().Create();
 
             _stockPositionServiceMock
-                .Setup(m => m.UpdateStockPosition(It.IsAny<UpdateStockPositionRequest>(), It.IsAny<Guid>()))
+                .Setup(m => m.UpdateStockPosition(It.IsAny<UpdateStockPositionRequest>()))
                 .ReturnsAsync(null as StockPositionResponse);
 
             // Act
-            IActionResult result = await _sut.UpdateStockPosition(updateStockPositionRequest, id);
+            IActionResult result = await _sut.UpdateStockPosition(updateStockPositionRequest);
 
             // Assert
             result.Should().BeOfType<BadRequestObjectResult>();
             result.As<BadRequestObjectResult>().Value.Should().Be("Invalid position id");
-            _stockPositionServiceMock.Verify(m => m.UpdateStockPosition(updateStockPositionRequest, Guid.Parse(id)), Times.Once);
+            _stockPositionServiceMock.Verify(m => m.UpdateStockPosition(updateStockPositionRequest), Times.Once);
         }
 
         [Fact]
         async public Task UpdateStockPosition_ToBeOk()
         {
             // Arrange
-            string id = MockHelper.GenerateValidGuidString();
+            Guid id = _fixture.Create<Guid>();
             UpdateStockPositionRequest updateStockPositionRequest =
-                _fixture.Build<UpdateStockPositionRequest>().Create();
+                _fixture
+                .Build<UpdateStockPositionRequest>()
+                .With(e => e.TransactionType, "Buy")
+                .Create();
 
             StockPositionResponse stockPositionResponse =
                 _fixture.Build<StockPositionResponse>().Create();
 
-            AddTransactionRequest addTransactionRequest = _mapper.Map<AddTransactionRequest>(updateStockPositionRequest); 
-
             _stockPositionServiceMock
-                .Setup(m => m.UpdateStockPosition(It.IsAny<UpdateStockPositionRequest>(), It.IsAny<Guid>()))
+                .Setup(m => m.UpdateStockPosition(It.IsAny<UpdateStockPositionRequest>()))
                 .ReturnsAsync(stockPositionResponse);
 
             _transactionServiceMock
@@ -243,13 +244,13 @@ namespace InvestmentManager.UnitTests.Controllers
                 .ReturnsAsync(_fixture.Build<TransactionResponse>().Create());
 
             // Act
-            IActionResult response = await _sut.UpdateStockPosition(updateStockPositionRequest, id);
+            IActionResult response = await _sut.UpdateStockPosition(updateStockPositionRequest);
 
             // Assert
             response.Should().BeOfType<OkObjectResult>();
             response.As<OkObjectResult>().Value.Should().Be(stockPositionResponse);
 
-            _stockPositionServiceMock.Verify(m => m.UpdateStockPosition(updateStockPositionRequest, Guid.Parse(id)), Times.Once);
+            _stockPositionServiceMock.Verify(m => m.UpdateStockPosition(updateStockPositionRequest), Times.Once);
             _transactionServiceMock.Verify(m => m.CreateTransaction(It.IsAny<AddTransactionRequest>()), Times.Once);
         }
         #endregion
