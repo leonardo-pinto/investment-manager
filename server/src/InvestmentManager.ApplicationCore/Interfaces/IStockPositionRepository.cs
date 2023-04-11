@@ -31,5 +31,12 @@ namespace InvestmentManager.ApplicationCore.Interfaces
         /// <param name="positionId">Id of the given stock position</param>
         /// <returns>A stock position object or null</returns>
         Task<StockPosition?> GetSingleStockPosition(Guid positionId);
+
+        /// <summary>
+        /// Check if a stock position with the given symbol already exists
+        /// </summary>
+        /// <param name="symbol">Stock symbol</param>
+        /// <returns>Boolean value</returns>
+        Task<bool> StockSymbolAlreadyExists(string symbol);
     }
 }
