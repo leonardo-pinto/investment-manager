@@ -34,7 +34,7 @@ namespace InvestmentManager.ApplicationCore.DTO
         /// </summary>
         [Required(ErrorMessage = "Date and time of stock position can't be null or empty")]
         [DataType(DataType.Date)]
-        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime DateAndTimeOfStockPosition { get; set; }
     }
 }

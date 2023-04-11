@@ -9,6 +9,18 @@ namespace InvestmentManager.ApplicationCore.DTO
     public class UpdateStockPositionRequest
     {
         /// <summary>
+        /// Position id of the stock to be updated
+        /// </summary>
+        [Required(ErrorMessage = "PositionId can't be null or empty")]
+        public Guid PositionId { get; set; }
+
+        /// <summary>
+        /// Stock position symbol
+        /// </summary>
+        [Required(ErrorMessage = "Symbol can't be null or empty")]
+        public string Symbol { get; set; }
+
+        /// <summary>
         /// Quantity of the stock
         /// </summary>
         [Required(ErrorMessage = "Quantity can't be null or empty")]
@@ -22,7 +34,11 @@ namespace InvestmentManager.ApplicationCore.DTO
         [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0.01")]
         public double Price { get; set; }
 
-        public TransactionType TransactionType { get; set; }
+        /// <summary>
+        /// Type of the transaction (e.g., buy or sell)
+        /// </summary>
+        [Required(ErrorMessage = "Transaction type can't be null or empty")]
+        public string TransactionType { get; set; }
 
         /// <summary>
         /// The date and time of the stock position
