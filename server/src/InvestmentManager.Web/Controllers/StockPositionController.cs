@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using InvestmentManager.ApplicationCore.DTO;
-using InvestmentManager.ApplicationCore.Helpers;
+using InvestmentManager.ApplicationCore.Exceptions;
 using InvestmentManager.ApplicationCore.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,11 +29,11 @@ namespace InvestmentManager.Web.Controllers
         }
 
         [HttpGet("{id}")]
-        async public Task<IActionResult> GetSingleStockPosition(string id)
+        async public Task<IActionResult> GetSingleStockPosition(Guid id)
         {
-            Guid positionId = Guid.Parse(id);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            StockPositionResponse? stockPositionResponse = await _stockPositionService.GetSingleStockPosition(positionId);
+            StockPositionResponse? stockPositionResponse = await _stockPositionService.GetSingleStockPosition(id);
 
             if (stockPositionResponse == null)
             {
@@ -46,51 +46,60 @@ namespace InvestmentManager.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateStockPosition(AddStockPositionRequest addStockPositionRequest)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            try
             {
-                return BadRequest(ModelState);
-            }
+                StockPositionResponse? stockPositionResponse = await _stockPositionService.CreateStockPosition(addStockPositionRequest);
 
-            StockPositionResponse? stockPositionResponse = await _stockPositionService.CreateStockPosition(addStockPositionRequest);
-           
-            if (stockPositionResponse == null)
+                if (stockPositionResponse == null)
+                {
+                    return BadRequest("Invalid stock symbol");
+                }
+
+                var addTransactionRequest = _mapper.Map<AddTransactionRequest>(addStockPositionRequest);
+                addTransactionRequest.PositionId = stockPositionResponse.PositionId;
+
+                await _transactionService.CreateTransaction(addTransactionRequest);
+
+                return CreatedAtAction(
+                    nameof(GetSingleStockPosition),
+                    new { id = stockPositionResponse?.PositionId },
+                    stockPositionResponse
+               );
+            }
+            catch (RepeatedStockSymbolException ex)
             {
-                return BadRequest("Invalid stock symbol");
+                return BadRequest(ex.Message);
             }
-
-            var addTransactionRequest = _mapper.Map<AddTransactionRequest>(addStockPositionRequest);
-            addTransactionRequest.PositionId = stockPositionResponse.PositionId;
-            
-            await _transactionService.CreateTransaction(addTransactionRequest);
-
-            return CreatedAtAction(
-                nameof(GetSingleStockPosition),
-                new { positionId = stockPositionResponse?.PositionId },
-                stockPositionResponse
-           );
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateStockPosition(UpdateStockPositionRequest updateStockPositionRequest, string id)
+        [HttpPut]
+        public async Task<IActionResult> UpdateStockPosition(UpdateStockPositionRequest updateStockPositionRequest)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            try
             {
-                return BadRequest(ModelState);
+
+                StockPositionResponse? stockPositionResponse = await _stockPositionService.UpdateStockPosition(updateStockPositionRequest);
+
+                if (stockPositionResponse == null)
+                {
+                    return BadRequest("Invalid position id");
+                }
+
+                await _transactionService
+                    .CreateTransaction(_mapper.Map<AddTransactionRequest>(updateStockPositionRequest));
+
+                return Ok(stockPositionResponse);
             }
-
-            Guid positionId = Guid.Parse(id);
-            StockPositionResponse? stockPositionResponse = await _stockPositionService.UpdateStockPosition(updateStockPositionRequest, positionId);
-
-            if (stockPositionResponse == null)
+            catch (InvalidStockQuantityException ex)
             {
-                return BadRequest("Invalid position id");
+                return BadRequest(ex.Message);
             }
-
-            AddTransactionRequest addTransactionRequest = _mapper.Map<AddTransactionRequest>(updateStockPositionRequest);
-
-            await _transactionService.CreateTransaction(addTransactionRequest);
-
-            return Ok(stockPositionResponse);
+            catch (InvalidTransactionTypeException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
