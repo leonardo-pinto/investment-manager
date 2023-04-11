@@ -1,39 +1,56 @@
 ﻿using InvestmentManager.ApplicationCore.Domain.Entities;
 using InvestmentManager.ApplicationCore.Interfaces;
+using InvestmentManager.Infrastructure.AppDbContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace InvestmentManager.Infrastructure.Repositories
 {
     public class StockPositionRepository : IStockPositionRepository
     {
+        private readonly ApplicationDbContext _db;
+
+        public StockPositionRepository(ApplicationDbContext db)
+        {
+            _db = db;
+        }
 
         public async Task CreateStockPosition(StockPosition stockPosition)
         {
-            // add
-            // save changes
-            throw new NotImplementedException();
+            _db.StockPositions.Add(stockPosition);
+            await _db.SaveChangesAsync();
         }
 
         public async Task<List<StockPosition>> GetAllStockPositions()
         {
-            // get all
-            // return
-            throw new NotImplementedException();
+            return await _db.StockPositions.ToListAsync();
         }
 
         public async Task<StockPosition?> GetSingleStockPosition(Guid positionId)
         {
-            // get specific by position id
-            // return
-            throw new NotImplementedException();
+            return await _db.StockPositions.FirstOrDefaultAsync(e => e.PositionId == positionId);
+        }
+
+        public async Task<bool> StockSymbolAlreadyExists(string symbol)
+        {
+            StockPosition? stockPosition = await _db.StockPositions.FirstOrDefaultAsync(e => e.Symbol == symbol);
+
+            return stockPosition == null ? false : true;
         }
 
         public async Task UpdateStockPosition(StockPosition stockPosition)
         {
-            // retrieve first obj from db
-            // update values with the input
-            // update obj from db
-            // save changes
-            throw new NotImplementedException();
+            StockPosition? matchingStockPositon =
+                await _db.StockPositions.FirstOrDefaultAsync(e => e.PositionId == stockPosition.PositionId);
+
+            if (matchingStockPositon != null)
+            {
+                matchingStockPositon.Quantity = stockPosition.Quantity;
+                matchingStockPositon.AveragePrice = stockPosition.AveragePrice;
+                matchingStockPositon.Cost = stockPosition.Cost;
+                matchingStockPositon.CurrentPrice = stockPosition.CurrentPrice;
+
+                await _db.SaveChangesAsync();
+            }
         }
     }
 }
