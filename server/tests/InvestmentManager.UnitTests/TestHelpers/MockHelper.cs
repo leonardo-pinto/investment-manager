@@ -7,12 +7,6 @@ namespace InvestmentManager.UnitTests.TestHelpers
     {
         private static readonly IFixture _fixture = new Fixture();
 
-        static public string GenerateValidGuidString()
-        {
-            Guid guidId = Guid.NewGuid();
-            return guidId.ToString();
-        }
-
         static public Dictionary<string, double> GenerateStockPriceDict(List<StockPosition> input)
         {
             List<string> stockSymbols = input.Select(e => e.Symbol).ToList();
