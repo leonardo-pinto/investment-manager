@@ -25,6 +25,13 @@ namespace InvestmentManager.ApplicationCore.Services
 
         async public Task<StockPositionResponse?> CreateStockPosition(AddStockPositionRequest addStockPositionRequest)
         {
+            bool symbolAlreadyExists = await _stockPositionRepository.StockSymbolAlreadyExists(addStockPositionRequest.Symbol);
+
+            if (symbolAlreadyExists)
+            {
+                throw new RepeatedStockSymbolException("Stock symbol already registered. Please update the position instead of creating a new one.");
+            }
+
             double currentStockPrice = await _finnhubService.GetStockPriceQuote(addStockPositionRequest.Symbol);
 
             if (currentStockPrice == 0) return null;
@@ -72,13 +79,40 @@ namespace InvestmentManager.ApplicationCore.Services
             return _mapper.Map<StockPositionResponse>(stockPosition);
         }
 
-        async public Task<StockPositionResponse?> UpdateStockPosition(UpdateStockPositionRequest updateStockPositionRequest, Guid positionId)
+        async public Task<StockPositionResponse?> UpdateStockPosition(UpdateStockPositionRequest updateStockPositionRequest)
         {
-            StockPosition? matchingStock = await _stockPositionRepository.GetSingleStockPosition(positionId);
 
-            if (matchingStock == null) return null;
-          
-            if (updateStockPositionRequest.TransactionType == TransactionType.Buy)
+            StockPosition? matchingStock = await _stockPositionRepository.GetSingleStockPosition(updateStockPositionRequest.PositionId);
+
+            if (matchingStock == null)
+            {
+                return null;
+            }
+
+            if (Enum.TryParse(typeof(TransactionType), updateStockPositionRequest.TransactionType, out object? transactionTypeObj))
+            {
+                TransactionType transactionType = (TransactionType)transactionTypeObj;
+                matchingStock = UpdateStockPropertiesByTransactionType(
+                    matchingStock, updateStockPositionRequest, transactionType);
+
+                matchingStock.CurrentPrice = await _finnhubService.GetStockPriceQuote(matchingStock.Symbol);
+                await _stockPositionRepository.UpdateStockPosition(matchingStock);
+
+                return _mapper.Map<StockPositionResponse>(matchingStock);
+            }
+            else
+            {
+                throw new InvalidTransactionTypeException("Invalid transaction type");
+            }
+        }
+
+        public StockPosition UpdateStockPropertiesByTransactionType(
+            StockPosition matchingStock,
+            UpdateStockPositionRequest updateStockPositionRequest,
+            TransactionType transactionType
+        )
+        {
+            if (transactionType == TransactionType.Buy)
             {
                 matchingStock.AveragePrice =
                     matchingStock.UpdateAveragePrice(
@@ -95,10 +129,7 @@ namespace InvestmentManager.ApplicationCore.Services
             }
 
             matchingStock.Cost = matchingStock.Quantity * matchingStock.AveragePrice;
-            matchingStock.CurrentPrice = await _finnhubService.GetStockPriceQuote(matchingStock.Symbol);
-            await _stockPositionRepository.UpdateStockPosition(matchingStock);
-
-            return _mapper.Map<StockPositionResponse>(matchingStock);
+            return matchingStock;
         }
 
         public List<StockPosition> UpdateStockPriceListBySymbol(Dictionary<string, double> stockPriceDict, List<StockPosition> stockPositions)
