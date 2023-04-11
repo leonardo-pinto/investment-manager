@@ -5,6 +5,7 @@ using InvestmentManager.ApplicationCore.DTO;
 using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Services;
 using InvestmentManager.ApplicationCore.Enums;
+using InvestmentManager.ApplicationCore.Helpers;
 using Moq;
 using AutoMapper;
 using InvestmentManager.ApplicationCore.Mapper;
@@ -15,7 +16,7 @@ namespace InvestmentManager.UnitTests.Services
 {
     public class StockPositionServiceTest
     {
-        private readonly IStockPositionService _sut;
+        private readonly StockPositionService _sut;
         private readonly Mock<IFinnhubService> _finnhubServiceMock;
         private readonly Mock<IStockPositionRepository> _stockPositionRepositoryMock;
         private readonly IFixture _fixture;
@@ -43,6 +44,10 @@ namespace InvestmentManager.UnitTests.Services
             AddStockPositionRequest addStockPositionRequest =
                 _fixture.Build<AddStockPositionRequest>().Create();
 
+            _stockPositionRepositoryMock
+                .Setup(m => m.StockSymbolAlreadyExists(It.IsAny<string>()))
+                .ReturnsAsync(false);
+
             _finnhubServiceMock
                 .Setup(temp => temp.GetStockPriceQuote(It.IsAny<string>()))
                 .ReturnsAsync(0);
@@ -55,6 +60,29 @@ namespace InvestmentManager.UnitTests.Services
         }
 
         [Fact]
+        async public Task CreateStockPosition_RepeatedStockSymbol_ToBeRepeatedStockSymbolException()
+        {
+            // Arrange
+            AddStockPositionRequest addStockPositionRequest =
+                _fixture.Build<AddStockPositionRequest>().Create();
+
+            _stockPositionRepositoryMock
+                .Setup(m => m.StockSymbolAlreadyExists(It.IsAny<string>()))
+                .ReturnsAsync(true);
+
+            // Act
+            Func<Task> action = async () =>
+            {
+                await _sut.CreateStockPosition(addStockPositionRequest);
+            };
+
+            // Assert
+            await action.Should()
+                .ThrowAsync<RepeatedStockSymbolException>()
+                .WithMessage("Stock symbol already registered. Please update the position instead of creating a new one.");
+        }
+
+        [Fact]
         public async Task CreateStockPosition_ValidData_ToBeSuccessful()
         {
             // Arrage
@@ -62,6 +90,10 @@ namespace InvestmentManager.UnitTests.Services
                 _fixture.Build<AddStockPositionRequest>().Create();
 
             double stockPriceMock = _fixture.Create<double>();
+
+            _stockPositionRepositoryMock
+                .Setup(m => m.StockSymbolAlreadyExists(It.IsAny<string>()))
+                .ReturnsAsync(false);
 
             _finnhubServiceMock
                 .Setup(temp => temp.GetStockPriceQuote(It.IsAny<string>()))
@@ -233,50 +265,21 @@ namespace InvestmentManager.UnitTests.Services
         }
         #endregion
 
-        #region UpdateStockPosition
+        #region UpdateStockPropertiesByTransactionType
 
         [Fact]
-        public async Task UpdateStockPosition_InvalidStockPositionId_ToBeNull()
+        public void UpdateStockPropertiesByTransactionType_BuyTransaction_ToBeSuccessful()
         {
             // Arrange
-            UpdateStockPositionRequest updateStockPositionRequest =
-                _fixture.Build<UpdateStockPositionRequest>().Create();
-            Guid positionId = _fixture.Create<Guid>();
+            TransactionType transactionType = TransactionType.Buy;
 
-            _stockPositionRepositoryMock
-                .Setup(m => m.GetSingleStockPosition(It.IsAny<Guid>()))
-                .ReturnsAsync(null as StockPosition);
-
-            // Act
-            StockPositionResponse? result = await _sut.UpdateStockPosition(updateStockPositionRequest, positionId);
-
-            // Assert
-            result.Should().BeNull();
-        }
-
-        [Fact]
-        public async Task UpdateStockPosition_BuyTransaction_ToBeSuccessful()
-        {
-            // Arrange
-            UpdateStockPositionRequest updateStockPositionRequest = _fixture
-                .Build<UpdateStockPositionRequest>()
-                .With(e => e.TransactionType, TransactionType.Buy)
-                .Create();
-            Guid positionId = _fixture.Create<Guid>();
             StockPosition matchingStock = _fixture
                 .Build<StockPosition>()
                 .Create();
 
-            _stockPositionRepositoryMock
-                .Setup(m => m.GetSingleStockPosition(It.IsAny<Guid>()))
-                .ReturnsAsync(matchingStock);
-
-            _finnhubServiceMock
-                .Setup(m => m.GetStockPriceQuote(It.IsAny<string>()))
-                .ReturnsAsync(_fixture.Create<double>());
-            _stockPositionRepositoryMock
-                .Setup(m => m.UpdateStockPosition(It.IsAny<StockPosition>()))
-                .Returns(Task.CompletedTask);
+            UpdateStockPositionRequest updateStockPositionRequest = _fixture
+                .Build<UpdateStockPositionRequest>()
+                .Create();
 
             int expectedQuantity = updateStockPositionRequest.Quantity + matchingStock.Quantity;
             double expectedAvgPrice = matchingStock
@@ -284,7 +287,8 @@ namespace InvestmentManager.UnitTests.Services
             double expectedCost = expectedQuantity * expectedAvgPrice;
 
             // Act
-            StockPositionResponse? result = await _sut.UpdateStockPosition(updateStockPositionRequest, positionId);
+            StockPosition result = _sut.UpdateStockPropertiesByTransactionType(
+                matchingStock, updateStockPositionRequest, transactionType);
 
             // Assert
             result?.Quantity.Should().Be(expectedQuantity);
@@ -293,18 +297,122 @@ namespace InvestmentManager.UnitTests.Services
         }
 
         [Fact]
-        public async Task UpdateStockPosition_SellTransaction_ToBeSuccessful()
+        public void UpdateStockPropertiesByTransactionType_SellTransaction_ToBeSuccessful()
+        {
+            // Arrange
+            TransactionType transactionType = TransactionType.Sell;
+
+            StockPosition matchingStock = _fixture
+                .Build<StockPosition>()
+                .With(e => e.Quantity, 10)
+                .Create();
+
+            UpdateStockPositionRequest updateStockPositionRequest = _fixture
+                .Build<UpdateStockPositionRequest>()
+                .With(e => e.Quantity, 2)
+                .Create();
+
+            int expectedQuantity = matchingStock.Quantity - updateStockPositionRequest.Quantity;
+            double expectedCost = expectedQuantity * matchingStock.AveragePrice;
+
+            // Act
+            StockPosition result = _sut.UpdateStockPropertiesByTransactionType(
+                matchingStock, updateStockPositionRequest, transactionType);
+
+            // Assert
+            result?.Quantity.Should().Be(expectedQuantity);
+            result?.AveragePrice.Should().Be(matchingStock.AveragePrice);
+            result?.Cost.Should().Be(expectedCost);
+        }
+
+
+        [Fact]
+        public void UpdateStockPropertiesByTransactionType_InvalidSellQuantity_ToBeInvalidStockQuantityException()
+        {
+            // Arrange
+            TransactionType transactionType = TransactionType.Sell;
+
+            UpdateStockPositionRequest updateStockPositionRequest = _fixture
+                .Build<UpdateStockPositionRequest>()
+                .With(e => e.Quantity, 200)
+                .Create();
+
+            StockPosition matchingStock = _fixture
+                .Build<StockPosition>()
+                .With(e => e.Quantity, 100)
+                .Create();
+
+            // Act
+            Action action = () => _sut.UpdateStockPropertiesByTransactionType(
+                    matchingStock, updateStockPositionRequest, transactionType);
+
+            // Assert
+            action.Should().Throw<InvalidStockQuantityException>()
+                .WithMessage("The stock quantity to be sold is greater than the current stock position quantity.");
+        }
+        #endregion
+
+        #region UpdateStockPosition
+
+        [Fact]
+        public async Task UpdateStockPosition_InvalidStockPositionId_ToBeNull()
+        {
+            // Arrange
+            UpdateStockPositionRequest updateStockPositionRequest =
+                _fixture.Build<UpdateStockPositionRequest>().Create();
+
+            _stockPositionRepositoryMock
+                .Setup(m => m.GetSingleStockPosition(It.IsAny<Guid>()))
+                .ReturnsAsync(null as StockPosition);
+
+            // Act
+            StockPositionResponse? result = await _sut.UpdateStockPosition(updateStockPositionRequest);
+
+            // Assert
+            result.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task UpdateStockPosition_InvalidTransactionType_ToBeInvalidTransactionTypeException()
+        {
+            // Arrange
+            UpdateStockPositionRequest updateStockPositionRequest = _fixture
+               .Build<UpdateStockPositionRequest>()
+               .With(e => e.TransactionType, "invalidType")
+               .Create();
+
+            StockPosition matchingStock = _fixture.Build<StockPosition>().Create();
+
+            _stockPositionRepositoryMock
+               .Setup(m => m.GetSingleStockPosition(It.IsAny<Guid>()))
+               .ReturnsAsync(matchingStock);
+
+            // Act
+            Func<Task> action = async () =>
+            {
+                await _sut.UpdateStockPosition(updateStockPositionRequest);
+            };
+
+            await action.Should()
+                .ThrowAsync<InvalidTransactionTypeException>()
+                .WithMessage("Invalid transaction type");
+        }
+
+        [Fact]
+        public async Task UpdateStockPosition_ValidData_ToBeSuccessful()
         {
             // Arrange
             UpdateStockPositionRequest updateStockPositionRequest = _fixture
                 .Build<UpdateStockPositionRequest>()
-                .With(e => e.TransactionType, TransactionType.Sell)
-                .With(e => e.Quantity, 100)
+                .With(e => e.TransactionType, "Buy")
+                .With(e => e.Quantity, 10)
+                .With(e => e.Price, 30)
                 .Create();
-            Guid positionId = _fixture.Create<Guid>();
+
             StockPosition matchingStock = _fixture
                 .Build<StockPosition>()
-                .With(e => e.Quantity, 200)
+                .With(e => e.Quantity, 10)
+                .With(e => e.AveragePrice, 20)
                 .Create();
 
             _stockPositionRepositoryMock
@@ -314,52 +422,23 @@ namespace InvestmentManager.UnitTests.Services
             _finnhubServiceMock
                 .Setup(m => m.GetStockPriceQuote(It.IsAny<string>()))
                 .ReturnsAsync(_fixture.Create<double>());
+
             _stockPositionRepositoryMock
                 .Setup(m => m.UpdateStockPosition(It.IsAny<StockPosition>()))
                 .Returns(Task.CompletedTask);
 
-            int expectedQuantity = matchingStock.Quantity - updateStockPositionRequest.Quantity;
-            double expectedCost = expectedQuantity * matchingStock.AveragePrice;
-
             // Act
-            StockPositionResponse? result = await _sut.UpdateStockPosition(updateStockPositionRequest, positionId);
+            StockPositionResponse result = await _sut.UpdateStockPosition(updateStockPositionRequest);
 
             // Assert
-            result?.Quantity.Should().Be(expectedQuantity);
-            result?.AveragePrice.Should().Be(matchingStock.AveragePrice);
-            result?.Cost.Should().Be(expectedCost);
-        }
-
-        [Fact]
-        async public Task UpdateStockPosition_InvalidSellQuantity_ToBeInvalidStockQuantityException()
-        {
-            // Arrange
-            UpdateStockPositionRequest updateStockPositionRequest = _fixture
-                .Build<UpdateStockPositionRequest>()
-                .With(e => e.TransactionType, TransactionType.Sell)
-                .With(e => e.Quantity, 200)
-                .Create();
-            Guid positionId = _fixture.Create<Guid>();
-            StockPosition matchingStock = _fixture
-                .Build<StockPosition>()
-                .With(e => e.Quantity, 100)
-                .Create();
-
-            _stockPositionRepositoryMock
-                .Setup(m => m.GetSingleStockPosition(It.IsAny<Guid>()))
-                .ReturnsAsync(matchingStock);
-
-            // Act
-            Func<Task> action = async () =>
-            {
-                await _sut.UpdateStockPosition(updateStockPositionRequest, positionId);
-            };
-
-            // Assert
-            await action.Should().ThrowAsync<InvalidStockQuantityException>()
-                .WithMessage("The stock quantity to be sold is greater than the current stock position quantity.");
+            result.Symbol.Should().Be(matchingStock.Symbol);
+            result.Quantity.Should().Be(20);
+            result.AveragePrice.Should().Be(25);
+            result.Cost.Should().Be(500);
+            result.MarketValue.Should().Be(FinancialMetrics.CalculateMarketValue(result.Quantity, result.CurrentPrice));
+            result.MonetaryGain.Should().Be(FinancialMetrics.CalculateMonetaryGain(result.Quantity, result.CurrentPrice, result.AveragePrice));
+            result.PercentualGain.Should().Be(FinancialMetrics.CalculatePercentualGain(result.CurrentPrice, result.AveragePrice));
         }
         #endregion
     }
-
 }
