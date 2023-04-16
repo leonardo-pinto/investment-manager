@@ -30,16 +30,6 @@ namespace InvestmentManager.ApplicationCore.Domain.Entities
         public double AveragePrice { get; set; }
 
         /// <summary>
-        /// The current stock price quote
-        /// </summary>
-        public double CurrentPrice { get; set; }
-
-        /// <summary>
-        /// The cost of the stock position (Quantity * AveragePrice)
-        /// </summary>
-        public double Cost { get; set; }
-
-        /// <summary>
         /// Calculates an updated average price
         /// </summary>
         /// <param name="increasedQuantity">Number of new stocks</param>
