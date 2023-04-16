@@ -24,30 +24,5 @@
         /// The average price of the stock position
         /// </summary>
         public double AveragePrice { get; set; }
-
-        /// <summary>
-        /// The cost of the stock position (Quantity * AveragePrice)
-        /// </summary>
-        public double Cost { get; set; }
-
-        /// <summary>
-        /// Current stock price based on latest quote
-        /// </summary>
-        public double CurrentPrice { get; set; }
-
-        /// <summary>
-        /// Current stock market value (Quantity * Price)
-        /// </summary>
-        public double MarketValue { get; set; }
-
-        /// <summary>
-        /// Current percentual gain ((Price/AveragePrice) - 1)
-        /// </summary>
-        public double PercentualGain { get; set; }
-
-        /// <summary>
-        /// Current monetary gain (MarketValue - Cost)
-        /// </summary>
-        public double MonetaryGain { get; set; }
     }
 }
