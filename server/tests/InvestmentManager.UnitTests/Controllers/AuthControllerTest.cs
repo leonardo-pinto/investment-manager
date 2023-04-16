@@ -121,6 +121,7 @@ namespace InvestmentManager.UnitTests.Controllers
 
             var expectedResult = new AuthResponse()
             {
+                Id = userMock.Id,
                 Username = userMock.UserName,
                 AccessToken = tokenMock
             };
@@ -224,6 +225,7 @@ namespace InvestmentManager.UnitTests.Controllers
 
             var expectedResult = new AuthResponse()
             {
+                Id = userMock.Id,
                 Username = userMock.UserName,
                 AccessToken = tokenMock
             };
