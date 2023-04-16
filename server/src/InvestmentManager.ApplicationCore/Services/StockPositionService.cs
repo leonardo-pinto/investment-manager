@@ -55,12 +55,6 @@ namespace InvestmentManager.ApplicationCore.Services
                 return stockPositionsResponse;
             }
 
-            List<string> stockSymbols = stockPositions.Select(temp => temp.Symbol).ToList();
-
-            Dictionary<string, double> stockPriceDict = await _finnhubService.GetMultipleStockPriceQuote(stockSymbols);
-
-            stockPositions = UpdateStockPriceListBySymbol(stockPriceDict, stockPositions);
-
             return stockPositions.Select(e => _mapper.Map<StockPositionResponse>(e)).ToList();
         }
 
