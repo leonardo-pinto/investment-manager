@@ -30,7 +30,9 @@ namespace InvestmentManager.ApplicationCore.Services
         public async Task<SignInResult> Login(LoginRequest loginRequest)
         {
             IdentityUser user = new() { UserName = loginRequest.UserName };
-            return await _signInManager.PasswordSignInAsync(user, loginRequest.Password, false, false);
+
+
+            return await _signInManager.PasswordSignInAsync(user.UserName, loginRequest.Password, false, false);
         }
 
         public async Task<IdentityUser?> FindUserByUserName(string userName)
