@@ -1,10 +1,12 @@
 ﻿using InvestmentManager.ApplicationCore.DTO;
 using InvestmentManager.ApplicationCore.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InvestmentManager.Web.Controllers
 {
     [Route("api/transactions")]
+    [Authorize]
     [ApiController]
     public class TransactionController : ControllerBase
     {
