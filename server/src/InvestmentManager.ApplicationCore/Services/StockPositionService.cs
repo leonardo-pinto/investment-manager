@@ -81,29 +81,20 @@ namespace InvestmentManager.ApplicationCore.Services
                 return null;
             }
 
-            if (Enum.TryParse(typeof(TransactionType), updateStockPositionRequest.TransactionType, out object? transactionTypeObj))
-            {
-                TransactionType transactionType = (TransactionType)transactionTypeObj;
-                matchingStock = UpdateStockPropertiesByTransactionType(
-                    matchingStock, updateStockPositionRequest, transactionType);
+            matchingStock = UpdateStockPropertiesByTransactionType(
+                matchingStock, updateStockPositionRequest);
 
-                await _stockPositionRepository.UpdateStockPosition(matchingStock);
+            await _stockPositionRepository.UpdateStockPosition(matchingStock);
 
-                return _mapper.Map<StockPositionResponse>(matchingStock);
-            }
-            else
-            {
-                throw new InvalidTransactionTypeException("Invalid transaction type");
-            }
+            return _mapper.Map<StockPositionResponse>(matchingStock);
         }
 
         public StockPosition UpdateStockPropertiesByTransactionType(
             StockPosition matchingStock,
-            UpdateStockPositionRequest updateStockPositionRequest,
-            TransactionType transactionType
+            UpdateStockPositionRequest updateStockPositionRequest
         )
         {
-            if (transactionType == TransactionType.Buy)
+            if (updateStockPositionRequest.TransactionType == TransactionType.Buy)
             {
                 matchingStock.AveragePrice =
                     matchingStock.UpdateAveragePrice(
