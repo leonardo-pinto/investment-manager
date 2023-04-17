@@ -1,6 +1,4 @@
-﻿
-
-using InvestmentManager.ApplicationCore.Exceptions;
+﻿using InvestmentManager.ApplicationCore.Exceptions;
 using InvestmentManager.ApplicationCore.Interfaces;
 
 namespace InvestmentManager.ApplicationCore.Services
@@ -42,5 +40,10 @@ namespace InvestmentManager.ApplicationCore.Services
             return stockSymbolQuoteDict;
         }
 
+        public async Task<bool> IsStockSymbolValid(string stockSymbol)
+        {
+            double stockQuote = await _finnhubRepository.GetStockPriceQuote(stockSymbol);
+            return stockQuote != 0;
+        }
     }
 }

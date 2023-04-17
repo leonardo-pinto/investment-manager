@@ -19,5 +19,12 @@
         /// <param name="stockSymbols">Array of stock symbols to search for price quote</param>
         /// <returns>Dictionary that contains stock symbol and latest price quote</returns>
         Task<Dictionary<string, double>> GetMultipleStockPriceQuote(string[] stockSymbols);
+
+        /// <summary>
+        /// Check if the stock symbol is valid
+        /// </summary>
+        /// <param name="stockSymbol">Stock symbol</param>
+        /// <returns>True if symbol is valid, false if it is invalid</returns>
+        Task<bool> IsStockSymbolValid(string stockSymbol);
     }
 }
