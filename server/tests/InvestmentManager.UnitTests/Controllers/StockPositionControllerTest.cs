@@ -2,6 +2,7 @@
 using AutoMapper;
 using FluentAssertions;
 using InvestmentManager.ApplicationCore.DTO;
+using InvestmentManager.ApplicationCore.Enums;
 using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Mapper;
 using InvestmentManager.ApplicationCore.Services;
@@ -229,7 +230,7 @@ namespace InvestmentManager.UnitTests.Controllers
             UpdateStockPositionRequest updateStockPositionRequest =
                 _fixture
                 .Build<UpdateStockPositionRequest>()
-                .With(e => e.TransactionType, "Buy")
+                .With(e => e.TransactionType, TransactionType.Buy)
                 .Create();
 
             StockPositionResponse stockPositionResponse =

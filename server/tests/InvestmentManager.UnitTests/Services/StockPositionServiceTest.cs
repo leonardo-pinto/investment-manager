@@ -219,6 +219,7 @@ namespace InvestmentManager.UnitTests.Services
 
             UpdateStockPositionRequest updateStockPositionRequest = _fixture
                 .Build<UpdateStockPositionRequest>()
+                .With(e => e.TransactionType, TransactionType.Buy)
                 .Create();
 
             int expectedQuantity = updateStockPositionRequest.Quantity + matchingStock.Quantity;
@@ -227,7 +228,7 @@ namespace InvestmentManager.UnitTests.Services
 
             // Act
             StockPosition result = _sut.UpdateStockPropertiesByTransactionType(
-                matchingStock, updateStockPositionRequest, transactionType);
+                matchingStock, updateStockPositionRequest);
 
             // Assert
             result?.Quantity.Should().Be(expectedQuantity);
@@ -248,13 +249,14 @@ namespace InvestmentManager.UnitTests.Services
             UpdateStockPositionRequest updateStockPositionRequest = _fixture
                 .Build<UpdateStockPositionRequest>()
                 .With(e => e.Quantity, 2)
+                .With(e => e.TransactionType, TransactionType.Sell)
                 .Create();
 
             int expectedQuantity = matchingStock.Quantity - updateStockPositionRequest.Quantity;
 
             // Act
             StockPosition result = _sut.UpdateStockPropertiesByTransactionType(
-                matchingStock, updateStockPositionRequest, transactionType);
+                matchingStock, updateStockPositionRequest);
 
             // Assert
             result?.Quantity.Should().Be(expectedQuantity);
@@ -271,6 +273,7 @@ namespace InvestmentManager.UnitTests.Services
             UpdateStockPositionRequest updateStockPositionRequest = _fixture
                 .Build<UpdateStockPositionRequest>()
                 .With(e => e.Quantity, 200)
+                .With(e => e.TransactionType, TransactionType.Sell)
                 .Create();
 
             StockPosition matchingStock = _fixture
@@ -280,7 +283,7 @@ namespace InvestmentManager.UnitTests.Services
 
             // Act
             Action action = () => _sut.UpdateStockPropertiesByTransactionType(
-                    matchingStock, updateStockPositionRequest, transactionType);
+                    matchingStock, updateStockPositionRequest);
 
             // Assert
             action.Should().Throw<InvalidStockQuantityException>()
@@ -309,38 +312,12 @@ namespace InvestmentManager.UnitTests.Services
         }
 
         [Fact]
-        public async Task UpdateStockPosition_InvalidTransactionType_ToBeInvalidTransactionTypeException()
-        {
-            // Arrange
-            UpdateStockPositionRequest updateStockPositionRequest = _fixture
-               .Build<UpdateStockPositionRequest>()
-               .With(e => e.TransactionType, "invalidType")
-               .Create();
-
-            StockPosition matchingStock = _fixture.Build<StockPosition>().Create();
-
-            _stockPositionRepositoryMock
-               .Setup(m => m.GetSingleStockPosition(It.IsAny<Guid>()))
-               .ReturnsAsync(matchingStock);
-
-            // Act
-            Func<Task> action = async () =>
-            {
-                await _sut.UpdateStockPosition(updateStockPositionRequest);
-            };
-
-            await action.Should()
-                .ThrowAsync<InvalidTransactionTypeException>()
-                .WithMessage("Invalid transaction type");
-        }
-
-        [Fact]
         public async Task UpdateStockPosition_ValidData_ToBeSuccessful()
         {
             // Arrange
             UpdateStockPositionRequest updateStockPositionRequest = _fixture
                 .Build<UpdateStockPositionRequest>()
-                .With(e => e.TransactionType, "Buy")
+                .With(e => e.TransactionType, TransactionType.Buy)
                 .With(e => e.Quantity, 10)
                 .With(e => e.Price, 30)
                 .Create();
