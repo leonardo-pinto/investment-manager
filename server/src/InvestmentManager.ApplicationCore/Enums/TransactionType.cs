@@ -5,6 +5,7 @@
     /// </summary>
     public enum TransactionType
     {
-        Buy, Sell
+        Buy, // 0
+        Sell // 1
     }
 }
