@@ -35,10 +35,10 @@ namespace InvestmentManager.ApplicationCore.DTO
         public double Price { get; set; }
 
         /// <summary>
-        /// Type of the transaction (e.g., buy or sell)
+        /// Type of the transaction. Buy = 0, Sell = 1
         /// </summary>
         [Required(ErrorMessage = "Transaction type can't be null or empty")]
-        public string TransactionType { get; set; }
+        public TransactionType TransactionType { get; set; }
 
         /// <summary>
         /// The date and time of the stock position
