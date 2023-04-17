@@ -32,10 +32,7 @@ namespace InvestmentManager.ApplicationCore.Mapper
             CreateMap<UpdateStockPositionRequest, AddTransactionRequest>()
                 .ForMember(
                     dest => dest.DateAndTimeOfTransaction,
-                    opt => opt.MapFrom(src => src.DateAndTimeOfStockPosition))
-                .ForMember(
-                    dest => dest.TransactionType,
-                    opt => opt.MapFrom(src => Enum.Parse(typeof(TransactionType), src.TransactionType)));
+                    opt => opt.MapFrom(src => src.DateAndTimeOfStockPosition));
 
             CreateMap<AddTransactionRequest, Transaction>()
                 .ForMember(
