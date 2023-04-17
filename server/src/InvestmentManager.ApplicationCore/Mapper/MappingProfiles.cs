@@ -12,25 +12,11 @@ namespace InvestmentManager.ApplicationCore.Mapper
         {
             CreateMap<AddStockPositionRequest, StockPosition>()
                 .ForMember(
-                    dest => dest.Cost,
-                    opt => opt.MapFrom(src => FinancialMetrics.CalculateCost(src.Quantity, src.AveragePrice)))
-                .ForMember(
                     dest => dest.PositionId,
                     opt => opt.MapFrom(src => Guid.NewGuid())
                 );
 
-            CreateMap<StockPosition, StockPositionResponse>()
-                .ForMember(
-                    dest => dest.MarketValue,
-                    opt => opt.MapFrom(src => FinancialMetrics.CalculateMarketValue(src.Quantity, src.CurrentPrice))
-                )
-                .ForMember(
-                    dest => dest.PercentualGain,
-                    opt => opt.MapFrom(src => FinancialMetrics.CalculatePercentualGain(src.CurrentPrice, src.AveragePrice))
-                )
-                .ForMember(
-                    dest => dest.MonetaryGain,
-                    opt => opt.MapFrom(src => FinancialMetrics.CalculateMonetaryGain(src.Quantity, src.CurrentPrice, src.AveragePrice)));
+            CreateMap<StockPosition, StockPositionResponse>();
     
             CreateMap<AddStockPositionRequest, AddTransactionRequest>()
                 .ForMember(
