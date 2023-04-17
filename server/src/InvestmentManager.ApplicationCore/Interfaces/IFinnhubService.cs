@@ -16,8 +16,8 @@
         /// <summary>
         /// Get multiple stocks current price quote
         /// </summary>
-        /// <param name="stockSymbols">List of stock symbols to search for price quote</param>
+        /// <param name="stockSymbols">Array of stock symbols to search for price quote</param>
         /// <returns>Dictionary that contains stock symbol and latest price quote</returns>
-        Task<Dictionary<string, double>> GetMultipleStockPriceQuote(List<string> stockSymbols);
+        Task<Dictionary<string, double>> GetMultipleStockPriceQuote(string[] stockSymbols);
     }
 }

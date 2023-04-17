@@ -29,7 +29,7 @@ namespace InvestmentManager.ApplicationCore.Services
             }
         }
 
-        async public Task<Dictionary<string, double>> GetMultipleStockPriceQuote(List<string> stockSymbols)
+        async public Task<Dictionary<string, double>> GetMultipleStockPriceQuote(string[] stockSymbols)
         {
             Dictionary<string, double> stockSymbolQuoteDict = new();
 
