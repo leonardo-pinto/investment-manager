@@ -3,20 +3,19 @@ using FluentAssertions;
 using InvestmentManager.ApplicationCore.Exceptions;
 using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Services;
+using InvestmentManager.Infrastructure.Repositories;
 using Moq;
 
 namespace InvestmentManager.UnitTests.Services
 {
-    public class FinnhubServiceTest : IDisposable
+    public class FinnhubServiceTest
     {
         private readonly IFinnhubService _sut;
-        private readonly MockRepository _mockRepository;
         private readonly Mock<IFinnhubRepository> _finnhubRepositoryMock;
         private readonly IFixture _fixture;
 
         public FinnhubServiceTest()
         {
-            _mockRepository = new MockRepository(MockBehavior.Strict);
             _finnhubRepositoryMock = new Mock<IFinnhubRepository>(MockBehavior.Strict);
             _sut = new FinnhubService(_finnhubRepositoryMock.Object);
             _fixture = new Fixture();
@@ -40,7 +39,7 @@ namespace InvestmentManager.UnitTests.Services
             await action
                 .Should()
                 .ThrowAsync<FinnhubException>()
-                .WithMessage($"Unable to retrieve stock price quote.");
+                .WithMessage("Unable to retrieve stock price quote.");
         }
 
 
@@ -66,10 +65,7 @@ namespace InvestmentManager.UnitTests.Services
         [Fact]
         async public Task GetMultipleStockPriceQuote_ValidData_ToBeSuccessful()
         {
-            List<string> stockSymbols = new()
-            {
-                "ABC", "DEF", "GHI"
-            };
+            string[] stockSymbols = { "ABC", "DEF", "GHI" };
 
             double ABCStockQuote = _fixture.Create<double>();
             double DEFStockQuote = _fixture.Create<double>();
@@ -94,9 +90,36 @@ namespace InvestmentManager.UnitTests.Services
         }
 
         #endregion
-        public void Dispose()
+
+        #region IsStockSymbolValid
+
+        [Fact]
+        public async Task IsStockSymbolValid_ValidStockSymbol_ToBeTrue()
         {
-            _mockRepository.VerifyAll();
+            // Arrange
+            string stockSymbol = _fixture.Create<string>();
+            _finnhubRepositoryMock.Setup(m => m.GetStockPriceQuote(It.IsAny<string>())).ReturnsAsync(10.9);
+
+            // Act
+            bool result = await _sut.IsStockSymbolValid(stockSymbol);
+
+            // Assert
+            result.Should().BeTrue();
         }
+
+        [Fact]
+        public async Task IsStockSymbolValid_InvalidStockSymbol_ToBeFalse()
+        {
+            // Arrange
+            string stockSymbol = _fixture.Create<string>();
+            _finnhubRepositoryMock.Setup(m => m.GetStockPriceQuote(It.IsAny<string>())).ReturnsAsync(0);
+
+            // Act
+            bool result = await _sut.IsStockSymbolValid(stockSymbol);
+
+            // Assert
+            result.Should().BeFalse();
+        }
+        #endregion
     }
 }
