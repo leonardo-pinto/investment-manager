@@ -2,17 +2,20 @@
 using InvestmentManager.ApplicationCore.DTO;
 using InvestmentManager.ApplicationCore.Exceptions;
 using InvestmentManager.ApplicationCore.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InvestmentManager.Web.Controllers
 {
     [Route("api/stock-position")]
+    [Authorize]
     [ApiController]
     public class StockPositionController : ControllerBase
     {
         private readonly IStockPositionService _stockPositionService;
         private readonly ITransactionService _transactionService;
         private readonly IMapper _mapper;
+
         public StockPositionController(IStockPositionService stockPositionService, ITransactionService transactionService, IMapper mapper)
         {
             _stockPositionService = stockPositionService;
