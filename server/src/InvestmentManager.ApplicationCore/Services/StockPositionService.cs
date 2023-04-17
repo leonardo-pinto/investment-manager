@@ -32,12 +32,14 @@ namespace InvestmentManager.ApplicationCore.Services
                 throw new RepeatedStockSymbolException("Stock symbol already registered. Please update the position instead of creating a new one.");
             }
 
-            double currentStockPrice = await _finnhubService.GetStockPriceQuote(addStockPositionRequest.Symbol);
+            bool isStockSymbolValid = await _finnhubService.IsStockSymbolValid(addStockPositionRequest.Symbol);
 
-            if (currentStockPrice == 0) return null;
+            if (!isStockSymbolValid)
+            {
+                return null;
+            }
 
             StockPosition stockPosition = _mapper.Map<StockPosition>(addStockPositionRequest);
-            stockPosition.CurrentPrice = currentStockPrice;
 
             await _stockPositionRepository.CreateStockPosition(stockPosition);
 
@@ -67,15 +69,11 @@ namespace InvestmentManager.ApplicationCore.Services
                 return null;
             }
 
-            double stockPrice = await _finnhubService.GetStockPriceQuote(stockPosition.Symbol);
-            stockPosition.CurrentPrice = stockPrice;
-
             return _mapper.Map<StockPositionResponse>(stockPosition);
         }
 
         async public Task<StockPositionResponse?> UpdateStockPosition(UpdateStockPositionRequest updateStockPositionRequest)
         {
-
             StockPosition? matchingStock = await _stockPositionRepository.GetSingleStockPosition(updateStockPositionRequest.PositionId);
 
             if (matchingStock == null)
@@ -89,7 +87,6 @@ namespace InvestmentManager.ApplicationCore.Services
                 matchingStock = UpdateStockPropertiesByTransactionType(
                     matchingStock, updateStockPositionRequest, transactionType);
 
-                matchingStock.CurrentPrice = await _finnhubService.GetStockPriceQuote(matchingStock.Symbol);
                 await _stockPositionRepository.UpdateStockPosition(matchingStock);
 
                 return _mapper.Map<StockPositionResponse>(matchingStock);
@@ -121,21 +118,7 @@ namespace InvestmentManager.ApplicationCore.Services
                 }
                 matchingStock.Quantity -= updateStockPositionRequest.Quantity;
             }
-
-            matchingStock.Cost = matchingStock.Quantity * matchingStock.AveragePrice;
             return matchingStock;
-        }
-
-        public List<StockPosition> UpdateStockPriceListBySymbol(Dictionary<string, double> stockPriceDict, List<StockPosition> stockPositions)
-        {
-            foreach (KeyValuePair<string, double> entry in stockPriceDict)
-            {
-                // get index of stockPosition with the given stockSymbol
-                int index = stockPositions
-                    .FindIndex(stockPosition => stockPosition.Symbol == entry.Key);
-                stockPositions[index].CurrentPrice = entry.Value;
-            }
-            return stockPositions;
         }
     }
 }
