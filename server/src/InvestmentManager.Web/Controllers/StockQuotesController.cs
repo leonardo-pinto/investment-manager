@@ -12,10 +12,24 @@ namespace InvestmentManager.Web.Controllers
     public class StockQuotesController : ControllerBase
     {
         private readonly IFinnhubService _finnhubService;
+        private readonly IBrApiService _brApiService;
 
-        public StockQuotesController(IFinnhubService finnhubService)
+        public StockQuotesController(IFinnhubService finnhubService, IBrApiService brApiService)
         {
             _finnhubService = finnhubService;
+            _brApiService = brApiService;
+        }
+
+        [HttpGet("br/quotes")]
+        public async Task<IActionResult> GetMultipleBrStockQuotes([FromQuery] string symbols)
+        {
+            var stockQuotes = await _brApiService.GetStocksPriceQuote(symbols);
+
+            return Ok(new StockQuotesResponse()
+            {
+                StockQuotes = stockQuotes,
+                UpdatedAt = DateTimeOffset.Now
+            });
         }
 
         [HttpGet("us/{symbol}")]
@@ -29,7 +43,7 @@ namespace InvestmentManager.Web.Controllers
         public async Task<IActionResult> GetMultipleUsStockQuotes([FromQuery] string symbols) 
         {
             string[] symbolsArr = symbols.Split(",");
-            Dictionary<string, double> stockQuotes = await _finnhubService.GetMultipleStockPriceQuote(symbolsArr);
+            var stockQuotes = await _finnhubService.GetMultipleStockPriceQuote(symbolsArr);
 
             return Ok(new StockQuotesResponse()
             {
