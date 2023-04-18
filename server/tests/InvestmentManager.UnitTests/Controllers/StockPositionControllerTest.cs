@@ -5,10 +5,7 @@ using InvestmentManager.ApplicationCore.DTO;
 using InvestmentManager.ApplicationCore.Enums;
 using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Mapper;
-using InvestmentManager.ApplicationCore.Services;
-using InvestmentManager.UnitTests.TestHelpers;
 using InvestmentManager.Web.Controllers;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -107,11 +104,13 @@ namespace InvestmentManager.UnitTests.Controllers
 
         #endregion
 
-        #region GetAllStockPositions
+        #region GetAllStockPositionsByUserId
         [Fact]
-        async public Task GetAllStockPositions_ToBeOk()
+        async public Task GetAllStockPositionsByUserId_ToBeOk()
         {
             // Arrange
+            string userId = _fixture.Create<string>();
+
             List<StockPositionResponse> stockPositionResponse = new()
             {
                 _fixture.Build<StockPositionResponse>().Create(),
@@ -120,16 +119,16 @@ namespace InvestmentManager.UnitTests.Controllers
             };
 
             _stockPositionServiceMock
-                .Setup(m => m.GetAllStockPositions())
+                .Setup(m => m.GetAllStockPositionsByUserId(It.IsAny<string>()))
                 .ReturnsAsync(stockPositionResponse);
 
             // Act
-            IActionResult response = await _sut.GetAllStockPositions();
+            IActionResult response = await _sut.GetAllStockPositionsByUserId(userId);
 
             // Assert
             response.Should().BeOfType<OkObjectResult>();
             response.As<OkObjectResult>().Value.Should().Be(stockPositionResponse);
-            _stockPositionServiceMock.Verify(m => m.GetAllStockPositions(), Times.Once);
+            _stockPositionServiceMock.Verify(m => m.GetAllStockPositionsByUserId(userId), Times.Once);
         }
 
         #endregion
@@ -245,15 +244,52 @@ namespace InvestmentManager.UnitTests.Controllers
                 .ReturnsAsync(_fixture.Build<TransactionResponse>().Create());
 
             // Act
-            IActionResult response = await _sut.UpdateStockPosition(updateStockPositionRequest);
+            IActionResult result = await _sut.UpdateStockPosition(updateStockPositionRequest);
 
             // Assert
-            response.Should().BeOfType<OkObjectResult>();
-            response.As<OkObjectResult>().Value.Should().Be(stockPositionResponse);
+            result.Should().BeOfType<OkObjectResult>();
+            result.As<OkObjectResult>().Value.Should().Be(stockPositionResponse);
 
             _stockPositionServiceMock.Verify(m => m.UpdateStockPosition(updateStockPositionRequest), Times.Once);
             _transactionServiceMock.Verify(m => m.CreateTransaction(It.IsAny<AddTransactionRequest>()), Times.Once);
         }
+        #endregion
+
+        #region DeleteStockPosition
+
+        [Fact]
+        public async Task DeleteStockPosition_ValidId_ToBeNoContent()
+        {
+            // Arrange
+            Guid id = _fixture.Create<Guid>();
+            _stockPositionServiceMock
+                .Setup(m => m.DeleteStockPosition(It.IsAny<Guid>()))
+                .ReturnsAsync(true);
+
+            // Act
+            var result = await _sut.DeleteStockPosition(id);
+
+            // Assert
+            result.Should().BeOfType<NoContentResult>();
+        }
+
+        [Fact]
+        public async Task DeleteStockPosition_InvalidId_ToBeBadRequest()
+        {
+            // Arrange
+            Guid id = _fixture.Create<Guid>();
+            _stockPositionServiceMock
+                .Setup(m => m.DeleteStockPosition(It.IsAny<Guid>()))
+                .ReturnsAsync(false);
+
+            // Act
+            var result = await _sut.DeleteStockPosition(id);
+
+            // Assert
+            result.Should().BeOfType<BadRequestObjectResult>();
+            result.As<BadRequestObjectResult>().Value.Should().Be("There was an error while deleting the stock position.");
+        }
+
         #endregion
     }
 }
