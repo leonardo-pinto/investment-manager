@@ -15,9 +15,10 @@ namespace InvestmentManager.ApplicationCore.Interfaces
         Task<TransactionResponse> CreateTransaction(AddTransactionRequest addTransactionRequest);
 
         /// <summary>
-        /// Get all the transactions
+        /// Get all the transactions of a given user id
         /// </summary>
+        /// <param name="userId">User id</param>
         /// <returns>Returns a list containing all transactions</returns>
-        Task<List<TransactionResponse>> GetAllTransactions();
+        Task<List<TransactionResponse>> GetAllTransactionsByUserId(string userId);
     }
 }
