@@ -28,7 +28,7 @@ namespace InvestmentManager.ApplicationCore.Services
 
         public async Task<StockPositionResponse?> CreateStockPosition(AddStockPositionRequest addStockPositionRequest)
         {
-            bool symbolAlreadyExists = await _stockPositionRepository.StockSymbolAlreadyExists(addStockPositionRequest.Symbol);
+            bool symbolAlreadyExists = await _stockPositionRepository.StockSymbolAlreadyExists(addStockPositionRequest.Symbol, addStockPositionRequest.UserId);
 
             if (symbolAlreadyExists)
             {
