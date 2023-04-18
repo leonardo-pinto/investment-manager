@@ -5,12 +5,11 @@ using InvestmentManager.ApplicationCore.DTO;
 using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Services;
 using InvestmentManager.ApplicationCore.Enums;
-using InvestmentManager.ApplicationCore.Helpers;
 using Moq;
 using AutoMapper;
 using InvestmentManager.ApplicationCore.Mapper;
 using InvestmentManager.ApplicationCore.Exceptions;
-using InvestmentManager.UnitTests.TestHelpers;
+using InvestmentManager.Infrastructure.Repositories;
 
 namespace InvestmentManager.UnitTests.Services
 {
@@ -163,28 +162,30 @@ namespace InvestmentManager.UnitTests.Services
 
         #endregion
 
-        #region GetAllStockPositions
+        #region GetAllStockPositionsByUserId
 
         [Fact]
-        public async Task GetAllStockPositions_NoStockPositions_ToBeEmptyList()
+        public async Task GetAllStockPositionsByUserId_NoStockPositions_ToBeEmptyList()
         {
             // Arrange
+            string userId = _fixture.Create<string>();
             _stockPositionRepositoryMock
-                .Setup(temp => temp.GetAllStockPositions())
+                .Setup(m => m.GetAllStockPositionsByUserId(It.IsAny<string>()))
                 .ReturnsAsync(new List<StockPosition>());
 
             // Act
-            List<StockPositionResponse> stockPositionResponse = await _sut.GetAllStockPositions();
+            List<StockPositionResponse> stockPositionResponse = await _sut.GetAllStockPositionsByUserId(userId);
 
             // Assert
             stockPositionResponse.Should().BeEmpty();
-            _stockPositionRepositoryMock.Verify(m => m.GetAllStockPositions(), Times.Once);
+            _stockPositionRepositoryMock.Verify(m => m.GetAllStockPositionsByUserId(userId), Times.Once);
         }
 
         [Fact]
-        public async Task GetAllStockPositions_WithStockPositions_ToBeSuccessful()
+        public async Task GetAllStockPositionsByUserId_WithStockPositions_ToBeSuccessful()
         {
             // Arrange
+            string userId = _fixture.Create<string>();
             var stockPositions = new List<StockPosition>()
             {
                 _fixture.Build<StockPosition>().Create(),
@@ -192,11 +193,11 @@ namespace InvestmentManager.UnitTests.Services
             };
 
             _stockPositionRepositoryMock
-                .Setup(m => m.GetAllStockPositions())
+                .Setup(m => m.GetAllStockPositionsByUserId(It.IsAny<string>()))
                 .ReturnsAsync(stockPositions);
 
             // Act
-            List<StockPositionResponse> stockPositionResponse = await _sut.GetAllStockPositions();
+            List<StockPositionResponse> stockPositionResponse = await _sut.GetAllStockPositionsByUserId(userId);
 
             // Assert
             stockPositionResponse.Should().HaveCount(stockPositions.Count);
@@ -213,8 +214,6 @@ namespace InvestmentManager.UnitTests.Services
         public void UpdateStockPropertiesByTransactionType_BuyTransaction_ToBeSuccessful()
         {
             // Arrange
-            TransactionType transactionType = TransactionType.Buy;
-
             StockPosition matchingStock = _fixture.Build<StockPosition>().Create();
 
             UpdateStockPositionRequest updateStockPositionRequest = _fixture
@@ -239,8 +238,6 @@ namespace InvestmentManager.UnitTests.Services
         public void UpdateStockPropertiesByTransactionType_SellTransaction_ToBeSuccessful()
         {
             // Arrange
-            TransactionType transactionType = TransactionType.Sell;
-
             StockPosition matchingStock = _fixture
                 .Build<StockPosition>()
                 .With(e => e.Quantity, 10)
@@ -268,8 +265,6 @@ namespace InvestmentManager.UnitTests.Services
         public void UpdateStockPropertiesByTransactionType_InvalidSellQuantity_ToBeInvalidStockQuantityException()
         {
             // Arrange
-            TransactionType transactionType = TransactionType.Sell;
-
             UpdateStockPositionRequest updateStockPositionRequest = _fixture
                 .Build<UpdateStockPositionRequest>()
                 .With(e => e.Quantity, 200)
@@ -343,6 +338,85 @@ namespace InvestmentManager.UnitTests.Services
             result?.Symbol.Should().Be(matchingStock.Symbol);
             result?.Quantity.Should().Be(20);
             result?.AveragePrice.Should().Be(25);
+        }
+        #endregion
+
+        #region DeleteStockPosition
+
+        [Fact]
+        public async Task DeleteStockPosition_ValidId_ToBeTrue()
+        {
+            // Arrange
+            Guid id = _fixture.Create<Guid>();
+            StockPosition stockPosition = _fixture
+                .Build<StockPosition>()
+                .With(e => e.Quantity, 0)
+                .Create();
+
+            _stockPositionRepositoryMock
+                .Setup(m => m.GetSingleStockPosition(It.IsAny<Guid>()))
+                .ReturnsAsync(stockPosition);
+
+            _stockPositionRepositoryMock
+                .Setup(m => m.DeleteStockPosition(It.IsAny<Guid>()))
+                .ReturnsAsync(true);
+
+            // Act
+            var result = await _sut.DeleteStockPosition(id);
+
+            // Assert
+            result.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task DeleteStockPosition_DeletionFails_ToBeFalse()
+        {
+            // Arrange
+            Guid id = _fixture.Create<Guid>();
+            StockPosition stockPosition = _fixture
+                .Build<StockPosition>()
+                .With(e => e.Quantity, 0)
+                .Create();
+
+            _stockPositionRepositoryMock
+               .Setup(m => m.GetSingleStockPosition(It.IsAny<Guid>()))
+               .ReturnsAsync(stockPosition);
+
+            _stockPositionRepositoryMock
+                .Setup(m => m.DeleteStockPosition(It.IsAny<Guid>()))
+                .ReturnsAsync(false);
+
+            // Act
+            var result = await _sut.DeleteStockPosition(id);
+
+            // Assert
+            result.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task DeleteStockPosition_InvalidQuantity_ToBeInvalidStockQuantityException()
+        {
+            // Arrange
+            Guid id = _fixture.Create<Guid>();
+            StockPosition stockPosition = _fixture
+                .Build<StockPosition>()
+                .With(e => e.Quantity, 10)
+                .Create();
+
+            _stockPositionRepositoryMock
+               .Setup(m => m.GetSingleStockPosition(It.IsAny<Guid>()))
+               .ReturnsAsync(stockPosition);
+
+            // Act
+            Func<Task> action = async () =>
+            {
+                await _sut.DeleteStockPosition(id);
+            };
+
+            // Assert
+            await action.Should()
+                .ThrowAsync<InvalidStockQuantityException>()
+                .WithMessage("It is not possible to delete a stock position which quantity is not zero.");
         }
         #endregion
     }
