@@ -16,6 +16,11 @@ namespace InvestmentManager.ApplicationCore.DTO
         public Guid PositionId { get; set; }
 
         /// <summary>
+        /// Unique user id
+        /// </summary>
+        public string UserId { get; set; }
+
+        /// <summary>
         /// Unique stock symbol of the transaction
         /// </summary>
         [Required(ErrorMessage = "Transaction symbol can't be null or empty")]
