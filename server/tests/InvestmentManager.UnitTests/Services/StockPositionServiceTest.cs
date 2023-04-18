@@ -50,7 +50,7 @@ namespace InvestmentManager.UnitTests.Services
                 .Create();
 
             _stockPositionRepositoryMock
-                .Setup(m => m.StockSymbolAlreadyExists(It.IsAny<string>()))
+                .Setup(m => m.StockSymbolAlreadyExists(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(false);
 
             _finnhubServiceMock
@@ -75,7 +75,7 @@ namespace InvestmentManager.UnitTests.Services
                 .Create();
 
             _stockPositionRepositoryMock
-                .Setup(m => m.StockSymbolAlreadyExists(It.IsAny<string>()))
+                .Setup(m => m.StockSymbolAlreadyExists(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(true);
 
             // Act
@@ -103,7 +103,7 @@ namespace InvestmentManager.UnitTests.Services
             double stockPriceMock = _fixture.Create<double>();
 
             _stockPositionRepositoryMock
-                .Setup(m => m.StockSymbolAlreadyExists(It.IsAny<string>()))
+                .Setup(m => m.StockSymbolAlreadyExists(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(false);
 
             _finnhubServiceMock
