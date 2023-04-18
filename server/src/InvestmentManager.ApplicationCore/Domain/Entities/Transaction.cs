@@ -15,6 +15,11 @@ namespace InvestmentManager.ApplicationCore.Domain.Entities
         public Guid TransactionId { get; set; }
 
         /// <summary>
+        /// Unique user id
+        /// </summary>
+        public string UserId { get; set; }
+
+        /// <summary>
         /// Unique Id of the position from the transaction
         /// </summary>
         public Guid PositionId { get; set; }
@@ -34,11 +39,6 @@ namespace InvestmentManager.ApplicationCore.Domain.Entities
         /// The price of the transaction
         /// </summary>
         public double Price { get; set; }
-
-        /// <summary>
-        /// The cost of the transaction (Quantity * Price)
-        /// </summary>
-        public double Cost { get; set; }
 
         /// <summary>
         /// The date and time of the transaction
