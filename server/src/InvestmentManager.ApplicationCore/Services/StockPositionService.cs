@@ -70,10 +70,10 @@ namespace InvestmentManager.ApplicationCore.Services
             return await _stockPositionRepository.DeleteStockPosition(positionId);
         }
 
-        async public Task<List<StockPositionResponse>> GetAllStockPositionsByUserId(string userId)
+        async public Task<List<StockPositionResponse>> GetAllStockPositionsByUserIdAndTradingCountry(string userId, string tradingCountry)
         {
             List<StockPositionResponse> stockPositionsResponse = new();
-            List<StockPosition> stockPositions = await _stockPositionRepository.GetAllStockPositionsByUserId(userId);
+            List<StockPosition> stockPositions = await _stockPositionRepository.GetAllStockPositionsByUserIdAndTradingCountry(userId, tradingCountry);
 
             if (!stockPositions.Any())
             {

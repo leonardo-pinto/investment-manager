@@ -26,8 +26,9 @@ namespace InvestmentManager.ApplicationCore.Interfaces
         /// Gets all stock position for the given user id
         /// </summary>
         /// <param name="userId">User id</param>
+        /// <param name="tradingCountry">Trading country of stock positions</param>
         /// <returns>List of stock positions</returns>
-        Task<List<StockPositionResponse>> GetAllStockPositionsByUserId(string userId);
+        Task<List<StockPositionResponse>> GetAllStockPositionsByUserIdAndTradingCountry(string userId, string tradingCountry);
 
         /// <summary>
         /// Get a single stock position of a given user
