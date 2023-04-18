@@ -53,6 +53,8 @@ builder.Services
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+builder.Services.AddTransient<IBrApiRepository, BrApiRepository>();
+builder.Services.AddTransient<IBrApiService, BrApiService>();  
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<IAuthService, AuthService>();
