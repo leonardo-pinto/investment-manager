@@ -21,12 +21,14 @@ namespace InvestmentManager.UnitTests.Controllers
             _fixture = new Fixture();
         }
 
-        #region GetAllTransactions
+        #region GetAllTransactionsByUserId
 
         [Fact]
-        async public Task GetAllTransactions_ToBeOkWithTransactions()
+        async public Task GetAllTransactionsByUserId_ToBeOkWithTransactions()
         {
             // Arrange
+            var userId = _fixture.Create<string>();
+
             List<TransactionResponse> transactionResponseMock = new ()
             {
                 _fixture.Build<TransactionResponse>().Create(),
@@ -36,16 +38,16 @@ namespace InvestmentManager.UnitTests.Controllers
             };
 
             _transactionServiceMock
-                .Setup(m => m.GetAllTransactions())
+                .Setup(m => m.GetAllTransactionsByUserId(userId))
                 .ReturnsAsync(transactionResponseMock);
 
             // Act
-            IActionResult transactionResponse = await _sut.GetAllTransactions();
+            IActionResult transactionResponse = await _sut.GetAllTransactionsByUserId(userId);
 
             // Assert
             transactionResponse.Should().BeOfType<OkObjectResult>()
                 .Which.Value.Should().BeEquivalentTo(transactionResponseMock);
-            _transactionServiceMock.Verify(m => m.GetAllTransactions(), Times.Once);
+            _transactionServiceMock.Verify(m => m.GetAllTransactionsByUserId(userId), Times.Once);
         }
         #endregion
     }
