@@ -119,16 +119,16 @@ namespace InvestmentManager.UnitTests.Controllers
             };
 
             _stockPositionServiceMock
-                .Setup(m => m.GetAllStockPositionsByUserId(It.IsAny<string>()))
+                .Setup(m => m.GetAllStockPositionsByUserIdAndTradingCountry(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(stockPositionResponse);
 
             // Act
-            IActionResult response = await _sut.GetAllStockPositionsByUserId(userId);
+            IActionResult response = await _sut.GetAllStockPositionsByUserIdAndTradingCountry(userId, "BR");
 
             // Assert
             response.Should().BeOfType<OkObjectResult>();
             response.As<OkObjectResult>().Value.Should().Be(stockPositionResponse);
-            _stockPositionServiceMock.Verify(m => m.GetAllStockPositionsByUserId(userId), Times.Once);
+            _stockPositionServiceMock.Verify(m => m.GetAllStockPositionsByUserIdAndTradingCountry(userId, "BR"), Times.Once);
         }
 
         #endregion

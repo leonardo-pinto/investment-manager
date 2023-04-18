@@ -182,15 +182,16 @@ namespace InvestmentManager.UnitTests.Services
             // Arrange
             string userId = _fixture.Create<string>();
             _stockPositionRepositoryMock
-                .Setup(m => m.GetAllStockPositionsByUserId(It.IsAny<string>()))
+                .Setup(m => m.GetAllStockPositionsByUserIdAndTradingCountry(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new List<StockPosition>());
 
             // Act
-            List<StockPositionResponse> stockPositionResponse = await _sut.GetAllStockPositionsByUserId(userId);
+            List<StockPositionResponse> stockPositionResponse = await _sut.GetAllStockPositionsByUserIdAndTradingCountry(userId, "US");
 
             // Assert
             stockPositionResponse.Should().BeEmpty();
-            _stockPositionRepositoryMock.Verify(m => m.GetAllStockPositionsByUserId(userId), Times.Once);
+            _stockPositionRepositoryMock.Verify(m => m.GetAllStockPositionsByUserIdAndTradingCountry(userId, "US"), Times.Once);
+
         }
 
         [Fact]
@@ -205,11 +206,11 @@ namespace InvestmentManager.UnitTests.Services
             };
 
             _stockPositionRepositoryMock
-                .Setup(m => m.GetAllStockPositionsByUserId(It.IsAny<string>()))
+                .Setup(m => m.GetAllStockPositionsByUserIdAndTradingCountry(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(stockPositions);
 
             // Act
-            List<StockPositionResponse> stockPositionResponse = await _sut.GetAllStockPositionsByUserId(userId);
+            List<StockPositionResponse> stockPositionResponse = await _sut.GetAllStockPositionsByUserIdAndTradingCountry(userId, "BR");
 
             // Assert
             stockPositionResponse.Should().HaveCount(stockPositions.Count);
