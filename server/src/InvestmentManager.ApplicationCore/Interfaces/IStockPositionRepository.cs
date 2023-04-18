@@ -20,10 +20,11 @@ namespace InvestmentManager.ApplicationCore.Interfaces
         Task UpdateStockPosition(StockPosition stockPosition);
 
         /// <summary>
-        /// Returns all stock position in the database
+        /// Get all stock position of a given user id in the data base
         /// </summary>
+        /// <param name="userId">User id</param>
         /// <returns>Returns a list containing all stock positions</returns>
-        Task<List<StockPosition>> GetAllStockPositions();
+        Task<List<StockPosition>> GetAllStockPositionsByUserId(string userId);
 
         /// <summary>
         /// Get a stock position based on its id
@@ -38,5 +39,12 @@ namespace InvestmentManager.ApplicationCore.Interfaces
         /// <param name="symbol">Stock symbol</param>
         /// <returns>Boolean value</returns>
         Task<bool> StockSymbolAlreadyExists(string symbol);
+
+        /// <summary>
+        /// Delete a stock position based on a given position id
+        /// </summary>
+        /// <param name="positionId">Position id</param>
+        /// <returns>Boolean value representing if the method was succeeded</returns>
+        Task<bool> DeleteStockPosition(Guid positionId);
     }
 }

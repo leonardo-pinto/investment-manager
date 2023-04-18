@@ -20,9 +20,10 @@ namespace InvestmentManager.Infrastructure.Repositories
             await _db.SaveChangesAsync();
         }
 
-        public async Task<List<StockPosition>> GetAllStockPositions()
+
+        public async Task<List<StockPosition>> GetAllStockPositionsByUserId(string userId)
         {
-            return await _db.StockPositions.ToListAsync();
+            return await _db.StockPositions.Where(e => e.UserId == userId).ToListAsync();
         }
 
         public async Task<StockPosition?> GetSingleStockPosition(Guid positionId)
@@ -34,7 +35,7 @@ namespace InvestmentManager.Infrastructure.Repositories
         {
             StockPosition? stockPosition = await _db.StockPositions.FirstOrDefaultAsync(e => e.Symbol == symbol);
 
-            return stockPosition == null ? false : true;
+            return stockPosition != null;
         }
 
         public async Task UpdateStockPosition(StockPosition stockPosition)
@@ -46,11 +47,15 @@ namespace InvestmentManager.Infrastructure.Repositories
             {
                 matchingStockPositon.Quantity = stockPosition.Quantity;
                 matchingStockPositon.AveragePrice = stockPosition.AveragePrice;
-                matchingStockPositon.Cost = stockPosition.Cost;
-                matchingStockPositon.CurrentPrice = stockPosition.CurrentPrice;
 
                 await _db.SaveChangesAsync();
             }
+        }
+        public async Task<bool> DeleteStockPosition(Guid positionId)
+        {
+            _db.StockPositions.RemoveRange(_db.StockPositions.Where(e => e.PositionId == positionId));
+            int rowsDeleted = await _db.SaveChangesAsync();
+            return rowsDeleted > 0;
         }
     }
 }
