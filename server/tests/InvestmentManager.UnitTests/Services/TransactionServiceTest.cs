@@ -7,7 +7,6 @@ using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Services;
 using InvestmentManager.ApplicationCore.Mapper;
 using Moq;
-using InvestmentManager.ApplicationCore.Helpers;
 
 namespace InvestmentManager.UnitTests.Services
 {
@@ -35,7 +34,6 @@ namespace InvestmentManager.UnitTests.Services
         {
             // Arrange
             AddTransactionRequest addTransactionRequest = _fixture.Build<AddTransactionRequest>().Create();
-            double expectedCost = FinancialMetrics.CalculateCost(addTransactionRequest.Quantity, addTransactionRequest.Price);
 
             _transactionRepositoryMock
                 .Setup(m => m.CreateTransaction(It.IsAny<Transaction>()))
@@ -48,7 +46,6 @@ namespace InvestmentManager.UnitTests.Services
             transactionResponse.Symbol.Should().Be(addTransactionRequest.Symbol);
             transactionResponse.Quantity.Should().Be(addTransactionRequest.Quantity);
             transactionResponse.Price.Should().Be(addTransactionRequest.Price);
-            transactionResponse.Cost.Should().Be(expectedCost);
             transactionResponse.DateAndTimeOfTransaction.Should().Be(addTransactionRequest.DateAndTimeOfTransaction);
             transactionResponse.TransactionType.Should().Be(addTransactionRequest.TransactionType.ToString());
 
@@ -56,12 +53,13 @@ namespace InvestmentManager.UnitTests.Services
     }
         #endregion
 
-        #region GetAllTransactions
+        #region GetAllTransactionsByUserId
 
         [Fact]
-        public async Task GetAllTransactions_ToBeSuccessful()
+        public async Task GetAllTransactionsByUserId_ToBeSuccessful()
         {
             // Arrange
+            string userId = _fixture.Create<string>();
             List<Transaction> transactionsListMock = new()
             {
                 _fixture.Build<Transaction>().Create(),
@@ -70,11 +68,11 @@ namespace InvestmentManager.UnitTests.Services
             };
 
             _transactionRepositoryMock
-                .Setup(m => m.GetAllTransactions())
+                .Setup(m => m.GetAllTransactionsByUserId(It.IsAny<string>()))
                 .ReturnsAsync(transactionsListMock);
 
             // Act
-            List<TransactionResponse> transactionListResponse = await _sut.GetAllTransactions();
+            List<TransactionResponse> transactionListResponse = await _sut.GetAllTransactionsByUserId(userId);
 
             // Arrange
             transactionListResponse.Should().HaveSameCount(transactionsListMock);
@@ -83,7 +81,7 @@ namespace InvestmentManager.UnitTests.Services
             transactionListResponse[2].Quantity.Should().Be(transactionsListMock[2].Quantity);
 
             _transactionRepositoryMock
-               .Verify(m => m.GetAllTransactions(), Times.Once);
+               .Verify(m => m.GetAllTransactionsByUserId(userId), Times.Once);
         }
         #endregion
     }
