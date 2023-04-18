@@ -31,13 +31,6 @@ namespace InvestmentManager.Infrastructure.Repositories
             return await _db.StockPositions.FirstOrDefaultAsync(e => e.PositionId == positionId);
         }
 
-        public async Task<bool> StockSymbolAlreadyExists(string symbol)
-        {
-            StockPosition? stockPosition = await _db.StockPositions.FirstOrDefaultAsync(e => e.Symbol == symbol);
-
-            return stockPosition != null;
-        }
-
         public async Task UpdateStockPosition(StockPosition stockPosition)
         {
             StockPosition? matchingStockPositon =
@@ -56,6 +49,14 @@ namespace InvestmentManager.Infrastructure.Repositories
             _db.StockPositions.RemoveRange(_db.StockPositions.Where(e => e.PositionId == positionId));
             int rowsDeleted = await _db.SaveChangesAsync();
             return rowsDeleted > 0;
+        }
+
+        public async Task<bool> StockSymbolAlreadyExists(string symbol, string userId)
+        {
+            StockPosition? stockPosition = await _db.StockPositions
+                .FirstOrDefaultAsync(e => e.Symbol == symbol && e.UserId == userId);
+
+            return stockPosition != null;
         }
     }
 }

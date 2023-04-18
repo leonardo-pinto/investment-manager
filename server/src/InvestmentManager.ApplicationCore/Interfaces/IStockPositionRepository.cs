@@ -37,8 +37,9 @@ namespace InvestmentManager.ApplicationCore.Interfaces
         /// Check if a stock position with the given symbol already exists
         /// </summary>
         /// <param name="symbol">Stock symbol</param>
+        /// <param name="userId">User id</param>
         /// <returns>Boolean value</returns>
-        Task<bool> StockSymbolAlreadyExists(string symbol);
+        Task<bool> StockSymbolAlreadyExists(string symbol, string userId);
 
         /// <summary>
         /// Delete a stock position based on a given position id
