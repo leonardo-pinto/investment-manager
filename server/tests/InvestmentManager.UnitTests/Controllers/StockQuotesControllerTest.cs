@@ -12,13 +12,43 @@ namespace InvestmentManager.UnitTests.Controllers
     public class StockQuotesControllerTest
     {
         private readonly Mock<IFinnhubService> _finnhubServiceMock;
+        private readonly Mock<IBrApiService> _brApiServiceMock;
         private readonly StockQuotesController _sut;
 
         public StockQuotesControllerTest()
         {
             _finnhubServiceMock = new Mock<IFinnhubService>(MockBehavior.Strict);
-            _sut = new StockQuotesController(_finnhubServiceMock.Object);
+            _brApiServiceMock = new Mock<IBrApiService>(MockBehavior.Strict);
+            _sut = new StockQuotesController(_finnhubServiceMock.Object, _brApiServiceMock.Object);
         }
+
+        #region GetMultipleBrStockQuotes
+
+        [Fact]
+        public async Task GetMultipleBrStockQuotes_ValidData_ToBeOk()
+        {
+            // Arrange
+            string symbols = "PETR4,MGLU3,VALE3";
+
+            var stockQuotesMock = new Dictionary<string, double>()
+            {
+                { "PETR4", 10.50 },
+                { "MGLU3", 2.99 },
+                { "VALE3", 80.20 }
+            };
+
+            _brApiServiceMock
+                .Setup(m => m.GetStocksPriceQuote(It.IsAny<string>()))
+                .ReturnsAsync(stockQuotesMock);
+
+            // Act
+            var result = await _sut.GetMultipleBrStockQuotes(symbols);
+
+            // Assert
+            result.Should().BeOfType<OkObjectResult>()
+               .Which.Value.Should().BeOfType<StockQuotesResponse>();
+        }
+        #endregion
 
         #region GetSingleUsStockQuote
 
