@@ -14,6 +14,12 @@ namespace InvestmentManager.ApplicationCore.Domain.Entities
         [Key]
         public Guid PositionId { get; set; }
 
+
+        /// <summary>
+        /// Unique user id
+        /// </summary>
+        public string UserId { get; set; }
+
         /// <summary>
         /// Unique symbol of the stock position
         /// </summary>
