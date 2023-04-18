@@ -36,6 +36,11 @@ namespace InvestmentManager.ApplicationCore.Domain.Entities
         public double AveragePrice { get; set; }
 
         /// <summary>
+        /// Country in which the stock is traded
+        /// </summary>
+        public string TradingCountry { get; set; }
+
+        /// <summary>
         /// Calculates an updated average price
         /// </summary>
         /// <param name="increasedQuantity">Number of new stocks</param>
