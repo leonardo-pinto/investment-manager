@@ -23,10 +23,11 @@ namespace InvestmentManager.ApplicationCore.Interfaces
         Task<StockPositionResponse?> UpdateStockPosition(UpdateStockPositionRequest updateStockPositionRequest);
 
         /// <summary>
-        /// Get all stock positions of a given user
+        /// Gets all stock position for the given user id
         /// </summary>
-        /// <returns>Returns a list StockPositionResponse type</returns>
-        Task<List<StockPositionResponse>> GetAllStockPositions();
+        /// <param name="userId">User id</param>
+        /// <returns>List of stock positions</returns>
+        Task<List<StockPositionResponse>> GetAllStockPositionsByUserId(string userId);
 
         /// <summary>
         /// Get a single stock position of a given user
@@ -34,5 +35,12 @@ namespace InvestmentManager.ApplicationCore.Interfaces
         /// <param name="positionId">Position id of the stock</param>
         /// <returns>Returns a StockPositionResponse type</returns>
         Task<StockPositionResponse?> GetSingleStockPosition(Guid positionId);
+
+        /// <summary>
+        /// Delete stock position of a given position id
+        /// </summary>
+        /// <param name="positionId">Position id</param>
+        /// <returns>Boolean representing if the method was succeeded</returns>
+        Task<bool> DeleteStockPosition(Guid positionId);
     }
 }
