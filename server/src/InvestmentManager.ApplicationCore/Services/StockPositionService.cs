@@ -23,7 +23,7 @@ namespace InvestmentManager.ApplicationCore.Services
             _mapper = mapper;
         }
 
-        async public Task<StockPositionResponse?> CreateStockPosition(AddStockPositionRequest addStockPositionRequest)
+        public async Task<StockPositionResponse?> CreateStockPosition(AddStockPositionRequest addStockPositionRequest)
         {
             bool symbolAlreadyExists = await _stockPositionRepository.StockSymbolAlreadyExists(addStockPositionRequest.Symbol);
 
@@ -47,10 +47,22 @@ namespace InvestmentManager.ApplicationCore.Services
             return stockPositionResponse;
         }
 
-        async public Task<List<StockPositionResponse>> GetAllStockPositions()
+        public async Task<bool> DeleteStockPosition(Guid positionId)
+        {
+            StockPosition? stockPosition = await _stockPositionRepository.GetSingleStockPosition(positionId);
+
+            if (stockPosition?.Quantity != 0)
+            {
+                throw new InvalidStockQuantityException("It is not possible to delete a stock position which quantity is not zero.");
+            }
+
+            return await _stockPositionRepository.DeleteStockPosition(positionId);
+        }
+
+        async public Task<List<StockPositionResponse>> GetAllStockPositionsByUserId(string userId)
         {
             List<StockPositionResponse> stockPositionsResponse = new();
-            List<StockPosition> stockPositions = await _stockPositionRepository.GetAllStockPositions();
+            List<StockPosition> stockPositions = await _stockPositionRepository.GetAllStockPositionsByUserId(userId);
 
             if (!stockPositions.Any())
             {
