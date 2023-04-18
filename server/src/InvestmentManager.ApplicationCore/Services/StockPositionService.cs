@@ -10,15 +10,18 @@ namespace InvestmentManager.ApplicationCore.Services
     public class StockPositionService : IStockPositionService
     {
         private readonly IFinnhubService _finnhubService;
+        private readonly IBrApiService _brApiService;
         private readonly IStockPositionRepository _stockPositionRepository;
         private readonly IMapper _mapper;
 
         public StockPositionService(
             IFinnhubService finnhubService,
+            IBrApiService brApiService,
             IStockPositionRepository stockPositionRepository,
             IMapper mapper)
         {
             _finnhubService = finnhubService;
+            _brApiService = brApiService;
             _stockPositionRepository = stockPositionRepository;
             _mapper = mapper;
         }
@@ -32,7 +35,15 @@ namespace InvestmentManager.ApplicationCore.Services
                 throw new RepeatedStockSymbolException("Stock symbol already registered. Please update the position instead of creating a new one.");
             }
 
-            bool isStockSymbolValid = await _finnhubService.IsStockSymbolValid(addStockPositionRequest.Symbol);
+            bool isStockSymbolValid;
+            if (addStockPositionRequest.TradingCountry == TradingCountry.US)
+            {
+                isStockSymbolValid = await _finnhubService.IsStockSymbolValid(addStockPositionRequest.Symbol);
+            } 
+            else
+            {
+                isStockSymbolValid = await _brApiService.IsStockSymbolValid(addStockPositionRequest.Symbol);
+            }
 
             if (!isStockSymbolValid)
             {
