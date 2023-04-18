@@ -1,4 +1,5 @@
 ﻿using InvestmentManager.ApplicationCore.Domain.Entities;
+using InvestmentManager.ApplicationCore.Enums;
 
 namespace InvestmentManager.ApplicationCore.Interfaces
 {
@@ -23,8 +24,9 @@ namespace InvestmentManager.ApplicationCore.Interfaces
         /// Get all stock position of a given user id in the data base
         /// </summary>
         /// <param name="userId">User id</param>
+        /// <param name="tradingCountry">Trading country of stock positions</param>
         /// <returns>Returns a list containing all stock positions</returns>
-        Task<List<StockPosition>> GetAllStockPositionsByUserId(string userId);
+        Task<List<StockPosition>> GetAllStockPositionsByUserIdAndTradingCountry(string userId, string tradingCountry);
 
         /// <summary>
         /// Get a stock position based on its id

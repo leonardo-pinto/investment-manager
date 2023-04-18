@@ -1,4 +1,5 @@
 ﻿using InvestmentManager.ApplicationCore.Domain.Entities;
+using InvestmentManager.ApplicationCore.Enums;
 using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.Infrastructure.AppDbContext;
 using Microsoft.EntityFrameworkCore;
@@ -18,12 +19,6 @@ namespace InvestmentManager.Infrastructure.Repositories
         {
             _db.StockPositions.Add(stockPosition);
             await _db.SaveChangesAsync();
-        }
-
-
-        public async Task<List<StockPosition>> GetAllStockPositionsByUserId(string userId)
-        {
-            return await _db.StockPositions.Where(e => e.UserId == userId).ToListAsync();
         }
 
         public async Task<StockPosition?> GetSingleStockPosition(Guid positionId)
@@ -57,6 +52,12 @@ namespace InvestmentManager.Infrastructure.Repositories
                 .FirstOrDefaultAsync(e => e.Symbol == symbol && e.UserId == userId);
 
             return stockPosition != null;
+        }
+
+        public async Task<List<StockPosition>> GetAllStockPositionsByUserIdAndTradingCountry(string userId, string tradingCountry)
+        {
+            return await _db.StockPositions
+                .Where(e => e.UserId == userId && e.TradingCountry == tradingCountry).ToListAsync();
         }
     }
 }
