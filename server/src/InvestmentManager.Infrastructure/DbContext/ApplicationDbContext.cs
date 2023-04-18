@@ -27,6 +27,13 @@ namespace InvestmentManager.Infrastructure.AppDbContext
                 .WithMany()
                 .HasForeignKey(e => e.PositionId);
             });
+
+            builder.Entity<StockPosition>(entity =>
+            {
+                entity.HasOne<IdentityUser>()
+                .WithMany()
+                .HasForeignKey(e => e.UserId);
+            });
         }
     }
 }
