@@ -13,7 +13,10 @@ namespace InvestmentManager.ApplicationCore.Mapper
                 .ForMember(
                     dest => dest.PositionId,
                     opt => opt.MapFrom(src => Guid.NewGuid())
-                );
+                )
+                .ForMember(
+                    dest => dest.TradingCountry,
+                    opt => opt.MapFrom(src => src.TradingCountry.ToString()));
 
             CreateMap<StockPosition, StockPositionResponse>();
     
