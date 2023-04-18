@@ -4,6 +4,7 @@ using InvestmentManager.ApplicationCore.Exceptions;
 using InvestmentManager.ApplicationCore.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace InvestmentManager.Web.Controllers
 {
@@ -23,19 +24,17 @@ namespace InvestmentManager.Web.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        async public Task<IActionResult> GetAllStockPositions()
+        [HttpGet("user-id/{userId}")]
+        async public Task<IActionResult> GetAllStockPositionsByUserId(string userId)
         {
-            List<StockPositionResponse> stockPositionResponse = await _stockPositionService.GetAllStockPositions();
+            List<StockPositionResponse> stockPositionResponse = await _stockPositionService.GetAllStockPositionsByUserId(userId);
 
             return Ok(stockPositionResponse);
         }
 
         [HttpGet("{id}")]
-        async public Task<IActionResult> GetSingleStockPosition(Guid id)
+        public async Task<IActionResult> GetSingleStockPosition(Guid id)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
             StockPositionResponse? stockPositionResponse = await _stockPositionService.GetSingleStockPosition(id);
 
             if (stockPositionResponse == null)
@@ -49,7 +48,11 @@ namespace InvestmentManager.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateStockPosition(AddStockPositionRequest addStockPositionRequest)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
                 StockPositionResponse? stockPositionResponse = await _stockPositionService.CreateStockPosition(addStockPositionRequest);
@@ -82,7 +85,6 @@ namespace InvestmentManager.Web.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
             try
             {
-
                 StockPositionResponse? stockPositionResponse = await _stockPositionService.UpdateStockPosition(updateStockPositionRequest);
 
                 if (stockPositionResponse == null)
@@ -104,5 +106,28 @@ namespace InvestmentManager.Web.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteStockPosition(Guid id)
+        {
+            try
+            {
+                bool deletionSucceeded = await _stockPositionService.DeleteStockPosition(id);
+
+                if (deletionSucceeded)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return BadRequest("There was an error while deleting the stock position.");
+                }
+            }
+            catch (InvalidStockQuantityException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }
