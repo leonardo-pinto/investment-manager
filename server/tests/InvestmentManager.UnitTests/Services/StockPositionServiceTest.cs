@@ -17,6 +17,7 @@ namespace InvestmentManager.UnitTests.Services
     {
         private readonly StockPositionService _sut;
         private readonly Mock<IFinnhubService> _finnhubServiceMock;
+        private readonly Mock<IBrApiService> _brApiServiceMock;
         private readonly Mock<IStockPositionRepository> _stockPositionRepositoryMock;
         private readonly IFixture _fixture;
 
@@ -25,9 +26,11 @@ namespace InvestmentManager.UnitTests.Services
             MapperConfiguration? autoMapperConfig = new(cfg => cfg.AddProfile(new MappingProfile()));
             IMapper mapper = new Mapper(autoMapperConfig);
             _finnhubServiceMock = new Mock<IFinnhubService>(MockBehavior.Strict);
+            _brApiServiceMock = new Mock<IBrApiService>(MockBehavior.Strict);
             _stockPositionRepositoryMock = new Mock<IStockPositionRepository>(MockBehavior.Strict);
             _sut = new StockPositionService(
                 _finnhubServiceMock.Object,
+                _brApiServiceMock.Object,
                 _stockPositionRepositoryMock.Object,
                 mapper
              );
@@ -41,7 +44,10 @@ namespace InvestmentManager.UnitTests.Services
         {
             // Arrange
             AddStockPositionRequest addStockPositionRequest =
-                _fixture.Build<AddStockPositionRequest>().Create();
+                _fixture
+                .Build<AddStockPositionRequest>()
+                .With(e => e.TradingCountry, TradingCountry.US)
+                .Create();
 
             _stockPositionRepositoryMock
                 .Setup(m => m.StockSymbolAlreadyExists(It.IsAny<string>()))
@@ -63,7 +69,10 @@ namespace InvestmentManager.UnitTests.Services
         {
             // Arrange
             AddStockPositionRequest addStockPositionRequest =
-                _fixture.Build<AddStockPositionRequest>().Create();
+                _fixture
+                .Build<AddStockPositionRequest>()
+                .With(e => e.TradingCountry, TradingCountry.US)
+                .Create();
 
             _stockPositionRepositoryMock
                 .Setup(m => m.StockSymbolAlreadyExists(It.IsAny<string>()))
@@ -86,7 +95,10 @@ namespace InvestmentManager.UnitTests.Services
         {
             // Arrage
             AddStockPositionRequest addStockPositionRequest =
-                _fixture.Build<AddStockPositionRequest>().Create();
+                _fixture
+                .Build<AddStockPositionRequest>()
+                .With(e => e.TradingCountry, TradingCountry.US)
+                .Create();
 
             double stockPriceMock = _fixture.Create<double>();
 
