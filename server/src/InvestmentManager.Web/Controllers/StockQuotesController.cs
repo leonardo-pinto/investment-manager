@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InvestmentManager.Web.Controllers
 {
-    [Route("api/stock-quote")]
+    [Route("stock-quote")]
     [Authorize]
     [ApiController]
     public class StockQuotesController : ControllerBase

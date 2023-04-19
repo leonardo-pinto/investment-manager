@@ -73,6 +73,8 @@ app.UseHsts();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UsePathBase(new PathString("/api"));
+app.UseRouting();
 app.MapControllers();
 
 app.Run();

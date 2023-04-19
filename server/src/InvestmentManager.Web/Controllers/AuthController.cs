@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InvestmentManager.Web.Controllers
 {
-    [Route("api/auth")]
+    [Route("auth")]
     [AllowAnonymous]
     [ApiController]
     public class AuthController : ControllerBase

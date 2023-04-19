@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InvestmentManager.Web.Controllers
 {
-    [Route("api/transactions")]
+    [Route("transactions")]
     [Authorize]
     [ApiController]
     public class TransactionController : ControllerBase

@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace InvestmentManager.Web.Controllers
 {
-    [Route("api/stock-position")]
+    [Route("stock-position")]
     [Authorize]
     [ApiController]
     public class StockPositionController : ControllerBase
