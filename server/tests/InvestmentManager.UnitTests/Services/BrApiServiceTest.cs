@@ -2,7 +2,6 @@
 using InvestmentManager.ApplicationCore.DTO;
 using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Services;
-using InvestmentManager.Infrastructure.Repositories;
 using Moq;
 
 namespace InvestmentManager.UnitTests.Services
@@ -19,7 +18,6 @@ namespace InvestmentManager.UnitTests.Services
         }
 
         #region IsStockSymbolValid
-
         [Fact]
         public async Task IsStockSymbolValid_ValidSymbol_ToBeTrue()
         {
@@ -69,7 +67,6 @@ namespace InvestmentManager.UnitTests.Services
         #endregion
 
         #region GetStocksPriceQuote
-
         [Fact]
 
         public async Task GetStocksPriceQuote_ValidData_ToBeSuccessful()

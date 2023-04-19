@@ -1,4 +1,5 @@
 ﻿using InvestmentManager.ApplicationCore.DTO;
+using InvestmentManager.ApplicationCore.Exceptions;
 using InvestmentManager.ApplicationCore.Interfaces;
 
 namespace InvestmentManager.ApplicationCore.Services
@@ -16,27 +17,39 @@ namespace InvestmentManager.ApplicationCore.Services
         {
             BrApiResponse response = await _brApiRepository.GetStocksPriceQuote(concatenatedStockSymbols);
             List<StockQuoteResult> stockQuoteResult = new ();
-
-            if (response.Results != null && response.Results.Length > 0)
+            try
             {
-                foreach (Result result in response.Results)
+                if (response.Results != null && response.Results.Length > 0)
                 {
-                    var element = new StockQuoteResult()
+                    foreach (Result result in response.Results)
                     {
-                        Symbol = result.Symbol,
-                        Price = result.RegularMarketPrice
-                    };
-                    stockQuoteResult.Add(element);
+                        var element = new StockQuoteResult()
+                        {
+                            Symbol = result.Symbol,
+                            Price = result.RegularMarketPrice
+                        };
+                        stockQuoteResult.Add(element);
+                    }
                 }
+                return stockQuoteResult;
             }
-
-            return stockQuoteResult;
+            catch (InvalidOperationException ex)
+            {
+                throw new BrApiException("Unable to retrieve stock price quote.", ex);
+            }
         }
 
         public async Task<bool> IsStockSymbolValid(string concatenatedStockSymbols)
         {
-            BrApiResponse response = await _brApiRepository.GetStocksPriceQuote(concatenatedStockSymbols);
-            return response.Error == null;
+            try
+            {
+                BrApiResponse response = await _brApiRepository.GetStocksPriceQuote(concatenatedStockSymbols);
+                return response.Error == null;
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new BrApiException("Unable to retrieve stock price quote.", ex);
+            }
         }
     }
 }
