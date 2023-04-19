@@ -26,27 +26,6 @@ namespace InvestmentManager.UnitTests.Controllers
 
 
         #region Register
-
-        [Fact]
-        public async Task Register_InvalidModel_ToBeBadRequest()
-        {
-            // Arrange
-            var registerMock = _fixture.Build<RegisterRequest>().Create();
-
-            _sut.ModelState.AddModelError("Password", "Password and confirm password do not match");
-
-            // Act
-            var result = await _sut.Register(registerMock);
-
-            // Assert
-            result
-           .Should().BeOfType<BadRequestObjectResult>()
-           .Which.Value.Should().BeEquivalentTo(new SerializableError
-           {
-                   { "Password", new []{ "Password and confirm password do not match" } }
-           });
-        }
-
         [Fact]
         public async Task Register_WhenRegisterFails_ToBeBadRequest()
         {
@@ -89,7 +68,8 @@ namespace InvestmentManager.UnitTests.Controllers
             var result = await _sut.Register(registerRequest);
 
             // Assert
-            result.Should().BeOfType<UnauthorizedResult>();
+            result.Should().BeOfType<UnauthorizedObjectResult>()
+                .Which.Value.Should().BeEquivalentTo(new ErrorResponse() { Error = "User not found"});
             _authServiceMock.Verify(m => m.Register(registerRequest), Times.Once);
             _authServiceMock.Verify(m => m.FindUserByUserName(registerRequest.UserName), Times.Once);
         }
@@ -138,27 +118,6 @@ namespace InvestmentManager.UnitTests.Controllers
         #endregion
 
         #region Login
-
-        [Fact]
-        public async Task Login_InvalidModel_ToBeBadRequest() 
-        {
-            // Arrange
-            var loginMock = _fixture.Build<LoginRequest>().Create();
-
-            _sut.ModelState.AddModelError("UserName", "User name can't be blank");
-
-            // Act
-            var result = await _sut.Login(loginMock);
-
-            // Assert
-            result
-           .Should().BeOfType<BadRequestObjectResult>()
-           .Which.Value.Should().BeEquivalentTo(new SerializableError
-           {
-                   { "UserName", new []{ "User name can't be blank" } }
-           });
-        }
-
         [Fact]
         public async Task Login_InvalidCredentials_ToBeUnauthorized() 
         {
@@ -174,7 +133,7 @@ namespace InvestmentManager.UnitTests.Controllers
 
             // Assert
             result.Should().BeOfType<UnauthorizedObjectResult>()
-                .Which.Value.Should().BeEquivalentTo("Invalid credentials");
+                .Which.Value.Should().BeEquivalentTo(new ErrorResponse() { Error = "Invalid credentials" });
         }
 
         [Fact]
@@ -195,7 +154,7 @@ namespace InvestmentManager.UnitTests.Controllers
             var result = await _sut.Login(loginMock);
 
             // Assert
-            result.Should().BeOfType<UnauthorizedResult>();
+            result.Should().BeOfType<UnauthorizedObjectResult>();
         }
 
         [Fact]

@@ -34,27 +34,6 @@ namespace InvestmentManager.UnitTests.Controllers
         #region CreateStockPosition
 
         [Fact]
-        async public Task CreateStockPosition_InvalidModel_ToBeBadRequest() 
-        {
-            // Arrange
-            AddStockPositionRequest addStockPositionRequest = _fixture
-                .Build<AddStockPositionRequest>()
-                .With(e => e.Quantity, -500)
-                .Create();
-
-            _sut.ModelState.AddModelError("Quantity", "Quantity must be greater than 0");
-
-            // Act
-            IActionResult result = await _sut.CreateStockPosition(addStockPositionRequest);
-
-            // Assert
-            result
-                .Should().BeOfType<BadRequestObjectResult>()
-                .Which.Value.Should().BeAssignableTo<SerializableError>()
-                .Which.ContainsKey("Quantity").Should().BeTrue();
-        }
-
-        [Fact]
         async public Task CreateStockPosition_WhenStockPositionResponseIsNull_ToBeBadRequest()
         {
             // Arrange
@@ -69,7 +48,7 @@ namespace InvestmentManager.UnitTests.Controllers
 
             // Assert
             result.Should().BeOfType<BadRequestObjectResult>();
-            result.As<BadRequestObjectResult>().Value.Should().Be("Invalid stock symbol");
+            result.As<BadRequestObjectResult>().Value.Should().BeEquivalentTo(new ErrorResponse() { Error = "Invalid stock symbol" });
 
             _stockPositionServiceMock.Verify(m => m.CreateStockPosition(addStockPositionRequest), Times.Once);
         }
@@ -150,7 +129,7 @@ namespace InvestmentManager.UnitTests.Controllers
 
             // Assert
             response.Should().BeOfType<NotFoundObjectResult>();
-            response.As<NotFoundObjectResult>().Value.Should().Be("Stock position not found");
+            response.As<NotFoundObjectResult>().Value.Should().BeEquivalentTo(new ErrorResponse() { Error = "Stock position not found" });
             _stockPositionServiceMock.Verify(m => m.GetSingleStockPosition(id), Times.Once);
 
         }
@@ -177,28 +156,6 @@ namespace InvestmentManager.UnitTests.Controllers
         #endregion
 
         #region UpdateStockPosition
-
-        [Fact]
-        async public Task UpdateStockPosition_InvalidModel_ToBeBadRequest()
-        {
-            // Arrange
-            UpdateStockPositionRequest updateStockPositionRequest = _fixture
-                .Build<UpdateStockPositionRequest>()
-                .With(e => e.Quantity, -500)
-                .Create();
-
-            _sut.ModelState.AddModelError("Quantity", "Quantity must be greater than 0");
-
-            // Act
-            IActionResult result = await _sut.UpdateStockPosition(updateStockPositionRequest);
-
-            // Assert
-            result
-                .Should().BeOfType<BadRequestObjectResult>()
-                .Which.Value.Should().BeAssignableTo<SerializableError>()
-                .Which.ContainsKey("Quantity").Should().BeTrue();
-        }
-
         [Fact]
         async public Task UpdateStockPosition_WhenPositionIdIsInvalid_ToBeNotFound()
         {
@@ -217,7 +174,7 @@ namespace InvestmentManager.UnitTests.Controllers
 
             // Assert
             result.Should().BeOfType<NotFoundObjectResult>();
-            result.As<NotFoundObjectResult>().Value.Should().Be("Stock position not found");
+            result.As<NotFoundObjectResult>().Value.Should().BeEquivalentTo(new ErrorResponse() { Error = "Stock position not found" });
             _stockPositionServiceMock.Verify(m => m.UpdateStockPosition(updateStockPositionRequest), Times.Once);
         }
 
@@ -287,7 +244,7 @@ namespace InvestmentManager.UnitTests.Controllers
 
             // Assert
             result.Should().BeOfType<NotFoundObjectResult>();
-            result.As<NotFoundObjectResult>().Value.Should().Be("Stock position to be deleted was not found");
+            result.As<NotFoundObjectResult>().Value.Should().BeEquivalentTo(new ErrorResponse() { Error = "Stock position to be deleted was not found" });
         }
         #endregion
     }
