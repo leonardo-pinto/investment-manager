@@ -24,10 +24,11 @@ namespace InvestmentManager.Web.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("user-id/{userId}")]
-        async public Task<IActionResult> GetAllStockPositionsByUserId(string userId)
+        [HttpGet("user-id/{userId}/trading-country/{tradingCountry}")]
+        async public Task<IActionResult> GetAllStockPositionsByUserIdAndTradingCountry(
+            string userId, string tradingCountry)
         {
-            List<StockPositionResponse> stockPositionResponse = await _stockPositionService.GetAllStockPositionsByUserId(userId);
+            List<StockPositionResponse> stockPositionResponse = await _stockPositionService.GetAllStockPositionsByUserIdAndTradingCountry(userId, tradingCountry);
 
             return Ok(stockPositionResponse);
         }
