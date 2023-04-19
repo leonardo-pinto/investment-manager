@@ -4,6 +4,7 @@ namespace InvestmentManager.ApplicationCore.DTO
 {
     /// <summary>
     /// DTO for the response of BrApi stock quote endpoint
+    /// BR stocks
     /// </summary>
     public class BrApiResponse
     {

@@ -2,7 +2,13 @@
 {
     public class StockQuotesResponse
     {
-        public Dictionary<string, double> StockQuotes { get; set; }
+        public List<StockQuoteResult> StockQuotes { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
+    }
+
+    public class StockQuoteResult
+    {
+        public string Symbol { get; set; }
+        public double Price { get; set; }
     }
 }
