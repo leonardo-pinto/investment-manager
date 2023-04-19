@@ -1,4 +1,6 @@
-﻿namespace InvestmentManager.ApplicationCore.Interfaces
+﻿using InvestmentManager.ApplicationCore.DTO;
+
+namespace InvestmentManager.ApplicationCore.Interfaces
 {
     /// <summary>
     /// Represents service that implements the business logic to interact with BrApi
@@ -18,7 +20,7 @@
         /// Get the quote prices of stock symbols
         /// </summary>
         /// <param name="concatenatedStockSymbols">Stock symbols string concatenated and separated by comma (e.g.: "PETR4,VALE3,BBDC4")</param>
-        /// <returns>Dictionary containing stock symbols (key) and quote (value)</returns>
-        Task<Dictionary<string, double>> GetStocksPriceQuote(string concatenatedStockSymbols);
+        /// <returns>List of StockQuoteResult that contains stock symbol and latest price quote</returns>
+        Task<List<StockQuoteResult>> GetStocksPriceQuote(string concatenatedStockSymbols);
     }
 }

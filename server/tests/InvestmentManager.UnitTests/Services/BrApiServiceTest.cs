@@ -95,12 +95,13 @@ namespace InvestmentManager.UnitTests.Services
 
             // Assert
             result.Should().HaveCount(3);
-            result.Should().BeEquivalentTo(new Dictionary<string, double>()
-            {
-                { "PETR4", 10.50 },
-                { "MGLU3", 2.99 },
-                { "VALE3", 80.20 }
-            });
+            result.Should().BeOfType<List<StockQuoteResult>>();
+            result[0].Symbol.Should().Be("PETR4");
+            result[1].Symbol.Should().Be("MGLU3");
+            result[2].Symbol.Should().Be("VALE3");
+            result[0].Price.Should().Be(10.50);
+            result[1].Price.Should().Be(2.99);
+            result[2].Price.Should().Be(80.20);
         }
         #endregion
     }

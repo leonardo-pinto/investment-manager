@@ -12,20 +12,25 @@ namespace InvestmentManager.ApplicationCore.Services
             _brApiRepository = brApiRepository;
         }
 
-        public async Task<Dictionary<string, double>> GetStocksPriceQuote(string concatenatedStockSymbols)
+        public async Task<List<StockQuoteResult>> GetStocksPriceQuote(string concatenatedStockSymbols)
         {
             BrApiResponse response = await _brApiRepository.GetStocksPriceQuote(concatenatedStockSymbols);
-            var responseDict = new Dictionary<string, double>();
+            List<StockQuoteResult> stockQuoteResult = new ();
 
             if (response.Results != null && response.Results.Length > 0)
             {
                 foreach (Result result in response.Results)
                 {
-                    responseDict.Add(result.Symbol, result.RegularMarketPrice);
+                    var element = new StockQuoteResult()
+                    {
+                        Symbol = result.Symbol,
+                        Price = result.RegularMarketPrice
+                    };
+                    stockQuoteResult.Add(element);
                 }
             }
 
-            return responseDict;
+            return stockQuoteResult;
         }
 
         public async Task<bool> IsStockSymbolValid(string concatenatedStockSymbols)
