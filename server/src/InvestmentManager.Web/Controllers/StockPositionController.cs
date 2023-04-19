@@ -30,7 +30,7 @@ namespace InvestmentManager.Web.Controllers
         {
             List<StockPositionResponse> stockPositionResponse = await _stockPositionService.GetAllStockPositionsByUserIdAndTradingCountry(userId, tradingCountry);
 
-            return Ok(stockPositionResponse);
+            return Ok(new StockPositionResponseList() { StockPositions = stockPositionResponse });
         }
 
         [HttpGet("{id}")]

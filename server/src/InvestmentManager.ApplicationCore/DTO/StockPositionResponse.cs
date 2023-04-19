@@ -25,4 +25,10 @@
         /// </summary>
         public double AveragePrice { get; set; }
     }
+
+    public class StockPositionResponseList
+    {
+        public List<StockPositionResponse>? StockPositions { get; set; }
+    }
+
 }
