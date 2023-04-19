@@ -1,4 +1,5 @@
-﻿using InvestmentManager.ApplicationCore.Exceptions;
+﻿using InvestmentManager.ApplicationCore.DTO;
+using InvestmentManager.ApplicationCore.Exceptions;
 using InvestmentManager.ApplicationCore.Interfaces;
 
 namespace InvestmentManager.ApplicationCore.Services
@@ -12,32 +13,26 @@ namespace InvestmentManager.ApplicationCore.Services
             _finnhubRepository = finnhubRepository;
         }
 
-        async public Task<double> GetStockPriceQuote(string stockSymbol)
+        async public Task<List<StockQuoteResult>> GetMultipleStockPriceQuote(string[] stockSymbols)
         {
+            List<StockQuoteResult> stockQuoteResult = new();
             try
             {
-                double stockPriceQuote = await _finnhubRepository.GetStockPriceQuote(stockSymbol);
-
-                return stockPriceQuote;
+                foreach (string stockSymbol in stockSymbols)
+                {
+                    double stockPriceQuote = await _finnhubRepository.GetStockPriceQuote(stockSymbol);
+                    stockQuoteResult.Add(new StockQuoteResult()
+                    {
+                        Symbol = stockSymbol,
+                        Price = stockPriceQuote
+                    });
+                }
+                return stockQuoteResult;
             }
             catch (InvalidOperationException ex)
             {
-                FinnhubException finnhubException = new FinnhubException("Unable to retrieve stock price quote.", ex);
-                throw finnhubException;
+                throw new FinnhubException("Unable to retrieve stock price quote.", ex);
             }
-        }
-
-        async public Task<Dictionary<string, double>> GetMultipleStockPriceQuote(string[] stockSymbols)
-        {
-            Dictionary<string, double> stockSymbolQuoteDict = new();
-
-            foreach (string stockSymbol in stockSymbols)
-            {
-                double stockPriceQuote = await GetStockPriceQuote(stockSymbol);
-                stockSymbolQuoteDict.Add(stockSymbol, stockPriceQuote);
-            }
-
-            return stockSymbolQuoteDict;
         }
 
         public async Task<bool> IsStockSymbolValid(string stockSymbol)
