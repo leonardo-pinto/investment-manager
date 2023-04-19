@@ -1,8 +1,6 @@
 ﻿using InvestmentManager.ApplicationCore.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System.Text.Json;
-using System.Net.Http.Headers;
-using Microsoft.Extensions.Http;
 using InvestmentManager.ApplicationCore.DTO;
 
 namespace InvestmentManager.Infrastructure.Repositories
@@ -27,7 +25,7 @@ namespace InvestmentManager.Infrastructure.Repositories
             var responseData = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-            FinnhubResponse finnhubResponse = JsonSerializer.Deserialize<FinnhubResponse>(responseData, options);
+            FinnhubResponse? finnhubResponse = JsonSerializer.Deserialize<FinnhubResponse>(responseData, options);
 
             if (finnhubResponse == null)
             {

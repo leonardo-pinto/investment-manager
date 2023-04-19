@@ -37,8 +37,15 @@ namespace InvestmentManager.ApplicationCore.Services
 
         public async Task<bool> IsStockSymbolValid(string stockSymbol)
         {
-            double stockQuote = await _finnhubRepository.GetStockPriceQuote(stockSymbol);
-            return stockQuote != 0;
+            try
+            {
+                double stockQuote = await _finnhubRepository.GetStockPriceQuote(stockSymbol);
+                return stockQuote != 0;
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new FinnhubException("Unable to retrieve stock price quote.", ex);
+            }
         }
     }
 }

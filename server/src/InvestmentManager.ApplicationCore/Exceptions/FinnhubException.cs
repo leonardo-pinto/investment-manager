@@ -1,7 +1,7 @@
 ﻿namespace InvestmentManager.ApplicationCore.Exceptions
 {
     /// <summary>
-    /// Represents a database connection failure
+    /// Represents a finnhub api connection failure
     /// </summary>
     public class FinnhubException : Exception
     {
