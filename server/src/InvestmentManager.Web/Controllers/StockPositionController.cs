@@ -40,7 +40,7 @@ namespace InvestmentManager.Web.Controllers
 
             if (stockPositionResponse == null)
             {
-                return BadRequest("Invalid position id");
+                return NotFound("Stock position not found");
             }
 
             return Ok(stockPositionResponse);
@@ -90,7 +90,7 @@ namespace InvestmentManager.Web.Controllers
 
                 if (stockPositionResponse == null)
                 {
-                    return BadRequest("Invalid position id");
+                    return NotFound("Stock position not found");
                 }
 
                 await _transactionService
@@ -121,7 +121,7 @@ namespace InvestmentManager.Web.Controllers
                 }
                 else
                 {
-                    return BadRequest("There was an error while deleting the stock position.");
+                    return NotFound("Stock position to be deleted was not found");
                 }
             }
             catch (InvalidStockQuantityException ex)

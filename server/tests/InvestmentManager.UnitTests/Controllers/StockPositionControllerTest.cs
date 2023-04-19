@@ -136,7 +136,7 @@ namespace InvestmentManager.UnitTests.Controllers
         #region GetSingleStockPosition
 
         [Fact]
-        async public Task GetSingleStockPosition_WhenPositionIdIsInvalid_ToBeBadRequest()
+        async public Task GetSingleStockPosition_WhenPositionIdIsInvalid_ToBeNotFound()
         {
             // Arrange
             Guid id = _fixture.Create<Guid>();
@@ -149,8 +149,8 @@ namespace InvestmentManager.UnitTests.Controllers
             IActionResult response = await _sut.GetSingleStockPosition(id);
 
             // Assert
-            response.Should().BeOfType<BadRequestObjectResult>();
-            response.As<BadRequestObjectResult>().Value.Should().Be("Invalid position id");
+            response.Should().BeOfType<NotFoundObjectResult>();
+            response.As<NotFoundObjectResult>().Value.Should().Be("Stock position not found");
             _stockPositionServiceMock.Verify(m => m.GetSingleStockPosition(id), Times.Once);
 
         }
@@ -200,7 +200,7 @@ namespace InvestmentManager.UnitTests.Controllers
         }
 
         [Fact]
-        async public Task UpdateStockPosition_WhenPositionIdIsInvalid_ToBeBadRequest()
+        async public Task UpdateStockPosition_WhenPositionIdIsInvalid_ToBeNotFound()
         {
             // Arrange
             Guid id = _fixture.Create<Guid>();
@@ -216,8 +216,8 @@ namespace InvestmentManager.UnitTests.Controllers
             IActionResult result = await _sut.UpdateStockPosition(updateStockPositionRequest);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>();
-            result.As<BadRequestObjectResult>().Value.Should().Be("Invalid position id");
+            result.Should().BeOfType<NotFoundObjectResult>();
+            result.As<NotFoundObjectResult>().Value.Should().Be("Stock position not found");
             _stockPositionServiceMock.Verify(m => m.UpdateStockPosition(updateStockPositionRequest), Times.Once);
         }
 
@@ -274,7 +274,7 @@ namespace InvestmentManager.UnitTests.Controllers
         }
 
         [Fact]
-        public async Task DeleteStockPosition_InvalidId_ToBeBadRequest()
+        public async Task DeleteStockPosition_InvalidId_ToBeNotFound()
         {
             // Arrange
             Guid id = _fixture.Create<Guid>();
@@ -286,8 +286,8 @@ namespace InvestmentManager.UnitTests.Controllers
             var result = await _sut.DeleteStockPosition(id);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>();
-            result.As<BadRequestObjectResult>().Value.Should().Be("There was an error while deleting the stock position.");
+            result.Should().BeOfType<NotFoundObjectResult>();
+            result.As<NotFoundObjectResult>().Value.Should().Be("Stock position to be deleted was not found");
         }
 
         #endregion
