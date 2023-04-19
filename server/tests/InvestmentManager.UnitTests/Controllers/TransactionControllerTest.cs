@@ -29,7 +29,7 @@ namespace InvestmentManager.UnitTests.Controllers
             // Arrange
             var userId = _fixture.Create<string>();
 
-            List<TransactionResponse> transactionResponseMock = new ()
+            List<TransactionResponse> transactionResponseMock = new()
             {
                 _fixture.Build<TransactionResponse>().Create(),
                 _fixture.Build<TransactionResponse>().Create(),
@@ -46,7 +46,7 @@ namespace InvestmentManager.UnitTests.Controllers
 
             // Assert
             transactionResponse.Should().BeOfType<OkObjectResult>()
-                .Which.Value.Should().BeEquivalentTo(transactionResponseMock);
+                .Which.Value.Should().BeEquivalentTo(new TransactionResponseList() { Transactions = transactionResponseMock });
             _transactionServiceMock.Verify(m => m.GetAllTransactionsByUserId(userId), Times.Once);
         }
         #endregion

@@ -37,4 +37,10 @@ namespace InvestmentManager.ApplicationCore.DTO
         /// </summary>
         public string? TransactionType { get; set; }
     }
+
+    public class TransactionResponseList 
+    { 
+        public List<TransactionResponse> Transactions { get; set; }
+    }
+
 }

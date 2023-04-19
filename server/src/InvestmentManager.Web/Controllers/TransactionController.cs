@@ -22,7 +22,7 @@ namespace InvestmentManager.Web.Controllers
         {
             List<TransactionResponse> transactionHistory = await _transactionService.GetAllTransactionsByUserId(userId);
 
-            return Ok(transactionHistory);
+            return Ok(new TransactionResponseList() { Transactions = transactionHistory });
         }
     }
 }
