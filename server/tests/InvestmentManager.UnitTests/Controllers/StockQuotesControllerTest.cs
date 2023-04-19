@@ -30,11 +30,11 @@ namespace InvestmentManager.UnitTests.Controllers
             // Arrange
             string symbols = "PETR4,MGLU3,VALE3";
 
-            var stockQuotesMock = new Dictionary<string, double>()
+            var stockQuotesMock = new List<StockQuoteResult>()
             {
-                { "PETR4", 10.50 },
-                { "MGLU3", 2.99 },
-                { "VALE3", 80.20 }
+                { new StockQuoteResult(){ Symbol = "PETR4", Price = 10.50 } },
+                { new StockQuoteResult(){ Symbol = "MGLU3", Price = 2.99 } },
+                { new StockQuoteResult() { Symbol = "VALE3", Price = 80.20 } }
             };
 
             _brApiServiceMock
@@ -42,7 +42,7 @@ namespace InvestmentManager.UnitTests.Controllers
                 .ReturnsAsync(stockQuotesMock);
 
             // Act
-            var result = await _sut.GetMultipleBrStockQuotes(symbols);
+            var result = await _sut.GetBrStockQuotes(symbols);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>()
@@ -50,37 +50,18 @@ namespace InvestmentManager.UnitTests.Controllers
         }
         #endregion
 
-        #region GetSingleUsStockQuote
+        #region GetUsStockQuotes
 
         [Fact]
-        public async Task GetSingleUsStockQuote_ValidData_ToBeOk()
-        {
-            // Arrange
-            string symbol = "AMZN";
-            _finnhubServiceMock.Setup(m => m.GetStockPriceQuote(It.IsAny<string>())).ReturnsAsync(100.9);
-
-            // Act
-            var result = await _sut.GetSingleUsStockQuote(symbol);
-
-            // Assert
-            result.Should().BeOfType<OkObjectResult>()
-                .Which.Value.Should().Be(100.9);
-            _finnhubServiceMock.Verify(m => m.GetStockPriceQuote(symbol), Times.Once);
-        }
-        #endregion
-
-        #region GetMultipleUsStockQuotes
-
-        [Fact]
-        public async Task GetMultipleUsStockQuotes_ValidData_ToBeOk()
+        public async Task GetUsStockQuotes_ValidData_ToBeOk()
         {
             // Arrange
             string symbols = "AMZN,VOO,VNQ";
-            var stockQuotesMock = new Dictionary<string, double>()
+            var stockQuotesMock = new List<StockQuoteResult>()
             {
-                { "AMZN", 103.05 },
-                { "VOO", 379.15 },
-                { "VNQ", 81.68 }
+                { new StockQuoteResult(){ Symbol = "AMZN", Price = 100.50 } },
+                { new StockQuoteResult(){ Symbol = "VOO", Price = 372.99 } },
+                { new StockQuoteResult() { Symbol = "BK", Price = 40.20 } }
             };
 
             string[] expectedStockSymbols = { "AMZN", "VOO", "VNQ" };
@@ -90,7 +71,7 @@ namespace InvestmentManager.UnitTests.Controllers
                 .ReturnsAsync(stockQuotesMock);
 
             // Act
-            var result = await _sut.GetMultipleUsStockQuotes(symbols);
+            var result = await _sut.GetUsStockQuotes(symbols);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>()

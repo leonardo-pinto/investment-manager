@@ -20,8 +20,8 @@ namespace InvestmentManager.Web.Controllers
             _brApiService = brApiService;
         }
 
-        [HttpGet("br/quotes")]
-        public async Task<IActionResult> GetMultipleBrStockQuotes([FromQuery] string symbols)
+        [HttpGet("br")]
+        public async Task<IActionResult> GetBrStockQuotes([FromQuery] string symbols)
         {
             var stockQuotes = await _brApiService.GetStocksPriceQuote(symbols);
 
@@ -32,15 +32,8 @@ namespace InvestmentManager.Web.Controllers
             });
         }
 
-        [HttpGet("us/{symbol}")]
-        public async Task<IActionResult> GetSingleUsStockQuote(string symbol)
-        {
-            double stockQuote = await _finnhubService.GetStockPriceQuote(symbol);
-            return Ok(stockQuote);
-        }
-
-        [HttpGet("us/quotes-list")]
-        public async Task<IActionResult> GetMultipleUsStockQuotes([FromQuery] string symbols) 
+        [HttpGet("us")]
+        public async Task<IActionResult> GetUsStockQuotes([FromQuery] string symbols) 
         {
             string[] symbolsArr = symbols.Split(",");
             var stockQuotes = await _finnhubService.GetMultipleStockPriceQuote(symbolsArr);
