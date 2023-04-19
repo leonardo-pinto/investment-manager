@@ -1,8 +1,7 @@
-﻿
-namespace InvestmentManager.ApplicationCore.Interfaces
+﻿namespace InvestmentManager.ApplicationCore.Interfaces
 {
     /// <summary>
-    /// Represents a repository that makes HTTP requests to finnhub.io
+    /// Represents service that implements the business logic to interact with finnhub.io
     /// https://finnhub.io/docs/api/introduction
     /// </summary>
     public interface IFinnhubRepository

@@ -1,7 +1,9 @@
 ﻿using InvestmentManager.ApplicationCore.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System.Text.Json;
+using System.Net.Http.Headers;
 using Microsoft.Extensions.Http;
+using InvestmentManager.ApplicationCore.DTO;
 
 namespace InvestmentManager.Infrastructure.Repositories
 {
@@ -19,34 +21,25 @@ namespace InvestmentManager.Infrastructure.Repositories
         public async Task<double> GetStockPriceQuote(string stockSymbol)
         {
             HttpClient httpClient = _httpClientFactory.CreateClient();
+            httpClient.DefaultRequestHeaders.Add("X-Finnhub-Token", _configuration.GetSection("FinnhubAccessToken").Value);
 
-            HttpRequestMessage httpRequestMessage = new ()
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://finnhub.io/api/v1/quote?symbol={stockSymbol}")
-            };
+            var response = await httpClient.GetAsync($"https://finnhub.io/api/v1/quote?symbol={stockSymbol}");
+            var responseData = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-            httpRequestMessage.Headers.Add(
-                "X-Finnhub-Token", _configuration.GetSection("FinnhubAccessToken").Value);
+            FinnhubResponse finnhubResponse = JsonSerializer.Deserialize<FinnhubResponse>(responseData, options);
 
-            HttpResponseMessage httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-
-            string responseBody = await httpResponseMessage.Content.ReadAsStringAsync();
-
-            Dictionary<string, double>? responseDict = JsonSerializer.Deserialize<Dictionary<string, double>>(responseBody);
-
-            if (responseDict == null)
+            if (finnhubResponse == null)
             {
                 throw new InvalidOperationException("No response from server");
             }
 
-            if (responseDict.ContainsKey("error"))
+            if (finnhubResponse.Error != null)
             {
-                throw new InvalidOperationException(Convert.ToString(responseDict["error"]));
+                throw new InvalidOperationException(finnhubResponse.Error);
             }
 
-            // returns value related to the current price
-            return responseDict["c"];
+            return finnhubResponse.CurrentPrice;
         }
     }
 }
