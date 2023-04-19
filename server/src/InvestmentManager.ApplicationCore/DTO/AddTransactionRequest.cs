@@ -53,6 +53,12 @@ namespace InvestmentManager.ApplicationCore.DTO
         [Required(ErrorMessage = "Invalid transaction type")]
         public TransactionType TransactionType { get; set; }
 
-        
+        /// <summary>
+        /// The country in which the stock is negotiated
+        /// </summary>
+        [Required(ErrorMessage = "Trading country can't be null or empty")]
+        public TradingCountry TradingCountry { get; set; }
+
+
     }
 }

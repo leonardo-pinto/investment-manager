@@ -49,5 +49,10 @@ namespace InvestmentManager.ApplicationCore.Domain.Entities
         /// Type of the transaction (buy or sell)
         /// </summary>
         public string TransactionType { get; set; }
+
+        /// <summary>
+        /// Country in which the stock is traded
+        /// </summary>
+        public string TradingCountry { get; set; }
     }
 }
