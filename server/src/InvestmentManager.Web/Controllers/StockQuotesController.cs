@@ -20,7 +20,8 @@ namespace InvestmentManager.Web.Controllers
             _brApiService = brApiService;
         }
 
-        [HttpGet("br")]
+        [HttpGet]
+        [Route("br")]
         public async Task<IActionResult> GetBrStockQuotes([FromQuery] string symbols)
         {
             var stockQuotes = await _brApiService.GetStocksPriceQuote(symbols);
@@ -32,7 +33,8 @@ namespace InvestmentManager.Web.Controllers
             });
         }
 
-        [HttpGet("us")]
+        [HttpGet]
+        [Route("us")]
         public async Task<IActionResult> GetUsStockQuotes([FromQuery] string symbols) 
         {
             string[] symbolsArr = symbols.Split(",");

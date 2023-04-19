@@ -20,7 +20,8 @@ namespace InvestmentManager.Web.Controllers
             _tokenService = tokenService;
         }
 
-        [HttpPost("register")]
+        [HttpPost]
+        [Route("register")]
         async public Task<IActionResult> Register(RegisterRequest registerRequest)
         {
             IdentityResult? result = await _authService.Register(registerRequest);
@@ -53,7 +54,8 @@ namespace InvestmentManager.Web.Controllers
             }
         }
 
-        [HttpPost("login")]
+        [HttpPost]
+        [Route("login")]
         async public Task<IActionResult> Login(LoginRequest loginRequest)
         {
             var result = await _authService.Login(loginRequest);

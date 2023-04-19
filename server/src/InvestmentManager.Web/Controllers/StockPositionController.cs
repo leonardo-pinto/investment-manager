@@ -24,7 +24,8 @@ namespace InvestmentManager.Web.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("user-id/{userId}/trading-country/{tradingCountry}")]
+        [HttpGet]
+        [Route("user-id/{userId}/trading-country/{tradingCountry}")]
         async public Task<IActionResult> GetAllStockPositionsByUserIdAndTradingCountry(
             string userId, string tradingCountry)
         {
@@ -33,7 +34,8 @@ namespace InvestmentManager.Web.Controllers
             return Ok(new StockPositionResponseList() { StockPositions = stockPositionResponse });
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("{id}")]
         public async Task<IActionResult> GetSingleStockPosition(Guid id)
         {
             StockPositionResponse? stockPositionResponse = await _stockPositionService.GetSingleStockPosition(id);
@@ -102,7 +104,8 @@ namespace InvestmentManager.Web.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
+        [Route("{id}")]
         public async Task<IActionResult> DeleteStockPosition(Guid id)
         {
             try

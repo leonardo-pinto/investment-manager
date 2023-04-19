@@ -17,7 +17,8 @@ namespace InvestmentManager.Web.Controllers
             _transactionService = transactionService;
         }
 
-        [HttpGet("userId/{userId}")]
+        [HttpGet("user-id/{userId}")]
+        [Route("user-id/{userId}")]
         async public Task<IActionResult> GetAllTransactionsByUserId(string userId)
         {
             List<TransactionResponse> transactionHistory = await _transactionService.GetAllTransactionsByUserId(userId);
