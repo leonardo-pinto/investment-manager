@@ -19,7 +19,7 @@ namespace InvestmentManager.ApplicationCore.Mapper
                     opt => opt.MapFrom(src => src.TradingCountry.ToString()));
 
             CreateMap<StockPosition, StockPositionResponse>();
-    
+
             CreateMap<AddStockPositionRequest, AddTransactionRequest>()
                 .ForMember(
                     dest => dest.Price,
@@ -42,7 +42,10 @@ namespace InvestmentManager.ApplicationCore.Mapper
                     opt => opt.MapFrom(src => Guid.NewGuid()))
                 .ForMember(
                     dest => dest.TransactionType,
-                    opt => opt.MapFrom(src => src.TransactionType.ToString()));
+                    opt => opt.MapFrom(src => src.TransactionType.ToString()))
+                .ForMember(
+                    dest => dest.TradingCountry,
+                    opt => opt.MapFrom(src => src.TradingCountry.ToString()));
 
             CreateMap<Transaction, TransactionResponse>();
         }
