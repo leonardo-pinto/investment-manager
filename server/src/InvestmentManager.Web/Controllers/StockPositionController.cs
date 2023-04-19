@@ -40,7 +40,7 @@ namespace InvestmentManager.Web.Controllers
 
             if (stockPositionResponse == null)
             {
-                return NotFound("Stock position not found");
+                return NotFound(new ErrorResponse() { Error = "Stock position not found" });
             }
 
             return Ok(stockPositionResponse);
@@ -49,18 +49,13 @@ namespace InvestmentManager.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateStockPosition(AddStockPositionRequest addStockPositionRequest)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             try
             {
                 StockPositionResponse? stockPositionResponse = await _stockPositionService.CreateStockPosition(addStockPositionRequest);
 
                 if (stockPositionResponse == null)
                 {
-                    return BadRequest("Invalid stock symbol");
+                    return BadRequest(new ErrorResponse() { Error = "Invalid stock symbol" });
                 }
 
                 var addTransactionRequest = _mapper.Map<AddTransactionRequest>(addStockPositionRequest);
@@ -83,14 +78,13 @@ namespace InvestmentManager.Web.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateStockPosition(UpdateStockPositionRequest updateStockPositionRequest)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
             try
             {
                 StockPositionResponse? stockPositionResponse = await _stockPositionService.UpdateStockPosition(updateStockPositionRequest);
 
                 if (stockPositionResponse == null)
                 {
-                    return NotFound("Stock position not found");
+                    return NotFound(new ErrorResponse() { Error = "Stock position not found" });
                 }
 
                 await _transactionService
@@ -100,11 +94,11 @@ namespace InvestmentManager.Web.Controllers
             }
             catch (InvalidStockQuantityException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ErrorResponse() { Error = ex.Message });
             }
             catch (InvalidTransactionTypeException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ErrorResponse() { Error = ex.Message });
             }
         }
 
@@ -121,14 +115,13 @@ namespace InvestmentManager.Web.Controllers
                 }
                 else
                 {
-                    return NotFound("Stock position to be deleted was not found");
+                    return NotFound(new ErrorResponse() { Error = "Stock position to be deleted was not found" });
                 }
             }
             catch (InvalidStockQuantityException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ErrorResponse() { Error = ex.Message });
             }
         }
-
     }
 }

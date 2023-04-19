@@ -23,11 +23,6 @@ namespace InvestmentManager.Web.Controllers
         [HttpPost("register")]
         async public Task<IActionResult> Register(RegisterRequest registerRequest)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             IdentityResult? result = await _authService.Register(registerRequest);
 
             if (result.Succeeded)
@@ -36,7 +31,7 @@ namespace InvestmentManager.Web.Controllers
 
                 if (user is null)
                 {
-                    return Unauthorized();
+                    return Unauthorized(new ErrorResponse() { Error = "User not found" });
                 }
 
                 string accessToken = _tokenService.GenerateToken(user);
@@ -61,23 +56,18 @@ namespace InvestmentManager.Web.Controllers
         [HttpPost("login")]
         async public Task<IActionResult> Login(LoginRequest loginRequest)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var result = await _authService.Login(loginRequest);
 
             if (!result.Succeeded)
             {
-                return Unauthorized("Invalid credentials");
+                return Unauthorized(new ErrorResponse() { Error = "Invalid credentials" });
             }
 
             IdentityUser? user = await _authService.FindUserByUserName(loginRequest.UserName);
             
             if (user is null)
             {
-                return Unauthorized();
+                return Unauthorized(new ErrorResponse() { Error = "User not found" });
             }
 
             string accessToken = _tokenService.GenerateToken(user);

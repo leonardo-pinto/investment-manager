@@ -289,7 +289,6 @@ namespace InvestmentManager.UnitTests.Controllers
             result.Should().BeOfType<NotFoundObjectResult>();
             result.As<NotFoundObjectResult>().Value.Should().Be("Stock position to be deleted was not found");
         }
-
         #endregion
     }
 }
