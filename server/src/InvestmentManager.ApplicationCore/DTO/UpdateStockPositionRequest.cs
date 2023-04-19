@@ -17,6 +17,12 @@ namespace InvestmentManager.ApplicationCore.DTO
         /// <summary>
         /// Stock position symbol
         /// </summary>
+        [Required(ErrorMessage = "User id can't be null or empty")]
+        public string UserId { get; set; }
+
+        /// <summary>
+        /// Stock position symbol
+        /// </summary>
         [Required(ErrorMessage = "Symbol can't be null or empty")]
         public string Symbol { get; set; }
 
