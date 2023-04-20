@@ -1,16 +1,20 @@
 ﻿using InvestmentManager.ApplicationCore.DTO;
 using InvestmentManager.ApplicationCore.Exceptions;
 using InvestmentManager.ApplicationCore.Interfaces;
+using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace InvestmentManager.ApplicationCore.Services
 {
     public class BrApiService : IBrApiService
     {
         private readonly IBrApiRepository _brApiRepository;
+        private readonly ILogger<BrApiService> _logger;
 
-        public BrApiService(IBrApiRepository brApiRepository)
+        public BrApiService(IBrApiRepository brApiRepository, ILogger<BrApiService> logger)
         {
             _brApiRepository = brApiRepository;
+            _logger = logger;
         }
 
         public async Task<List<StockQuoteResult>> GetStocksPriceQuote(string concatenatedStockSymbols)
@@ -35,6 +39,7 @@ namespace InvestmentManager.ApplicationCore.Services
             }
             catch (InvalidOperationException ex)
             {
+                _logger.LogError("Error to connect with BrApi - Error: {@Ex}", JsonSerializer.Serialize(ex));
                 throw new BrApiException("Unable to retrieve stock price quote.", ex);
             }
         }
@@ -48,6 +53,7 @@ namespace InvestmentManager.ApplicationCore.Services
             }
             catch (InvalidOperationException ex)
             {
+                _logger.LogError("Error to connect with BrApi - Error: {@Ex}", JsonSerializer.Serialize(ex));
                 throw new BrApiException("Unable to retrieve stock price quote.", ex);
             }
         }

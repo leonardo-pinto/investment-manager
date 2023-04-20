@@ -1,16 +1,20 @@
 ﻿using InvestmentManager.ApplicationCore.DTO;
 using InvestmentManager.ApplicationCore.Exceptions;
 using InvestmentManager.ApplicationCore.Interfaces;
+using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace InvestmentManager.ApplicationCore.Services
 {
     public class FinnhubService : IFinnhubService
     {
         private readonly IFinnhubRepository _finnhubRepository;
+        private readonly ILogger<IFinnhubService> _logger;
 
-        public FinnhubService(IFinnhubRepository finnhubRepository)
+        public FinnhubService(IFinnhubRepository finnhubRepository, ILogger<FinnhubService> logger)
         {
             _finnhubRepository = finnhubRepository;
+            _logger = logger;
         }
 
         async public Task<List<StockQuoteResult>> GetMultipleStockPriceQuote(string[] stockSymbols)
@@ -31,6 +35,7 @@ namespace InvestmentManager.ApplicationCore.Services
             }
             catch (InvalidOperationException ex)
             {
+                _logger.LogError("Error to connect with Finnhub - Error: {@Ex}", JsonSerializer.Serialize(ex));
                 throw new FinnhubException("Unable to retrieve stock price quote.", ex);
             }
         }
@@ -44,6 +49,7 @@ namespace InvestmentManager.ApplicationCore.Services
             }
             catch (InvalidOperationException ex)
             {
+                _logger.LogError("Error to connect with Finnhub - Error: {@Ex}", JsonSerializer.Serialize(ex));
                 throw new FinnhubException("Unable to retrieve stock price quote.", ex);
             }
         }

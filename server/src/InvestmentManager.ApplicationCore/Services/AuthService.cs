@@ -20,7 +20,6 @@ namespace InvestmentManager.ApplicationCore.Services
         public async Task<IdentityResult> Register(RegisterRequest registerRequest)
         {
             var user = new IdentityUser { UserName = registerRequest.UserName };
-
             return await _userManager.CreateAsync(
                 user,
                 registerRequest.Password
@@ -30,8 +29,6 @@ namespace InvestmentManager.ApplicationCore.Services
         public async Task<SignInResult> Login(LoginRequest loginRequest)
         {
             IdentityUser user = new() { UserName = loginRequest.UserName };
-
-
             return await _signInManager.PasswordSignInAsync(user.UserName, loginRequest.Password, false, false);
         }
 

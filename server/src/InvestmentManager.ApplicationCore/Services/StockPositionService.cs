@@ -4,6 +4,8 @@ using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Enums;
 using InvestmentManager.ApplicationCore.Exceptions;
 using AutoMapper;
+using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace InvestmentManager.ApplicationCore.Services
 {
@@ -13,17 +15,19 @@ namespace InvestmentManager.ApplicationCore.Services
         private readonly IBrApiService _brApiService;
         private readonly IStockPositionRepository _stockPositionRepository;
         private readonly IMapper _mapper;
+        private readonly ILogger<StockPositionService> _logger;
 
         public StockPositionService(
             IFinnhubService finnhubService,
             IBrApiService brApiService,
             IStockPositionRepository stockPositionRepository,
-            IMapper mapper)
+            IMapper mapper, ILogger<StockPositionService> logger)
         {
             _finnhubService = finnhubService;
             _brApiService = brApiService;
             _stockPositionRepository = stockPositionRepository;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<StockPositionResponse?> CreateStockPosition(AddStockPositionRequest addStockPositionRequest)
@@ -32,6 +36,7 @@ namespace InvestmentManager.ApplicationCore.Services
 
             if (symbolAlreadyExists)
             {
+                _logger.LogError("Repeated stock symbol - StockSymbol: {@AddStockPositionRequest.Symbol}", addStockPositionRequest.Symbol);
                 throw new RepeatedStockSymbolException("Stock symbol already registered. Please update the position instead of creating a new one.");
             }
 
@@ -47,6 +52,7 @@ namespace InvestmentManager.ApplicationCore.Services
 
             if (!isStockSymbolValid)
             {
+                _logger.LogError("Invalid stock symbol - StockSymbol: {@AddStockPositionRequest.Symbol}", addStockPositionRequest.Symbol);
                 return null;
             }
 
@@ -64,6 +70,7 @@ namespace InvestmentManager.ApplicationCore.Services
 
             if (stockPosition?.Quantity != 0)
             {
+                _logger.LogError("Invalid stock position quantity - StockPosition: {@StockPosition}", JsonSerializer.Serialize(stockPosition));
                 throw new InvalidStockQuantityException("It is not possible to delete a stock position which quantity is not zero.");
             }
 
@@ -89,6 +96,7 @@ namespace InvestmentManager.ApplicationCore.Services
 
             if (stockPosition == null)
             {
+                _logger.LogError("Invalid stock position id - StockPositionId: {@PositionId}", positionId);
                 return null;
             }
 
@@ -101,6 +109,7 @@ namespace InvestmentManager.ApplicationCore.Services
 
             if (matchingStock == null)
             {
+                _logger.LogError("Invalid stock position id - StockPositionId: {@updateStockPositionRequest.PositionId}", updateStockPositionRequest.PositionId);
                 return null;
             }
 
@@ -128,6 +137,7 @@ namespace InvestmentManager.ApplicationCore.Services
             {
                 if (updateStockPositionRequest.Quantity > matchingStock.Quantity)
                 {
+                    _logger.LogError("Invalid stock position quantity - UpdateStockPositionRequest: {@UpdateStockPositionRequest}", JsonSerializer.Serialize(updateStockPositionRequest));
                     throw new InvalidStockQuantityException("The stock quantity to be sold is greater than the current stock position quantity.");
                 }
                 matchingStock.Quantity -= updateStockPositionRequest.Quantity;

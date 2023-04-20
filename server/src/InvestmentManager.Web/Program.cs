@@ -12,8 +12,9 @@ using InvestmentManager.Web.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Logging.ClearProviders().AddConsole().AddDebug();
 
+builder.Services.AddControllers();
 builder.Services.AddHttpClient();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -78,7 +79,7 @@ else
     app.UseExceptionHandlingMiddleware();
 }
 
-// Configure the HTTP request pipeline.
+
 app.UsePathBase(new PathString("/api"));
 app.UseHsts();
 app.UseHttpsRedirection();
