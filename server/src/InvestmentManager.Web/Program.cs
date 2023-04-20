@@ -16,7 +16,6 @@ else
     app.UseExceptionHandlingMiddleware();
 }
 
-
 app.UsePathBase(new PathString("/api"));
 app.UseHsts();
 app.UseHttpsRedirection();
