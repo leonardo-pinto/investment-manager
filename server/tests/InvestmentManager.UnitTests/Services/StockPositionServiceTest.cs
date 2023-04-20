@@ -410,6 +410,27 @@ namespace InvestmentManager.UnitTests.Services
         }
 
         [Fact]
+        public async Task DeleteStockPosition_InvalidId_ToBeArgumentException()
+        {
+            // Arrange
+            Guid id = _fixture.Create<Guid>();
+            _stockPositionRepositoryMock
+               .Setup(m => m.GetSingleStockPosition(It.IsAny<Guid>()))
+               .ReturnsAsync(null as StockPosition);
+
+            // Act
+            Func<Task> action = async () =>
+            {
+                await _sut.DeleteStockPosition(id);
+            };
+
+            // Assert
+            await action.Should()
+                .ThrowAsync<ArgumentException>()
+                .WithMessage("Stock position not found");
+        }
+
+        [Fact]
         public async Task DeleteStockPosition_InvalidQuantity_ToBeInvalidStockQuantityException()
         {
             // Arrange
