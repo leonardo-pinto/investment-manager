@@ -56,17 +56,17 @@ namespace InvestmentManager
 
             services.AddAutoMapper(typeof(MappingProfile));
 
-            services.AddTransient<IBrApiRepository, BrApiRepository>();
-            services.AddTransient<IBrApiService, BrApiService>();
-            services.AddTransient<IAuthService, AuthService>();
-            services.AddTransient<ITokenService, TokenService>();
-            services.AddTransient<IAuthService, AuthService>();
-            services.AddTransient<IStockPositionService, StockPositionService>();
-            services.AddTransient<ITransactionService, TransactionService>();
-            services.AddTransient<IFinnhubService, FinnhubService>();
-            services.AddTransient<IStockPositionRepository, StockPositionRepository>();
-            services.AddTransient<ITransactionRepository, TransactionRepository>();
-            services.AddTransient<IFinnhubRepository, FinnhubRepository>();
+            services.AddScoped<IBrApiRepository, BrApiRepository>();
+            services.AddScoped<IBrApiService, BrApiService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IStockPositionService, StockPositionService>();
+            services.AddScoped<ITransactionService, TransactionService>();
+            services.AddScoped<IFinnhubService, FinnhubService>();
+            services.AddScoped<IStockPositionRepository, StockPositionRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<IFinnhubRepository, FinnhubRepository>();
 
             return services;
         }
