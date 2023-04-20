@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using InvestmentManager.Web.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,10 +66,18 @@ builder.Services.AddTransient<IStockPositionRepository, StockPositionRepository>
 builder.Services.AddTransient<ITransactionRepository, TransactionRepository>();
 builder.Services.AddTransient<IFinnhubRepository, FinnhubRepository>();
 
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+if (builder.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandlingMiddleware();
+}
+
+
 app.UseHsts();
 app.UseHttpsRedirection();
 app.UseAuthentication();
