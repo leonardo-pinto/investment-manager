@@ -1,6 +1,7 @@
 ﻿using InvestmentManager.ApplicationCore.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -33,6 +34,8 @@ namespace InvestmentManager.ApplicationCore.Services
             DateTime expiration)
         {
             return new JwtSecurityToken(
+                issuer: "issuer-key",
+                audience: "audience-key",
                 claims: claims,
                 expires: expiration,
                 signingCredentials: credentials
