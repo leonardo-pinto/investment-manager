@@ -7,15 +7,7 @@ builder.Services.ConfigureServices(builder.Configuration);
 
 var app = builder.Build();
 
-if(builder.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-}
-else
-{
-    app.UseExceptionHandlingMiddleware();
-}
-
+app.UseExceptionHandlingMiddleware();
 app.UsePathBase(new PathString("/api"));
 app.UseHsts();
 app.UseHttpsRedirection();

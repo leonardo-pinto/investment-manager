@@ -19,7 +19,7 @@ namespace InvestmentManager.Infrastructure.Repositories
         public async Task<double> GetStockPriceQuote(string stockSymbol)
         {
             HttpClient httpClient = _httpClientFactory.CreateClient();
-            httpClient.DefaultRequestHeaders.Add("X-Finnhub-Token", _configuration.GetSection("FinnhubAccessToken").Value);
+            httpClient.DefaultRequestHeaders.Add("X-Finnhub-Token", _configuration["FinnhubAccessToken"]);
 
             var response = await httpClient.GetAsync($"https://finnhub.io/api/v1/quote?symbol={stockSymbol}");
             var responseData = await response.Content.ReadAsStringAsync();

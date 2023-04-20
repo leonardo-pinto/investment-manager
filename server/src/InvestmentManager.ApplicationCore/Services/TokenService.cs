@@ -1,5 +1,6 @@
 ﻿using InvestmentManager.ApplicationCore.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -12,6 +13,13 @@ namespace InvestmentManager.ApplicationCore.Services
     {
         // The JWT generation code was developed based on 
         // https://github.com/JacobToftgaardRasmussen/MediumJWTAuthenticationASPNETCoreAPI/tree/main/ApiWithAuth
+
+        private readonly IConfiguration _configuration;
+
+        public TokenService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
         private const int ExpirationMinutes = 600;
 
@@ -34,8 +42,8 @@ namespace InvestmentManager.ApplicationCore.Services
             DateTime expiration)
         {
             return new JwtSecurityToken(
-                issuer: "issuer-key",
-                audience: "audience-key",
+                issuer: _configuration["JwtIssuer"],
+                audience: _configuration["JwtAudience"],
                 claims: claims,
                 expires: expiration,
                 signingCredentials: credentials
@@ -54,7 +62,7 @@ namespace InvestmentManager.ApplicationCore.Services
         private SigningCredentials CreateSigningCredentials()
         {
             return new SigningCredentials(
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes("1c6942ef04f51b57c999e80bdaa428a7")),
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSecret"])),
                 SecurityAlgorithms.HmacSha256
             );
         }

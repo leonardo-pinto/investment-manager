@@ -47,10 +47,10 @@ namespace InvestmentManager
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = "issuer-key", // move to appsettings.json
-                        ValidAudience = "audience-key", // move to appsettings.jsop
+                        ValidIssuer = configuration["JwtIssuer"], // move to appsettings.json
+                        ValidAudience = configuration["JwtAudience"], // move to appsettings.jsop
                         IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes("1c6942ef04f51b57c999e80bdaa428a7")) // move to secret file
+                            Encoding.UTF8.GetBytes(configuration["JwtSecret"])) // move to secret file
                     };
                 });
 
