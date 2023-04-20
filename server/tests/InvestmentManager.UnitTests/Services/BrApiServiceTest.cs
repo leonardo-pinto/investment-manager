@@ -2,6 +2,7 @@
 using InvestmentManager.ApplicationCore.DTO;
 using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Services;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace InvestmentManager.UnitTests.Services
@@ -10,11 +11,14 @@ namespace InvestmentManager.UnitTests.Services
     {
         private readonly BrApiService _sut;
         private readonly Mock<IBrApiRepository> _brApiRepositoryMock;
+        private readonly Mock<ILogger<BrApiService>> _loggerMock;
+
 
         public BrApiServiceTest()
         {
             _brApiRepositoryMock = new Mock<IBrApiRepository>(MockBehavior.Strict);
-            _sut = new BrApiService(_brApiRepositoryMock.Object);
+            _loggerMock = new Mock<ILogger<BrApiService>>(MockBehavior.Loose);
+            _sut = new BrApiService(_brApiRepositoryMock.Object, _loggerMock.Object);
         }
 
         #region IsStockSymbolValid

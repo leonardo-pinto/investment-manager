@@ -9,7 +9,7 @@ using Moq;
 using AutoMapper;
 using InvestmentManager.ApplicationCore.Mapper;
 using InvestmentManager.ApplicationCore.Exceptions;
-using InvestmentManager.Infrastructure.Repositories;
+using Microsoft.Extensions.Logging;
 
 namespace InvestmentManager.UnitTests.Services
 {
@@ -19,6 +19,7 @@ namespace InvestmentManager.UnitTests.Services
         private readonly Mock<IFinnhubService> _finnhubServiceMock;
         private readonly Mock<IBrApiService> _brApiServiceMock;
         private readonly Mock<IStockPositionRepository> _stockPositionRepositoryMock;
+        private readonly Mock<ILogger<StockPositionService>> _loggerMock;
         private readonly IFixture _fixture;
 
         public StockPositionServiceTest()
@@ -28,11 +29,13 @@ namespace InvestmentManager.UnitTests.Services
             _finnhubServiceMock = new Mock<IFinnhubService>(MockBehavior.Strict);
             _brApiServiceMock = new Mock<IBrApiService>(MockBehavior.Strict);
             _stockPositionRepositoryMock = new Mock<IStockPositionRepository>(MockBehavior.Strict);
+            _loggerMock = new Mock<ILogger<StockPositionService>>(MockBehavior.Loose);
             _sut = new StockPositionService(
                 _finnhubServiceMock.Object,
                 _brApiServiceMock.Object,
                 _stockPositionRepositoryMock.Object,
-                mapper
+                mapper,
+                _loggerMock.Object
              );
             _fixture = new Fixture();
         }

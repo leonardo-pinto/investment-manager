@@ -1,10 +1,9 @@
 ﻿using AutoFixture;
 using FluentAssertions;
 using InvestmentManager.ApplicationCore.DTO;
-using InvestmentManager.ApplicationCore.Exceptions;
 using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Services;
-using InvestmentManager.Infrastructure.Repositories;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace InvestmentManager.UnitTests.Services
@@ -14,11 +13,13 @@ namespace InvestmentManager.UnitTests.Services
         private readonly IFinnhubService _sut;
         private readonly Mock<IFinnhubRepository> _finnhubRepositoryMock;
         private readonly IFixture _fixture;
+        private readonly Mock<ILogger<FinnhubService>> _loggerMock;
 
         public FinnhubServiceTest()
         {
             _finnhubRepositoryMock = new Mock<IFinnhubRepository>(MockBehavior.Strict);
-            _sut = new FinnhubService(_finnhubRepositoryMock.Object);
+            _loggerMock = new Mock<ILogger<FinnhubService>>(MockBehavior.Loose);
+            _sut = new FinnhubService(_finnhubRepositoryMock.Object, _loggerMock.Object);
             _fixture = new Fixture();
         }
 
