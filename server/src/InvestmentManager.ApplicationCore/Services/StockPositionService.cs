@@ -68,6 +68,12 @@ namespace InvestmentManager.ApplicationCore.Services
         {
             StockPosition? stockPosition = await _stockPositionRepository.GetSingleStockPosition(positionId);
 
+            if (stockPosition == null)
+            {
+                _logger.LogError("Invalid stock position id - StockPositionId: {@PositionId}", positionId);
+                throw new ArgumentException("Stock position not found");
+            }
+
             if (stockPosition?.Quantity != 0)
             {
                 _logger.LogError("Invalid stock position quantity - StockPosition: {@StockPosition}", JsonSerializer.Serialize(stockPosition));

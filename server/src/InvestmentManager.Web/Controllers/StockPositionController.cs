@@ -125,6 +125,10 @@ namespace InvestmentManager.Web.Controllers
             {
                 return BadRequest(new ErrorResponse() { Error = ex.Message });
             }
+            catch (ArgumentException ex)
+            {
+                return NotFound(new ErrorResponse() { Error = ex.Message });
+            }
         }
     }
 }
