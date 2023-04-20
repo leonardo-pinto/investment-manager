@@ -1,4 +1,7 @@
-﻿namespace InvestmentManager.Web.Middlewares
+﻿using InvestmentManager.ApplicationCore.DTO;
+using System.Text.Json;
+
+namespace InvestmentManager.Web.Middlewares
 {
     // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
     public class ExceptionHandlingMiddleware
@@ -19,8 +22,12 @@
             }
             catch (Exception)
             {
+                var error = new ErrorResponse() { Error = "An unexpected error occurred." };
+                string errorJson = JsonSerializer.Serialize(error);
+
+                httpContext.Response.ContentType = "application/json";
                 httpContext.Response.StatusCode = 500;
-                await httpContext.Response.WriteAsync("Error occurred");
+                await httpContext.Response.WriteAsync(errorJson);
             }
         }
     }
