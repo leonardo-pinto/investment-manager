@@ -13,17 +13,17 @@
         /// <summary>
         /// Unique symbol of the stock position
         /// </summary>
-        public string Symbol { get; set; }
+        public required string Symbol { get; set; }
 
         /// <summary>
         /// The number of shares of this stock position
         /// </summary>
-        public int Quantity { get; set; }
+        public required int Quantity { get; set; }
 
         /// <summary>
         /// The average price of the stock position
         /// </summary>
-        public double AveragePrice { get; set; }
+        public required double AveragePrice { get; set; }
     }
 
     public class StockPositionResponseList

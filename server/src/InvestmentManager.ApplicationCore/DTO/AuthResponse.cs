@@ -2,8 +2,8 @@
 {
     public class AuthResponse
     {
-        public string Id { get; set; }
-        public string Username { get; set; }
-        public string AccessToken { get; set; }
+        public required string Id { get; set; }
+        public required string Username { get; set; }
+        public required string AccessToken { get; set; }
     }
 }

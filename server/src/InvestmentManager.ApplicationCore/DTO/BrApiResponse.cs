@@ -9,7 +9,7 @@ namespace InvestmentManager.ApplicationCore.DTO
     public class BrApiResponse
     {
         [JsonPropertyName("results")]
-        public Result[] Results { get; set; }
+        public Result[]? Results { get; set; }
 
         [JsonPropertyName("error")]
         public string? Error { get; set; }
@@ -19,9 +19,9 @@ namespace InvestmentManager.ApplicationCore.DTO
     public class Result
     {
         [JsonPropertyName("symbol")]
-        public string Symbol { get; set; }
+        public required string Symbol { get; set; }
 
         [JsonPropertyName("regularMarketPrice")]
-        public double RegularMarketPrice { get; set; }
+        public required double RegularMarketPrice { get; set; }
     }
 }

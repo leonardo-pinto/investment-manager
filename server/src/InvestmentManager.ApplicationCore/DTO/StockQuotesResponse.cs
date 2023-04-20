@@ -2,13 +2,13 @@
 {
     public class StockQuotesResponse
     {
-        public List<StockQuoteResult> StockQuotes { get; set; }
-        public DateTimeOffset UpdatedAt { get; set; }
+        public required List<StockQuoteResult> StockQuotes { get; set; }
+        public required DateTimeOffset UpdatedAt { get; set; }
     }
 
     public class StockQuoteResult
     {
-        public string Symbol { get; set; }
-        public double Price { get; set; }
+        public required string Symbol { get; set; }
+        public required double Price { get; set; }
     }
 }

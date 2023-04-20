@@ -18,27 +18,27 @@ namespace InvestmentManager.ApplicationCore.Domain.Entities
         /// <summary>
         /// Unique user id
         /// </summary>
-        public string UserId { get; set; }
+        public required string UserId { get; set; }
 
         /// <summary>
         /// Unique symbol of the stock position
         /// </summary>
-        public string Symbol { get; set; }
+        public required string Symbol { get; set; }
 
         /// <summary>
         /// The number of shares of this stock position
         /// </summary>
-        public int Quantity { get; set; }
+        public required int Quantity { get; set; }
 
         /// <summary>
         /// The average price of the stock position
         /// </summary>
-        public double AveragePrice { get; set; }
+        public required double AveragePrice { get; set; }
 
         /// <summary>
         /// Country in which the stock is traded
         /// </summary>
-        public string TradingCountry { get; set; }
+        public required string TradingCountry { get; set; }
 
         /// <summary>
         /// Calculates an updated average price

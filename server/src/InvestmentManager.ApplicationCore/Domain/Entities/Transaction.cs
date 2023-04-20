@@ -17,7 +17,7 @@ namespace InvestmentManager.ApplicationCore.Domain.Entities
         /// <summary>
         /// Unique user id
         /// </summary>
-        public string UserId { get; set; }
+        public required string UserId { get; set; }
 
         /// <summary>
         /// Unique Id of the position from the transaction
@@ -28,7 +28,7 @@ namespace InvestmentManager.ApplicationCore.Domain.Entities
         /// Unique Symbol of the transaction
         /// </summary>
 
-        public string Symbol { get; set; }
+        public required string Symbol { get; set; }
 
         /// <summary>
         /// The number of shares of this transaction
@@ -48,11 +48,11 @@ namespace InvestmentManager.ApplicationCore.Domain.Entities
         /// <summary>
         /// Type of the transaction (buy or sell)
         /// </summary>
-        public string TransactionType { get; set; }
+        public required string TransactionType { get; set; }
 
         /// <summary>
         /// Country in which the stock is traded
         /// </summary>
-        public string TradingCountry { get; set; }
+        public required string TradingCountry { get; set; }
     }
 }
