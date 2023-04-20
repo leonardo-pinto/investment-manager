@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using InvestmentManager.Web.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,13 +69,21 @@ builder.Services.AddTransient<IFinnhubRepository, FinnhubRepository>();
 
 var app = builder.Build();
 
+if(builder.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandlingMiddleware();
+}
+
 // Configure the HTTP request pipeline.
+app.UsePathBase(new PathString("/api"));
 app.UseHsts();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UsePathBase(new PathString("/api"));
-app.UseRouting();
 app.MapControllers();
 
 app.Run();
