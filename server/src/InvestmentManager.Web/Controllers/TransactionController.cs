@@ -17,6 +17,9 @@ namespace InvestmentManager.Web.Controllers
             _transactionService = transactionService;
         }
 
+        /// <summary>
+        /// Get all transactions for a user id
+        /// </summary>
         [HttpGet]
         [Route("user-id/{userId}")]
         async public Task<IActionResult> GetAllTransactionsByUserId(string userId)

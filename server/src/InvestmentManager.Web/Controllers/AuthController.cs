@@ -20,6 +20,9 @@ namespace InvestmentManager.Web.Controllers
             _tokenService = tokenService;
         }
 
+        /// <summary>
+        /// Register a new user
+        /// </summary>
         [HttpPost]
         [Route("register")]
         async public Task<IActionResult> Register(RegisterRequest registerRequest)
@@ -54,6 +57,9 @@ namespace InvestmentManager.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// Login an existing user
+        /// </summary>
         [HttpPost]
         [Route("login")]
         async public Task<IActionResult> Login(LoginRequest loginRequest)

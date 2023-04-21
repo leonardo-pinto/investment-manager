@@ -24,6 +24,9 @@ namespace InvestmentManager.Web.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Gets all stock positions traded in a country for a given user id
+        /// </summary>
         [HttpGet]
         [Route("user-id/{userId}/trading-country/{tradingCountry}")]
         async public Task<IActionResult> GetAllStockPositionsByUserIdAndTradingCountry(
@@ -34,6 +37,9 @@ namespace InvestmentManager.Web.Controllers
             return Ok(new StockPositionResponseList() { StockPositions = stockPositionResponse });
         }
 
+        /// <summary>
+        /// Get a stock position for a given stock position id
+        /// </summary>
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> GetSingleStockPosition(Guid id)
@@ -48,6 +54,9 @@ namespace InvestmentManager.Web.Controllers
             return Ok(stockPositionResponse);
         }
 
+        /// <summary>
+        /// Creates a new stock position
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> CreateStockPosition(AddStockPositionRequest addStockPositionRequest)
         {
@@ -77,6 +86,9 @@ namespace InvestmentManager.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// Updated a stock position
+        /// </summary>
         [HttpPut]
         public async Task<IActionResult> UpdateStockPosition(UpdateStockPositionRequest updateStockPositionRequest)
         {
@@ -104,6 +116,9 @@ namespace InvestmentManager.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// Deletes a stock position
+        /// </summary>
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> DeleteStockPosition(Guid id)

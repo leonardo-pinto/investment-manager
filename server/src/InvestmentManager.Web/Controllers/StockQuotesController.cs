@@ -20,6 +20,11 @@ namespace InvestmentManager.Web.Controllers
             _brApiService = brApiService;
         }
 
+        /// <summary>
+        /// Get update price quote for brazilian stocks
+        /// </summary>
+        /// <param name="symbols"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("br")]
         public async Task<IActionResult> GetBrStockQuotes([FromQuery] string symbols)
@@ -33,6 +38,11 @@ namespace InvestmentManager.Web.Controllers
             });
         }
 
+        /// <summary>
+        /// Get update price quote for us stocks
+        /// </summary>
+        /// <param name="symbols"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("us")]
         public async Task<IActionResult> GetUsStockQuotes([FromQuery] string symbols) 
