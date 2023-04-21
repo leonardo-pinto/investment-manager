@@ -24,7 +24,7 @@ namespace InvestmentManager.UnitTests.Controllers
         #region GetAllTransactionsByUserId
 
         [Fact]
-        async public Task GetAllTransactionsByUserId_ToBeOkWithTransactions()
+        async public Task GetAllTransactionsByUserId_ToBeOk()
         {
             // Arrange
             var userId = _fixture.Create<string>();
@@ -42,11 +42,12 @@ namespace InvestmentManager.UnitTests.Controllers
                 .ReturnsAsync(transactionResponseMock);
 
             // Act
-            IActionResult transactionResponse = await _sut.GetAllTransactionsByUserId(userId);
+            var result = await _sut.GetAllTransactionsByUserId(userId);
 
             // Assert
-            transactionResponse.Should().BeOfType<OkObjectResult>()
-                .Which.Value.Should().BeEquivalentTo(new TransactionsResponse() { Transactions = transactionResponseMock });
+            result.Should().BeOfType<ActionResult<TransactionsResponse>>();
+            var okObjectResult = result.Result as OkObjectResult;
+            okObjectResult?.Value.Should().BeEquivalentTo(new TransactionsResponse() { Transactions = transactionResponseMock });
             _transactionServiceMock.Verify(m => m.GetAllTransactionsByUserId(userId), Times.Once);
         }
         #endregion

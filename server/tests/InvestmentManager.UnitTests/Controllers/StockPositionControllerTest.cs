@@ -44,11 +44,11 @@ namespace InvestmentManager.UnitTests.Controllers
                 .ReturnsAsync(null as StockPositionResponse);
 
             // Act
-            IActionResult result = await _sut.CreateStockPosition(addStockPositionRequest);
+            var result = await _sut.CreateStockPosition(addStockPositionRequest);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>();
-            result.As<BadRequestObjectResult>().Value.Should().BeEquivalentTo(new ErrorResponse() { Error = "Invalid stock symbol" });
+            var badRequestObject = result.Result as BadRequestObjectResult;
+            badRequestObject.As<BadRequestObjectResult>().Value.Should().BeEquivalentTo(new ErrorResponse() { Error = "Invalid stock symbol" });
 
             _stockPositionServiceMock.Verify(m => m.CreateStockPosition(addStockPositionRequest), Times.Once);
         }
@@ -69,12 +69,13 @@ namespace InvestmentManager.UnitTests.Controllers
                 .ReturnsAsync(_fixture.Build<TransactionResponse>().Create());
 
             // Act
-            IActionResult result = await _sut.CreateStockPosition(addStockPositionRequest);
+            var result = await _sut.CreateStockPosition(addStockPositionRequest);
 
             // Assert
-            result.Should().BeOfType<CreatedAtActionResult>();
-            result.As<CreatedAtActionResult>()?.RouteValues["id"].Should().Be(stockPositionResponse?.PositionId);
-            result.As<CreatedAtActionResult>().Value.Should().BeEquivalentTo(stockPositionResponse);
+            result.Should().BeOfType<ActionResult<StockPositionResponse>>();
+            var createdAtActionResult = result.Result as CreatedAtActionResult;
+            createdAtActionResult?.RouteValues["id"].Should().Be(stockPositionResponse?.PositionId);
+            createdAtActionResult?.Value.Should().BeEquivalentTo(stockPositionResponse);
             _stockPositionServiceMock
                 .Verify(m => m.CreateStockPosition(addStockPositionRequest), Times.Once);
             _transactionServiceMock
@@ -102,11 +103,12 @@ namespace InvestmentManager.UnitTests.Controllers
                 .ReturnsAsync(stockPositionResponse);
 
             // Act
-            IActionResult response = await _sut.GetAllStockPositionsByUserIdAndTradingCountry(userId, "BR");
+            var result = await _sut.GetAllStockPositionsByUserIdAndTradingCountry(userId, "BR");
 
             // Assert
-            response.Should().BeOfType<OkObjectResult>();
-            response.As<OkObjectResult>().Value.Should().BeEquivalentTo(new StockPositionsResponse() { StockPositions = stockPositionResponse });
+            result.Should().BeOfType<ActionResult<StockPositionsResponse>>();
+            var okObjectResult = result.Result as OkObjectResult;
+            okObjectResult?.Value.Should().BeEquivalentTo(new StockPositionsResponse() { StockPositions = stockPositionResponse });
             _stockPositionServiceMock.Verify(m => m.GetAllStockPositionsByUserIdAndTradingCountry(userId, "BR"), Times.Once);
         }
 
@@ -125,11 +127,11 @@ namespace InvestmentManager.UnitTests.Controllers
                 .ReturnsAsync(null as StockPositionResponse);
 
             // Act
-            IActionResult response = await _sut.GetSingleStockPosition(id);
+            var result = await _sut.GetSingleStockPosition(id);
 
             // Assert
-            response.Should().BeOfType<NotFoundObjectResult>();
-            response.As<NotFoundObjectResult>().Value.Should().BeEquivalentTo(new ErrorResponse() { Error = "Stock position not found" });
+            var notFoundObjectResult = result.Result as NotFoundObjectResult;
+            notFoundObjectResult?.Value.Should().BeEquivalentTo(new ErrorResponse() { Error = "Stock position not found" });
             _stockPositionServiceMock.Verify(m => m.GetSingleStockPosition(id), Times.Once);
 
         }
@@ -146,11 +148,12 @@ namespace InvestmentManager.UnitTests.Controllers
                 .ReturnsAsync(stockPositionResponse);
 
             // Act
-            IActionResult response = await _sut.GetSingleStockPosition(id);
+            var result = await _sut.GetSingleStockPosition(id);
 
             // Assert
-            response.Should().BeOfType<OkObjectResult>();
-            response.As<OkObjectResult>().Value.Should().Be(stockPositionResponse);
+            result.Should().BeOfType<ActionResult<StockPositionResponse>>();
+            var okObjectResult = result.Result as OkObjectResult;
+            okObjectResult?.Value.Should().Be(stockPositionResponse);
             _stockPositionServiceMock.Verify(m => m.GetSingleStockPosition(id), Times.Once);
         }
         #endregion
@@ -170,11 +173,11 @@ namespace InvestmentManager.UnitTests.Controllers
                 .ReturnsAsync(null as StockPositionResponse);
 
             // Act
-            IActionResult result = await _sut.UpdateStockPosition(updateStockPositionRequest);
+            var result = await _sut.UpdateStockPosition(updateStockPositionRequest);
 
             // Assert
-            result.Should().BeOfType<NotFoundObjectResult>();
-            result.As<NotFoundObjectResult>().Value.Should().BeEquivalentTo(new ErrorResponse() { Error = "Stock position not found" });
+            var notFoundObject = result.Result as NotFoundObjectResult;
+            notFoundObject?.Value.Should().BeEquivalentTo(new ErrorResponse() { Error = "Stock position not found" });
             _stockPositionServiceMock.Verify(m => m.UpdateStockPosition(updateStockPositionRequest), Times.Once);
         }
 
@@ -201,11 +204,12 @@ namespace InvestmentManager.UnitTests.Controllers
                 .ReturnsAsync(_fixture.Build<TransactionResponse>().Create());
 
             // Act
-            IActionResult result = await _sut.UpdateStockPosition(updateStockPositionRequest);
+            var result = await _sut.UpdateStockPosition(updateStockPositionRequest);
 
             // Assert
-            result.Should().BeOfType<OkObjectResult>();
-            result.As<OkObjectResult>().Value.Should().Be(stockPositionResponse);
+            result.Should().BeOfType<ActionResult<StockPositionResponse>>();
+            var okObjectresult = result.Result as OkObjectResult;
+            okObjectresult?.Value.Should().Be(stockPositionResponse);
 
             _stockPositionServiceMock.Verify(m => m.UpdateStockPosition(updateStockPositionRequest), Times.Once);
             _transactionServiceMock.Verify(m => m.CreateTransaction(It.IsAny<AddTransactionRequest>()), Times.Once);

@@ -45,8 +45,9 @@ namespace InvestmentManager.UnitTests.Controllers
             var result = await _sut.GetBrStockQuotes(symbols);
 
             // Assert
-            result.Should().BeOfType<OkObjectResult>()
-               .Which.Value.Should().BeOfType<StockQuotesResponse>();
+            result.Should().BeOfType<ActionResult<StockQuotesResponse>>();
+            var okObjectResult = result.Result as OkObjectResult;
+            okObjectResult?.Value.Should().BeOfType<StockQuotesResponse>();
         }
         #endregion
 
@@ -74,8 +75,9 @@ namespace InvestmentManager.UnitTests.Controllers
             var result = await _sut.GetUsStockQuotes(symbols);
 
             // Assert
-            result.Should().BeOfType<OkObjectResult>()
-                .Which.Value.Should().BeOfType<StockQuotesResponse>();
+            result.Should().BeOfType<ActionResult<StockQuotesResponse>>();
+            var okObjectResult = result.Result as OkObjectResult;
+            okObjectResult?.Value.Should().BeOfType<StockQuotesResponse>();
             _finnhubServiceMock.Verify(m => m.GetMultipleStockPriceQuote(expectedStockSymbols), Times.Once);
         }
         #endregion

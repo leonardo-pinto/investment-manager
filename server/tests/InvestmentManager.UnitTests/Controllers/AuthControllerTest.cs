@@ -42,12 +42,9 @@ namespace InvestmentManager.UnitTests.Controllers
             var result = await _sut.Register(registerRequest);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>()
-                .Which.Value.Should().BeEquivalentTo(new SerializableError
-                   {
-                           { "Register", new []{ "Test error" } }
-                   });
-
+            var badRequestObject = result.Result as BadRequestObjectResult;
+            badRequestObject?.Value.Should().BeEquivalentTo(
+                new SerializableError{ { "Register", new []{ "Test error" } } });
         }
 
         [Fact]
@@ -68,8 +65,8 @@ namespace InvestmentManager.UnitTests.Controllers
             var result = await _sut.Register(registerRequest);
 
             // Assert
-            result.Should().BeOfType<UnauthorizedObjectResult>()
-                .Which.Value.Should().BeEquivalentTo(new ErrorResponse() { Error = "User not found"});
+            var unauthorizedObject = result.Result as UnauthorizedObjectResult;
+            unauthorizedObject?.Value.Should().BeEquivalentTo(new ErrorResponse() { Error = "User not found" });
             _authServiceMock.Verify(m => m.Register(registerRequest), Times.Once);
             _authServiceMock.Verify(m => m.FindUserByUserName(registerRequest.UserName), Times.Once);
         }
@@ -110,8 +107,9 @@ namespace InvestmentManager.UnitTests.Controllers
             var result = await _sut.Register(registerRequest);
 
             // Assert
-            result.Should().BeOfType<OkObjectResult>()
-                .Which.Value.Should().BeEquivalentTo(expectedResult);
+            result.Should().BeOfType<ActionResult<AuthResponse>>();
+            var okObjectResult = result.Result as OkObjectResult;
+            okObjectResult?.Value.Should().BeEquivalentTo(expectedResult);
             _tokenServiceMock.Verify(m => m.GenerateToken(userMock), Times.Once);
         }
 
@@ -119,7 +117,7 @@ namespace InvestmentManager.UnitTests.Controllers
 
         #region Login
         [Fact]
-        public async Task Login_InvalidCredentials_ToBeUnauthorized() 
+        public async Task Login_InvalidCredentials_ToBeUnauthorized()
         {
             // Arrange
             var loginMock = _fixture.Build<LoginRequest>().Create();
@@ -132,12 +130,14 @@ namespace InvestmentManager.UnitTests.Controllers
             var result = await _sut.Login(loginMock);
 
             // Assert
-            result.Should().BeOfType<UnauthorizedObjectResult>()
-                .Which.Value.Should().BeEquivalentTo(new ErrorResponse() { Error = "Invalid credentials" });
+            result.Should().BeOfType<ActionResult<AuthResponse>>();
+            var unauthorizedResult = result.Result as UnauthorizedObjectResult;
+            unauthorizedResult?.Value.Should()
+                .BeEquivalentTo(new ErrorResponse() { Error = "Invalid credentials" });
         }
 
         [Fact]
-        public async Task Login_WhenLoginSucceedsButUserNotFound_ToBeUnauthorized() 
+        public async Task Login_WhenLoginSucceedsButUserNotFound_ToBeUnauthorized()
         {
             // Arrange
             var loginMock = _fixture.Build<LoginRequest>().Create();
@@ -154,7 +154,9 @@ namespace InvestmentManager.UnitTests.Controllers
             var result = await _sut.Login(loginMock);
 
             // Assert
-            result.Should().BeOfType<UnauthorizedObjectResult>();
+            var unauthorizedResult = result.Result as UnauthorizedObjectResult;
+            unauthorizedResult?.Value.Should()
+                .BeEquivalentTo(new ErrorResponse() { Error = "User not found" });
         }
 
         [Fact]
@@ -193,8 +195,15 @@ namespace InvestmentManager.UnitTests.Controllers
             var result = await _sut.Login(loginMock);
 
             // Assert
-            result.Should().BeOfType<OkObjectResult>()
-                .Which.Value.Should().BeEquivalentTo(expectedResult);
+            result.Should().BeOfType<ActionResult<AuthResponse>>();
+            var unauthorizedResult = result.Result as UnauthorizedObjectResult;
+            unauthorizedResult?.Value.Should()
+                .BeEquivalentTo(new ErrorResponse() { Error = "Invalid credentials" });
+
+
+            result.Should().BeOfType<ActionResult<AuthResponse>>();
+            var okObjectResult = result.Result as OkObjectResult;
+            okObjectResult?.Value.Should().BeEquivalentTo(expectedResult);
             _tokenServiceMock.Verify(m => m.GenerateToken(userMock), Times.Once);
         }
 
