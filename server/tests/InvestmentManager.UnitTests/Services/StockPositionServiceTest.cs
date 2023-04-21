@@ -189,7 +189,7 @@ namespace InvestmentManager.UnitTests.Services
                 .ReturnsAsync(new List<StockPosition>());
 
             // Act
-            List<StockPositionResponse> stockPositionResponse = await _sut.GetAllStockPositionsByUserIdAndTradingCountry(userId, "US");
+            var stockPositionResponse = await _sut.GetAllStockPositionsByUserIdAndTradingCountry(userId, "US");
 
             // Assert
             stockPositionResponse.Should().BeEmpty();
@@ -213,13 +213,13 @@ namespace InvestmentManager.UnitTests.Services
                 .ReturnsAsync(stockPositions);
 
             // Act
-            List<StockPositionResponse> stockPositionResponse = await _sut.GetAllStockPositionsByUserIdAndTradingCountry(userId, "BR");
+            var stockPositionResponse = await _sut.GetAllStockPositionsByUserIdAndTradingCountry(userId, "BR");
 
             // Assert
             stockPositionResponse.Should().HaveCount(stockPositions.Count);
-            stockPositionResponse[0].Symbol.Should().Be(stockPositions[0].Symbol);
-            stockPositionResponse[0].Quantity.Should().Be(stockPositions[0].Quantity);
-            stockPositionResponse[0].AveragePrice.Should().Be(stockPositions[0].AveragePrice);
+            stockPositionResponse.ElementAt(0).Symbol.Should().Be(stockPositions[0].Symbol);
+            stockPositionResponse.ElementAt(0).Quantity.Should().Be(stockPositions[0].Quantity);
+            stockPositionResponse.ElementAt(0).AveragePrice.Should().Be(stockPositions[0].AveragePrice);
         }
 
         #endregion

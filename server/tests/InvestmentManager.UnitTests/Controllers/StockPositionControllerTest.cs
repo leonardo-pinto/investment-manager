@@ -106,7 +106,7 @@ namespace InvestmentManager.UnitTests.Controllers
 
             // Assert
             response.Should().BeOfType<OkObjectResult>();
-            response.As<OkObjectResult>().Value.Should().BeEquivalentTo(new StockPositionResponseList() { StockPositions = stockPositionResponse });
+            response.As<OkObjectResult>().Value.Should().BeEquivalentTo(new StockPositionsResponse() { StockPositions = stockPositionResponse });
             _stockPositionServiceMock.Verify(m => m.GetAllStockPositionsByUserIdAndTradingCountry(userId, "BR"), Times.Once);
         }
 

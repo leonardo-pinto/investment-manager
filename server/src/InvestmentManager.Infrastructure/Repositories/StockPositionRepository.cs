@@ -54,7 +54,7 @@ namespace InvestmentManager.Infrastructure.Repositories
             return stockPosition != null;
         }
 
-        public async Task<List<StockPosition>> GetAllStockPositionsByUserIdAndTradingCountry(string userId, string tradingCountry)
+        public async Task<IEnumerable<StockPosition>> GetAllStockPositionsByUserIdAndTradingCountry(string userId, string tradingCountry)
         {
             return await _db.StockPositions
                 .Where(e => e.UserId == userId && e.TradingCountry == tradingCountry).ToListAsync();

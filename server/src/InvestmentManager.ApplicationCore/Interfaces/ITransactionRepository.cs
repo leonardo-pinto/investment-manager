@@ -19,7 +19,7 @@ namespace InvestmentManager.ApplicationCore.Interfaces
         /// Get all the transactions of the given user id in the data base
         /// </summary>
         /// <param name="userId">User id</param>
-        /// <returns>Returns a list containing all transactions</returns>
-        Task<List<Transaction>> GetAllTransactionsByUserId(string userId);
+        /// <returns>Returns an enumerable containing all transactions</returns>
+        Task<IEnumerable<Transaction>> GetAllTransactionsByUserId(string userId);
     }
 }

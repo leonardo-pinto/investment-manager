@@ -29,13 +29,11 @@ namespace InvestmentManager.ApplicationCore.Services
             return transactionResponse;
         }
 
-        public async Task<List<TransactionResponse>> GetAllTransactionsByUserId(string userId)
+        public async Task<IEnumerable<TransactionResponse>> GetAllTransactionsByUserId(string userId)
         {
-            List<Transaction> transactions = await _transactionRepository.GetAllTransactionsByUserId(userId);
+            IEnumerable<Transaction> transactions = await _transactionRepository.GetAllTransactionsByUserId(userId);
 
-            var transactionsResponse = transactions.Select(_mapper.Map<TransactionResponse>).ToList();
-
-            return transactionsResponse;
+            return transactions.Select(_mapper.Map<TransactionResponse>).ToList();
         }
     }
 }

@@ -11,9 +11,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D9388A47
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InvestmentManager.UnitTests", "tests\InvestmentManager.UnitTests\InvestmentManager.UnitTests.csproj", "{E25D5235-1905-4AC4-BEEE-AF9869A3AEFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InvestmentManager.Web", "src\InvestmentManager.Web\InvestmentManager.Web.csproj", "{B93AF0BE-1D35-479E-BDF3-72AA547E675F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InvestmentManager.Web", "src\InvestmentManager.Web\InvestmentManager.Web.csproj", "{B93AF0BE-1D35-479E-BDF3-72AA547E675F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InvestmentManager.ApplicationCore", "src\InvestmentManager.ApplicationCore\InvestmentManager.ApplicationCore.csproj", "{5C113421-7D89-4383-8E38-54019DD6544E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InvestmentManager.ApplicationCore", "src\InvestmentManager.ApplicationCore\InvestmentManager.ApplicationCore.csproj", "{5C113421-7D89-4383-8E38-54019DD6544E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{475ACC5D-D1A8-494F-B814-741296FC933A}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

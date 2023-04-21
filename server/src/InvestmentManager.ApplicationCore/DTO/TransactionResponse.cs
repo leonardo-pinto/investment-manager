@@ -1,6 +1,4 @@
-﻿using InvestmentManager.ApplicationCore.Enums;
-
-namespace InvestmentManager.ApplicationCore.DTO
+﻿namespace InvestmentManager.ApplicationCore.DTO
 {
     /// <summary>
     /// DTO for returning a transaction response
@@ -38,9 +36,9 @@ namespace InvestmentManager.ApplicationCore.DTO
         public required string TransactionType { get; set; }
     }
 
-    public class TransactionResponseList 
+    public class TransactionsResponse
     { 
-        public required List<TransactionResponse> Transactions { get; set; }
+        public required IEnumerable<TransactionResponse> Transactions { get; set; }
     }
 
 }

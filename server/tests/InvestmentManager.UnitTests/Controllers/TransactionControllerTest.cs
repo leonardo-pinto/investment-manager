@@ -46,7 +46,7 @@ namespace InvestmentManager.UnitTests.Controllers
 
             // Assert
             transactionResponse.Should().BeOfType<OkObjectResult>()
-                .Which.Value.Should().BeEquivalentTo(new TransactionResponseList() { Transactions = transactionResponseMock });
+                .Which.Value.Should().BeEquivalentTo(new TransactionsResponse() { Transactions = transactionResponseMock });
             _transactionServiceMock.Verify(m => m.GetAllTransactionsByUserId(userId), Times.Once);
         }
         #endregion

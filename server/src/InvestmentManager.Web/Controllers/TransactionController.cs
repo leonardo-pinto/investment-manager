@@ -24,9 +24,9 @@ namespace InvestmentManager.Web.Controllers
         [Route("user-id/{userId}")]
         async public Task<IActionResult> GetAllTransactionsByUserId(string userId)
         {
-            List<TransactionResponse> transactionHistory = await _transactionService.GetAllTransactionsByUserId(userId);
+            IEnumerable<TransactionResponse> transactionHistory = await _transactionService.GetAllTransactionsByUserId(userId);
 
-            return Ok(new TransactionResponseList() { Transactions = transactionHistory });
+            return Ok(new TransactionsResponse() { Transactions = transactionHistory });
         }
     }
 }

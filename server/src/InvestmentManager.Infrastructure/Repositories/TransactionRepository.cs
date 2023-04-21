@@ -20,7 +20,7 @@ namespace InvestmentManager.Infrastructure.Repositories
             await _db.SaveChangesAsync();
         }
 
-        public async Task<List<Transaction>> GetAllTransactionsByUserId(string userId)
+        public async Task<IEnumerable<Transaction>> GetAllTransactionsByUserId(string userId)
         {
             return await _db.Transactions.Where(e => e.UserId == userId).ToListAsync();
         }

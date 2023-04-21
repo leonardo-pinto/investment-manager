@@ -32,9 +32,9 @@ namespace InvestmentManager.Web.Controllers
         async public Task<IActionResult> GetAllStockPositionsByUserIdAndTradingCountry(
             string userId, string tradingCountry)
         {
-            List<StockPositionResponse> stockPositionResponse = await _stockPositionService.GetAllStockPositionsByUserIdAndTradingCountry(userId, tradingCountry);
+            IEnumerable<StockPositionResponse> stockPositionResponse = await _stockPositionService.GetAllStockPositionsByUserIdAndTradingCountry(userId, tradingCountry);
 
-            return Ok(new StockPositionResponseList() { StockPositions = stockPositionResponse });
+            return Ok(new StockPositionsResponse() { StockPositions = stockPositionResponse });
         }
 
         /// <summary>

@@ -26,9 +26,9 @@
         public required double AveragePrice { get; set; }
     }
 
-    public class StockPositionResponseList
+    public class StockPositionsResponse
     {
-        public List<StockPositionResponse>? StockPositions { get; set; }
+        public IEnumerable<StockPositionResponse>? StockPositions { get; set; }
     }
 
 }

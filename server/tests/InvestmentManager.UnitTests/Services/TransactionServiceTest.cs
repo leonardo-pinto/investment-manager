@@ -72,13 +72,13 @@ namespace InvestmentManager.UnitTests.Services
                 .ReturnsAsync(transactionsListMock);
 
             // Act
-            List<TransactionResponse> transactionListResponse = await _sut.GetAllTransactionsByUserId(userId);
+            var transactionListResponse = await _sut.GetAllTransactionsByUserId(userId);
 
             // Arrange
             transactionListResponse.Should().HaveSameCount(transactionsListMock);
-            transactionListResponse[0].Quantity.Should().Be(transactionsListMock[0].Quantity);
-            transactionListResponse[1].Quantity.Should().Be(transactionsListMock[1].Quantity);
-            transactionListResponse[2].Quantity.Should().Be(transactionsListMock[2].Quantity);
+            transactionListResponse.ElementAt(0).Quantity.Should().Be(transactionsListMock[0].Quantity);
+            transactionListResponse.ElementAt(1).Quantity.Should().Be(transactionsListMock[1].Quantity);
+            transactionListResponse.ElementAt(2).Quantity.Should().Be(transactionsListMock[2].Quantity);
 
             _transactionRepositoryMock
                .Verify(m => m.GetAllTransactionsByUserId(userId), Times.Once);

@@ -27,8 +27,8 @@ namespace InvestmentManager.ApplicationCore.Interfaces
         /// </summary>
         /// <param name="userId">User id</param>
         /// <param name="tradingCountry">Trading country of stock positions</param>
-        /// <returns>List of stock positions</returns>
-        Task<List<StockPositionResponse>> GetAllStockPositionsByUserIdAndTradingCountry(string userId, string tradingCountry);
+        /// <returns>Enumerable of stock positions</returns>
+        Task<IEnumerable<StockPositionResponse>> GetAllStockPositionsByUserIdAndTradingCountry(string userId, string tradingCountry);
 
         /// <summary>
         /// Get a single stock position of a given user
