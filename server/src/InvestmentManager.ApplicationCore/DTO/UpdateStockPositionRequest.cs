@@ -44,6 +44,7 @@ namespace InvestmentManager.ApplicationCore.DTO
         /// Type of the transaction. Buy = 0, Sell = 1
         /// </summary>
         [Required(ErrorMessage = "Transaction type can't be null or empty")]
+        [EnumDataType(typeof(TransactionType))]
         public required TransactionType TransactionType { get; set; }
 
         /// <summary>

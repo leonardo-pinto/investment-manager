@@ -47,6 +47,7 @@ namespace InvestmentManager.ApplicationCore.DTO
         /// The country in which the stock is negotiated
         /// </summary>
         [Required(ErrorMessage = "Trading country can't be null or empty")]
+        [EnumDataType(typeof(TradingCountry))]
         public required TradingCountry TradingCountry { get; set; }
     }
 }

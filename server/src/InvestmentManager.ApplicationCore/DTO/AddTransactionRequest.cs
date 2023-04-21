@@ -51,12 +51,14 @@ namespace InvestmentManager.ApplicationCore.DTO
         /// Type of the transaction (buy or sell)
         /// </summary>
         [Required(ErrorMessage = "Invalid transaction type")]
+        [EnumDataType(typeof(TransactionType))]
         public required TransactionType TransactionType { get; set; }
 
         /// <summary>
         /// The country in which the stock is negotiated
         /// </summary>
         [Required(ErrorMessage = "Trading country can't be null or empty")]
+        [EnumDataType(typeof(TradingCountry))]
         public required TradingCountry TradingCountry { get; set; }
 
 

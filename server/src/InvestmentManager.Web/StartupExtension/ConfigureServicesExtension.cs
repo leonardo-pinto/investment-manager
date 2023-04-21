@@ -6,8 +6,10 @@ using InvestmentManager.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace InvestmentManager
 {
@@ -15,8 +17,16 @@ namespace InvestmentManager
     {
         public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
+
             services.AddHttpClient();
+
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
