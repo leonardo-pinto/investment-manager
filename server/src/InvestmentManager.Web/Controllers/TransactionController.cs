@@ -22,7 +22,7 @@ namespace InvestmentManager.Web.Controllers
         /// </summary>
         [HttpGet]
         [Route("user-id/{userId}")]
-        async public Task<IActionResult> GetAllTransactionsByUserId(string userId)
+        async public Task<ActionResult<TransactionsResponse>> GetAllTransactionsByUserId(string userId)
         {
             IEnumerable<TransactionResponse> transactionHistory = await _transactionService.GetAllTransactionsByUserId(userId);
 

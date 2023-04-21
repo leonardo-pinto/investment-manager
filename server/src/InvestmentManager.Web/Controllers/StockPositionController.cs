@@ -29,7 +29,7 @@ namespace InvestmentManager.Web.Controllers
         /// </summary>
         [HttpGet]
         [Route("user-id/{userId}/trading-country/{tradingCountry}")]
-        async public Task<IActionResult> GetAllStockPositionsByUserIdAndTradingCountry(
+        async public Task<ActionResult<StockPositionsResponse>> GetAllStockPositionsByUserIdAndTradingCountry(
             string userId, string tradingCountry)
         {
             IEnumerable<StockPositionResponse> stockPositionResponse = await _stockPositionService.GetAllStockPositionsByUserIdAndTradingCountry(userId, tradingCountry);
@@ -42,7 +42,7 @@ namespace InvestmentManager.Web.Controllers
         /// </summary>
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> GetSingleStockPosition(Guid id)
+        public async Task<ActionResult<StockPositionResponse>> GetSingleStockPosition(Guid id)
         {
             StockPositionResponse? stockPositionResponse = await _stockPositionService.GetSingleStockPosition(id);
 
@@ -58,7 +58,7 @@ namespace InvestmentManager.Web.Controllers
         /// Creates a new stock position
         /// </summary>
         [HttpPost]
-        public async Task<IActionResult> CreateStockPosition(AddStockPositionRequest addStockPositionRequest)
+        public async Task<ActionResult<StockPositionResponse>> CreateStockPosition(AddStockPositionRequest addStockPositionRequest)
         {
             try
             {
@@ -90,7 +90,7 @@ namespace InvestmentManager.Web.Controllers
         /// Updated a stock position
         /// </summary>
         [HttpPut]
-        public async Task<IActionResult> UpdateStockPosition(UpdateStockPositionRequest updateStockPositionRequest)
+        public async Task<ActionResult<StockPositionResponse>> UpdateStockPosition(UpdateStockPositionRequest updateStockPositionRequest)
         {
             try
             {
@@ -121,7 +121,7 @@ namespace InvestmentManager.Web.Controllers
         /// </summary>
         [HttpDelete]
         [Route("{id}")]
-        public async Task<IActionResult> DeleteStockPosition(Guid id)
+        public async Task<ActionResult> DeleteStockPosition(Guid id)
         {
             try
             {

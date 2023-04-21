@@ -27,7 +27,7 @@ namespace InvestmentManager.Web.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("br")]
-        public async Task<IActionResult> GetBrStockQuotes([FromQuery] string symbols)
+        public async Task<ActionResult<StockQuotesResponse>> GetBrStockQuotes([FromQuery] string symbols)
         {
             var stockQuotes = await _brApiService.GetStocksPriceQuote(symbols);
 
@@ -45,7 +45,7 @@ namespace InvestmentManager.Web.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("us")]
-        public async Task<IActionResult> GetUsStockQuotes([FromQuery] string symbols) 
+        public async Task<ActionResult<StockQuotesResponse>> GetUsStockQuotes([FromQuery] string symbols) 
         {
             string[] symbolsArr = symbols.Split(",");
             var stockQuotes = await _finnhubService.GetMultipleStockPriceQuote(symbolsArr);
