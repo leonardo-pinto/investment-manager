@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InvestmentManager.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230417230931_AddUserId")]
-    partial class AddUserId
+    [Migration("20230422190004_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,11 +41,17 @@ namespace InvestmentManager.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("TradingCountry")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("PositionId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("StockPositions", (string)null);
                 });
@@ -55,9 +61,6 @@ namespace InvestmentManager.Infrastructure.Migrations
                     b.Property<Guid>("TransactionId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<double>("Cost")
-                        .HasColumnType("float");
 
                     b.Property<DateTime>("DateAndTimeOfTransaction")
                         .HasColumnType("datetime2");
@@ -72,6 +75,10 @@ namespace InvestmentManager.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Symbol")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TradingCountry")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -290,6 +297,15 @@ namespace InvestmentManager.Infrastructure.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("InvestmentManager.ApplicationCore.Domain.Entities.StockPosition", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("InvestmentManager.ApplicationCore.Domain.Entities.Transaction", b =>
