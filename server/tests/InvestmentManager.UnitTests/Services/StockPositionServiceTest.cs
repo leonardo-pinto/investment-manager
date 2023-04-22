@@ -10,6 +10,7 @@ using AutoMapper;
 using InvestmentManager.ApplicationCore.Mapper;
 using InvestmentManager.ApplicationCore.Exceptions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace InvestmentManager.UnitTests.Services
 {
@@ -20,6 +21,7 @@ namespace InvestmentManager.UnitTests.Services
         private readonly Mock<IBrApiService> _brApiServiceMock;
         private readonly Mock<IStockPositionRepository> _stockPositionRepositoryMock;
         private readonly Mock<ILogger<StockPositionService>> _loggerMock;
+        private readonly Mock<IMemoryCache> _memoryCacheMock;
         private readonly IFixture _fixture;
 
         public StockPositionServiceTest()
@@ -30,12 +32,15 @@ namespace InvestmentManager.UnitTests.Services
             _brApiServiceMock = new Mock<IBrApiService>(MockBehavior.Strict);
             _stockPositionRepositoryMock = new Mock<IStockPositionRepository>(MockBehavior.Strict);
             _loggerMock = new Mock<ILogger<StockPositionService>>(MockBehavior.Loose);
+            _memoryCacheMock = new Mock<IMemoryCache>(MockBehavior.Loose);
+
             _sut = new StockPositionService(
                 _finnhubServiceMock.Object,
                 _brApiServiceMock.Object,
                 _stockPositionRepositoryMock.Object,
                 mapper,
-                _loggerMock.Object
+                _loggerMock.Object,
+                _memoryCacheMock.Object
              );
             _fixture = new Fixture();
         }
@@ -188,6 +193,10 @@ namespace InvestmentManager.UnitTests.Services
                 .Setup(m => m.GetAllStockPositionsByUserIdAndTradingCountry(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new List<StockPosition>());
 
+            var entryMock = new Mock<ICacheEntry>();
+            _memoryCacheMock.Setup(m => m.CreateEntry(It.IsAny<object>()))
+                .Returns(entryMock.Object);
+
             // Act
             var stockPositionResponse = await _sut.GetAllStockPositionsByUserIdAndTradingCountry(userId, "US");
 
@@ -211,6 +220,10 @@ namespace InvestmentManager.UnitTests.Services
             _stockPositionRepositoryMock
                 .Setup(m => m.GetAllStockPositionsByUserIdAndTradingCountry(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(stockPositions);
+
+            var entryMock = new Mock<ICacheEntry>();
+            _memoryCacheMock.Setup(m => m.CreateEntry(It.IsAny<object>()))
+                .Returns(entryMock.Object);
 
             // Act
             var stockPositionResponse = await _sut.GetAllStockPositionsByUserIdAndTradingCountry(userId, "BR");

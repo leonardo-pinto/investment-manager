@@ -7,6 +7,7 @@ using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Services;
 using InvestmentManager.ApplicationCore.Mapper;
 using Moq;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace InvestmentManager.UnitTests.Services
 {
@@ -14,6 +15,7 @@ namespace InvestmentManager.UnitTests.Services
     {
         private readonly ITransactionService _sut;
         private readonly Mock<ITransactionRepository> _transactionRepositoryMock;
+        private readonly Mock<IMemoryCache> _memoryCacheMock;
         private readonly IFixture _fixture;
 
         public TransactionServiceTest()
@@ -22,8 +24,10 @@ namespace InvestmentManager.UnitTests.Services
             IMapper mapper = new Mapper(autoMapperConfig);
 
             _transactionRepositoryMock = new Mock<ITransactionRepository>(MockBehavior.Strict);
+            _memoryCacheMock = new Mock<IMemoryCache>(MockBehavior.Loose);
+
             _sut = new TransactionService(
-                _transactionRepositoryMock.Object, mapper);
+                _transactionRepositoryMock.Object, mapper, _memoryCacheMock.Object);
             _fixture = new Fixture();
         }
 
@@ -70,6 +74,10 @@ namespace InvestmentManager.UnitTests.Services
             _transactionRepositoryMock
                 .Setup(m => m.GetAllTransactionsByUserId(It.IsAny<string>()))
                 .ReturnsAsync(transactionsListMock);
+
+            var entryMock = new Mock<ICacheEntry>();
+            _memoryCacheMock.Setup(m => m.CreateEntry(It.IsAny<object>()))
+                .Returns(entryMock.Object);
 
             // Act
             var transactionListResponse = await _sut.GetAllTransactionsByUserId(userId);
