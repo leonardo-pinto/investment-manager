@@ -92,6 +92,7 @@ namespace InvestmentManager
                     };
                 });
 
+            services.AddMemoryCache();
             services.AddAutoMapper(typeof(MappingProfile));
 
             services.AddScoped<IBrApiRepository, BrApiRepository>();

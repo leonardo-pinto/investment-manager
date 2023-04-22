@@ -6,6 +6,7 @@ using InvestmentManager.ApplicationCore.Exceptions;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace InvestmentManager.ApplicationCore.Services
 {
@@ -16,18 +17,21 @@ namespace InvestmentManager.ApplicationCore.Services
         private readonly IStockPositionRepository _stockPositionRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<StockPositionService> _logger;
+        private readonly IMemoryCache _memoryCache;
 
         public StockPositionService(
             IFinnhubService finnhubService,
             IBrApiService brApiService,
             IStockPositionRepository stockPositionRepository,
-            IMapper mapper, ILogger<StockPositionService> logger)
+            IMapper mapper, ILogger<StockPositionService> logger,
+            IMemoryCache memoryCache)
         {
             _finnhubService = finnhubService;
             _brApiService = brApiService;
             _stockPositionRepository = stockPositionRepository;
             _mapper = mapper;
             _logger = logger;
+            _memoryCache = memoryCache;
         }
 
         public async Task<StockPositionResponse?> CreateStockPosition(AddStockPositionRequest addStockPositionRequest)
@@ -60,6 +64,8 @@ namespace InvestmentManager.ApplicationCore.Services
 
             await _stockPositionRepository.CreateStockPosition(stockPosition);
 
+            _memoryCache.Remove($"stocksUser{addStockPositionRequest.UserId}Country{addStockPositionRequest.TradingCountry}");
+
             StockPositionResponse stockPositionResponse = _mapper.Map<StockPositionResponse>(stockPosition);
             return stockPositionResponse;
         }
@@ -80,13 +86,26 @@ namespace InvestmentManager.ApplicationCore.Services
                 throw new InvalidStockQuantityException("It is not possible to delete a stock position which quantity is not zero.");
             }
 
-            return await _stockPositionRepository.DeleteStockPosition(positionId);
+            bool result = await _stockPositionRepository.DeleteStockPosition(positionId);
+            string cacheKey = $"stocksUser{stockPosition.UserId}Country{stockPosition.TradingCountry}";
+            _memoryCache.Remove(cacheKey);
+            
+            return result;
         }
 
         async public Task<IEnumerable<StockPositionResponse>> GetAllStockPositionsByUserIdAndTradingCountry(string userId, string tradingCountry)
         {
-            IEnumerable<StockPosition> stockPositions = await _stockPositionRepository.GetAllStockPositionsByUserIdAndTradingCountry(userId, tradingCountry);
+            string cacheKey = $"stocksUser{userId}Country{tradingCountry.ToUpper()}";
 
+            if (!_memoryCache.TryGetValue(cacheKey, out IEnumerable<StockPosition> stockPositions))
+            {
+                stockPositions = await _stockPositionRepository.GetAllStockPositionsByUserIdAndTradingCountry(userId, tradingCountry);
+
+                _memoryCache.Set(
+                    cacheKey,
+                    stockPositions,
+                    TimeSpan.FromMinutes(10));
+            }
             return stockPositions.Select(e => _mapper.Map<StockPositionResponse>(e)).ToList();
         }
 
@@ -117,6 +136,9 @@ namespace InvestmentManager.ApplicationCore.Services
                 matchingStock, updateStockPositionRequest);
 
             await _stockPositionRepository.UpdateStockPosition(matchingStock);
+
+            string cacheKey = $"stocksUser{matchingStock.UserId}Country{matchingStock.TradingCountry}";
+            _memoryCache.Remove(cacheKey);
 
             return _mapper.Map<StockPositionResponse>(matchingStock);
         }
