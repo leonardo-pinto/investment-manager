@@ -22,8 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\InvestmentManager.ApplicationCore\InvestmentManager.ApplicationCore.csproj" />
-    <ProjectReference Include="..\src\InvestmentManager.Infrastructure\InvestmentManager.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\InvestmentManager.ApplicationCore\InvestmentManager.ApplicationCore.csproj" />
+    <ProjectReference Include="..\..\src\InvestmentManager.Infrastructure\InvestmentManager.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
