@@ -26,10 +26,13 @@
 
 ## Getting Started
 
-### Server
+## Server
+
+#### Disclaimer
+:warning: Since this is a personal project which was developed to practice software engineering skills, all server sensitive data (e.g., db connection string, jwt token and thirdt-party api tokens) are stored on appsettings.json. In a real scenario, these information should be stored in a secret environment. For more information, check [here](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-7.0)
 
 #### Prerequisites
-* .NET Core 7.0 SDK
+* .NET Core 7.0 SDK (to run local)
 * Docker (optional)
 
 #### Create a Finnhub API Token
@@ -44,6 +47,8 @@
 
 
 #### Running the server using a local SQL Server
+
+The application can be run locally using a local SQL Server following the steps:
 
 1. Add your connection string in appsettings.json to point to a local SQL Server instance
 ```sh
@@ -72,4 +77,17 @@ These commands will create a single database, which will store user credentials,
   dotnet run
   ```
 
+5. The application should be running on localhost:5252
+
+#### Running the server using Docker
+
+Both the application and database can run inside a Docker container following the steps:
+
+1. Run to following commands from the server folder where the .sln file is located (investment-manager/server)
+```sh
+  docker-compose build
+  docker-compose up
+  ```
+
+2. The application should be running on localhost:5000
 
