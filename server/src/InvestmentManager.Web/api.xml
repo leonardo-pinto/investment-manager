@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>InvestmentManager.Web</name>
+    </assembly>
+    <members>
+        <member name="M:InvestmentManager.Web.Controllers.AuthController.Register(InvestmentManager.ApplicationCore.DTO.RegisterRequest)">
+            <summary>
+            Register a new user
+            </summary>
+        </member>
+        <member name="M:InvestmentManager.Web.Controllers.AuthController.Login(InvestmentManager.ApplicationCore.DTO.LoginRequest)">
+            <summary>
+            Login an existing user
+            </summary>
+        </member>
+        <member name="M:InvestmentManager.Web.Controllers.StockPositionController.GetAllStockPositionsByUserIdAndTradingCountry(System.String,System.String)">
+            <summary>
+            Gets all stock positions traded in a country for a given user id
+            </summary>
+        </member>
+        <member name="M:InvestmentManager.Web.Controllers.StockPositionController.GetSingleStockPosition(System.Guid)">
+            <summary>
+            Get a stock position for a given stock position id
+            </summary>
+        </member>
+        <member name="M:InvestmentManager.Web.Controllers.StockPositionController.CreateStockPosition(InvestmentManager.ApplicationCore.DTO.AddStockPositionRequest)">
+            <summary>
+            Creates a new stock position
+            </summary>
+        </member>
+        <member name="M:InvestmentManager.Web.Controllers.StockPositionController.UpdateStockPosition(InvestmentManager.ApplicationCore.DTO.UpdateStockPositionRequest)">
+            <summary>
+            Updated a stock position
+            </summary>
+        </member>
+        <member name="M:InvestmentManager.Web.Controllers.StockPositionController.DeleteStockPosition(System.Guid)">
+            <summary>
+            Deletes a stock position
+            </summary>
+        </member>
+        <member name="M:InvestmentManager.Web.Controllers.StockQuotesController.GetBrStockQuotes(System.String)">
+            <summary>
+            Get update price quote for brazilian stocks
+            </summary>
+            <param name="symbols"></param>
+            <returns></returns>
+        </member>
+        <member name="M:InvestmentManager.Web.Controllers.StockQuotesController.GetUsStockQuotes(System.String)">
+            <summary>
+            Get update price quote for us stocks
+            </summary>
+            <param name="symbols"></param>
+            <returns></returns>
+        </member>
+        <member name="M:InvestmentManager.Web.Controllers.TransactionController.GetAllTransactionsByUserId(System.String)">
+            <summary>
+            Get all transactions for a user id
+            </summary>
+        </member>
+    </members>
+</doc>
