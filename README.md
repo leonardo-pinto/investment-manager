@@ -10,7 +10,7 @@
 
 ### Server
 * .NET Core 7.0
-* ASP.NET WebApi
+* <span>ASP.NET WebApi</span>
 * Clean Architecture
 * Entity Framework Core - Code First
 * Sql Server
