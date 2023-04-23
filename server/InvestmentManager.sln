@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InvestmentManager.IntegrationTests", "InvestmentManager.IntegrationTests\InvestmentManager.IntegrationTests.csproj", "{21E85DF7-6255-4CF1-B7C5-013B85056F79}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InvestmentManager.IntegrationTests", "tests\InvestmentManager.IntegrationTests\InvestmentManager.IntegrationTests.csproj", "{21E85DF7-6255-4CF1-B7C5-013B85056F79}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
