@@ -4,7 +4,11 @@
 </template>
 
 <script setup lang="ts">
+import { useStore } from './store';
 import TheHeader from './layout/TheHeader.vue';
+
+const store = useStore();
+store.dispatch('auth/autoLogin');
 </script>
 
 <style>
