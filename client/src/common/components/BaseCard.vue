@@ -1,8 +1,20 @@
 <template>
-  <div class="card">
+  <div class="card" :style="{ width: props.cardWidth }">
     <slot></slot>
   </div>
 </template>
+
+<script setup lang="ts">
+interface Props {
+  cardWidth?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  cardWidth: '80%',
+});
+
+console.log(props.cardWidth);
+</script>
 
 <style scoped>
 .card {
