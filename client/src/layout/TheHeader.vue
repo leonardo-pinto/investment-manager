@@ -18,7 +18,7 @@
           <BaseButton link to="/transactions">Transactions</BaseButton>
         </li>
         <li>
-          <BaseButton link to="/transactions" mode="outline">Logout</BaseButton>
+          <BaseButton @click="logout" mode="outline">Logout</BaseButton>
         </li>
       </ul>
     </nav>
@@ -28,9 +28,16 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useStore } from '../store';
+import { useRouter } from 'vue-router';
 
 const store = useStore();
+const router = useRouter();
 const isAuth = computed<boolean>(() => store.getters['auth/isAuthenticated']);
+
+const logout = () => {
+  store.dispatch('auth/logout');
+  router.replace('/');
+};
 </script>
 
 <style scoped>
