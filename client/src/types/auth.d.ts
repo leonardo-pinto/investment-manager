@@ -11,6 +11,6 @@ export interface AuthRegisterRequest {
 
 export interface AuthResponse {
   id: string;
-  userName: string;
+  username: string;
   accessToken: string;
 }
