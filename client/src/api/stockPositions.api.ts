@@ -1,10 +1,10 @@
+import { TradingCountry } from '../enums';
 import {
   CreateStockPositionRequest,
   StockPositionListResponse,
   StockPositionResponse,
-  TradingCountry,
   UpdateStockPositionRequest,
-} from '@/types/stockPosition';
+} from '../types/stockPosition';
 import httpClient from './httpClient';
 
 const STOCK_POSITION_ROUTE = '/stock-position';
