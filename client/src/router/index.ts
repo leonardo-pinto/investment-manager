@@ -19,10 +19,16 @@ const router = createRouter({
     {
       path: '/',
       component: () => import('../views/AuthLogin.vue'),
+      meta: {
+        requiresAuth: false,
+      },
     },
     {
       path: '/login',
       component: () => import('../views/AuthLogin.vue'),
+      meta: {
+        requiresAuth: false,
+      },
     },
     {
       path: '/register',
@@ -34,10 +40,16 @@ const router = createRouter({
     {
       path: '/stock-positions',
       component: () => import('../views/StockPositions.vue'),
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
       path: '/transactions',
       component: () => import('../views/Transactions.vue'),
+      meta: {
+        requiresAuth: true,
+      },
     },
   ],
 });
