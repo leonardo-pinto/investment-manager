@@ -12,8 +12,6 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   cardWidth: '80%',
 });
-
-console.log(props.cardWidth);
 </script>
 
 <style scoped>
