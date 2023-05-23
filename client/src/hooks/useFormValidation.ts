@@ -1,8 +1,8 @@
 import { reactive } from 'vue';
 
-const errors: { [key: string]: string } = reactive({});
-
 export default function useFormValidation() {
+  const errors: { [key: string]: string } = reactive({});
+
   const isFormValid = (data: { [key: string]: string }): boolean => {
     const hasEmptyData = Object.values(data).some((value) => value === '');
     const hasErrors = Object.values(errors).some((error) => error !== '');
@@ -39,8 +39,9 @@ export default function useFormValidation() {
     if (isPasswordValid && confirmation === '') {
       errors['passwordConfirmation'] = 'Confirm your password.';
     } else if (isPasswordValid && password !== confirmation) {
-      errors['passwordConfirmation'] =
-        'Password and password confirmation must match.';
+      errors['passwordConfirmation'] = 'Password and confirmation must match.';
+    } else {
+      errors['passwordConfirmation'] = '';
     }
   };
 
