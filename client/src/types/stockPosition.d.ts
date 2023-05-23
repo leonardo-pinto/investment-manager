@@ -1,12 +1,4 @@
-export enum TradingCountry {
-  US = 'US',
-  BR = 'BR',
-}
-
-export enum TransactionType {
-  Buy = 'Buy',
-  Sell = 'Sell',
-}
+import { TradingCountry, TransactionType } from '../enums';
 
 export interface CreateStockPositionRequest {
   symbol: string;
@@ -46,4 +38,9 @@ export interface StockPositionData extends StockPositionResponse {
   dayGainMonetary: number;
   gainPercentage: number;
   gainMonetary: number;
+}
+
+export interface GetAllStockPositionsRequest {
+  userId: string;
+  tradingCountry: TradingCountry;
 }
