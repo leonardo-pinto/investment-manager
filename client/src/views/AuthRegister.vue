@@ -12,7 +12,7 @@
         <input
           type="text"
           id="username"
-          v-model="registerData.username"
+          v-model.trim="registerData.username"
           @blur="validateEmptyField(registerData.username, 'username')"
         />
         <p v-if="errors.username" class="error-message">
@@ -26,7 +26,7 @@
             <input
               type="password"
               id="password"
-              v-model="registerData.password"
+              v-model.trim="registerData.password"
               @blur="validatePassword(registerData.password)"
             />
           </div>
@@ -54,6 +54,9 @@
         <p v-if="errors.passwordConfirmation" class="error-message">
           {{ errors.passwordConfirmation }}
         </p>
+      </div>
+      <div v-if="apiResponseError" class="error-api-response-message">
+        {{ apiResponseError }}
       </div>
       <BaseButton class="register-btn">Register</BaseButton>
       <div class="register">
@@ -98,6 +101,8 @@ const validateAllFormFields = (): void => {
   );
 };
 
+const apiResponseError = ref('');
+
 const submitForm = async () => {
   validateAllFormFields();
   if (!isFormValid(registerData.value)) {
@@ -115,8 +120,7 @@ const submitForm = async () => {
     await store.dispatch('auth/register', authCredentials);
     router.replace('/stock-positions');
   } catch (error) {
-    console.log('error -> ' + error);
-    console.log((error as any)?.response?.data?.error);
+    apiResponseError.value = (error as any).response?.data?.error;
   }
   isLoading.value = false;
 };
@@ -204,8 +208,13 @@ p {
 }
 
 .invalid label,
-.error-message {
+.error-message,
+.error-api-response-message {
   color: red;
+}
+
+.error-api-response-message {
+  font-size: 1.1rem;
 }
 
 .error-message {
