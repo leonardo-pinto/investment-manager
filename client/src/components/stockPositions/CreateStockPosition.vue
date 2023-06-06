@@ -3,7 +3,7 @@
     :show="props.show"
     width="80%"
     title="Register new stock position"
-    @close="emit('close')"
+    @close="handleClose"
   >
     <form>
       <div class="form-row">
@@ -97,6 +97,17 @@ const stockPositionData = ref({
   averagePrice: 0.01,
 });
 
+function clearFields() {
+  stockPositionData.value.symbol = '';
+  stockPositionData.value.quantity = 1;
+  stockPositionData.value.averagePrice = 0.01;
+}
+
+function handleClose(): void {
+  clearFields();
+  emit('close');
+}
+
 const validateAllFormFields = (): void => {
   validateEmptyField(stockPositionData.value.symbol, 'symbol');
   validatePositiveValue(stockPositionData.value.quantity, 'quantity');
@@ -124,7 +135,7 @@ const submitForm = async () => {
       createStockPositionRequest
     );
     await store.dispatch('stockPositions/updatedStockPositionsQuote');
-    emit('close');
+    handleClose();
   } catch (error) {
     errors['symbol'] = (error as any).response.data.error;
   }
