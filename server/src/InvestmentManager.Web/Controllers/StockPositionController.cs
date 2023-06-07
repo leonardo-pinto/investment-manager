@@ -4,7 +4,6 @@ using InvestmentManager.ApplicationCore.Exceptions;
 using InvestmentManager.ApplicationCore.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace InvestmentManager.Web.Controllers
 {
@@ -82,7 +81,7 @@ namespace InvestmentManager.Web.Controllers
             }
             catch (RepeatedStockSymbolException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ErrorResponse() { Error = ex.Message });
             }
         }
 
