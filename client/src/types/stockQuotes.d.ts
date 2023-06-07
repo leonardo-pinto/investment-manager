@@ -1,4 +1,4 @@
-export interface StockQuotesListResponse {
+export interface StockQuotesList {
   stockQuotes: StockQuote[];
   updatedAt: string;
 }

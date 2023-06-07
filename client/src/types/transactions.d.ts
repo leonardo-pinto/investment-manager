@@ -1,7 +1,3 @@
-export interface TransactionsResponse {
-  transactions: Transaction[];
-}
-
 export interface Transaction {
   symbol: string;
   quantity: number;

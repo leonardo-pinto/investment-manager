@@ -1,5 +1,22 @@
 import { TradingCountry, TransactionType } from '../enums';
 
+export interface StockPosition {
+  positionId: string;
+  symbol: string;
+  quantity: number;
+  averagePrice: number;
+  price: number;
+}
+
+export interface StockPositions {
+  stockPositions: StockPosition[];
+}
+
+export interface StockPositionsByCountry {
+  stockPositions: StockPosition[];
+  updatedAt?: string | null;
+}
+
 export interface CreateStockPositionRequest {
   symbol: string;
   userId: string;
@@ -11,36 +28,10 @@ export interface CreateStockPositionRequest {
 
 export interface UpdateStockPositionRequest {
   positionId: string;
-  userId: string;
+  userId?: string;
   symbol: string;
   quantity: number;
   price: number;
   transactionType: TransactionType;
   dateAndTimeOfStockPosition: string;
-}
-
-export interface StockPositionResponse {
-  positionId: string;
-  symbol: string;
-  quantity: number;
-  averagePrice: number;
-}
-
-export interface StockPositionListResponse {
-  stockPositions: StockPositionResponse[];
-}
-
-export interface StockPositionData extends StockPositionResponse {
-  price: number;
-  cost: number;
-  marketValue: number;
-  dayGainPercentage: number;
-  dayGainMonetary: number;
-  gainPercentage: number;
-  gainMonetary: number;
-}
-
-export interface GetAllStockPositionsRequest {
-  userId: string;
-  tradingCountry: TradingCountry;
 }
