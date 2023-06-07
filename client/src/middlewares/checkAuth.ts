@@ -7,6 +7,8 @@ export default function checkAuth(
 ) {
   if (requiresAuth && !isAuth) {
     next('/login');
+  } else if (!requiresAuth && isAuth) {
+    next('/stock-positions');
   } else {
     next();
   }
