@@ -1,7 +1,7 @@
 <template>
   <BaseDialog
     :show="props.show"
-    title="Buy stock position"
+    :title="title"
     width="50%"
     @close="handleClose"
   >
@@ -42,15 +42,20 @@
           {{ errors.price }}
         </p>
       </div>
+      <div v-if="apiResponseError" class="error-api-response-message">
+        {{ apiResponseError }}
+      </div>
     </form>
     <template #actions>
-      <BaseButton @click="submitForm">Buy</BaseButton>
+      <BaseButton @click="submitForm">{{
+        props.transactionType.toString()
+      }}</BaseButton>
     </template>
   </BaseDialog>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import {
   StockPosition,
   UpdateStockPositionRequest,
@@ -64,6 +69,7 @@ const store = useStore();
 interface Props {
   show: boolean;
   stockPosition: StockPosition | null;
+  transactionType: TransactionType;
 }
 
 const props = defineProps<Props>();
@@ -76,6 +82,12 @@ const stockPositionData = ref({
   price: 0.01,
 });
 
+const title = computed<string>(() =>
+  props.transactionType == TransactionType.Buy
+    ? 'Buy stock position'
+    : 'Sell stock position'
+);
+
 function validateAllFormFields(): void {
   validatePositiveValue(stockPositionData.value.quantity, 'quantity');
   validatePositiveValue(stockPositionData.value.price, 'price');
@@ -84,12 +96,15 @@ function validateAllFormFields(): void {
 function clearFields() {
   stockPositionData.value.quantity = 1;
   stockPositionData.value.price = 0.01;
+  apiResponseError.value = '';
 }
 
 function handleClose(): void {
   clearFields();
   emit('close');
 }
+
+const apiResponseError = ref('');
 
 const submitForm = async () => {
   validateAllFormFields();
@@ -103,7 +118,7 @@ const submitForm = async () => {
     symbol: props.stockPosition?.symbol ?? '',
     quantity: stockPositionData.value.quantity,
     price: stockPositionData.value.price,
-    transactionType: TransactionType.Buy,
+    transactionType: props.transactionType,
     dateAndTimeOfStockPosition: new Date().toISOString(),
   };
 
@@ -112,7 +127,7 @@ const submitForm = async () => {
     await store.dispatch('stockPositions/updatedStockPositionsQuote');
     handleClose();
   } catch (error) {
-    errors['symbol'] = (error as any).response.data.error;
+    apiResponseError.value = (error as any).response?.data?.error;
   }
 };
 </script>
@@ -153,12 +168,17 @@ input:focus {
 }
 
 .invalid label,
-.error-message {
+.error-message,
+.error-api-response-message {
   color: red;
 }
 
 .error-message {
   font-size: 0.8rem;
+}
+
+.error-api-response-message {
+  font-size: 1.1rem;
 }
 
 .invalid input {
