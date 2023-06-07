@@ -25,7 +25,7 @@
             type="number"
             id="quantity"
             min="1"
-            v-model.trim="stockPositionData.quantity"
+            v-model="stockPositionData.quantity"
             @blur="
               validatePositiveValue(stockPositionData.quantity, 'quantity')
             "
@@ -43,7 +43,7 @@
             id="averagePrice"
             min="0.01"
             step=".01"
-            v-model.trim="stockPositionData.averagePrice"
+            v-model="stockPositionData.averagePrice"
             @blur="
               validatePositiveValue(
                 stockPositionData.averagePrice,
