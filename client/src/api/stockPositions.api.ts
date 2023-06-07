@@ -1,8 +1,8 @@
 import { TradingCountry } from '../enums';
 import {
   CreateStockPositionRequest,
-  StockPositionListResponse,
-  StockPositionResponse,
+  StockPosition,
+  StockPositions,
   UpdateStockPositionRequest,
 } from '../types/stockPosition';
 import httpClient from './httpClient';
@@ -11,43 +11,44 @@ const STOCK_POSITION_ROUTE = '/stock-position';
 
 const createStockPosition = async (
   createStockPosition: CreateStockPositionRequest
-): Promise<StockPositionResponse> => {
-  const res = await httpClient.post<StockPositionResponse>(
+): Promise<StockPosition> => {
+  const res = await httpClient.post<StockPosition>(
     STOCK_POSITION_ROUTE,
     createStockPosition
   );
+
   return res.data;
 };
 
 const getAllStockPositions = async (
   userId: string,
   tradingCountry: TradingCountry
-): Promise<StockPositionListResponse> => {
-  const res = await httpClient.get<StockPositionListResponse>(
+): Promise<StockPosition[]> => {
+  const res = await httpClient.get<StockPositions>(
     `${STOCK_POSITION_ROUTE}/user-id/${userId}/trading-country/${tradingCountry}`
   );
-  return res.data;
+  return res.data.stockPositions;
 };
 
 const getStockPositionById = async (
   positionId: string
-): Promise<StockPositionResponse> => {
-  const res = await httpClient.get<StockPositionResponse>(
+): Promise<StockPosition> => {
+  const res = await httpClient.get<StockPosition>(
     `${STOCK_POSITION_ROUTE}/${positionId}`
   );
   return res.data;
 };
 
 const deleteStockPosition = async (positionId: string): Promise<void> => {
-  await httpClient.delete<StockPositionResponse>(
+  await httpClient.delete<StockPosition>(
     `${STOCK_POSITION_ROUTE}/${positionId}`
   );
 };
 
 const updateStockPosition = async (
   updateStockPosition: UpdateStockPositionRequest
-): Promise<StockPositionResponse> => {
-  const res = await httpClient.put<StockPositionResponse>(
+): Promise<StockPosition> => {
+  const res = await httpClient.put<StockPosition>(
     STOCK_POSITION_ROUTE,
     updateStockPosition
   );
