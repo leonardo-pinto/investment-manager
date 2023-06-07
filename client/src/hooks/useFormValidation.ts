@@ -3,7 +3,7 @@ import { reactive } from 'vue';
 export default function useFormValidation() {
   const errors: { [key: string]: string } = reactive({});
 
-  const isFormValid = (data: { [key: string]: string }): boolean => {
+  const isFormValid = (data: { [key: string]: any }): boolean => {
     const hasEmptyData = Object.values(data).some((value) => value === '');
     const hasErrors = Object.values(errors).some((error) => error !== '');
     return !hasEmptyData && !hasErrors;
@@ -45,11 +45,21 @@ export default function useFormValidation() {
     }
   };
 
+  const validatePositiveValue = (value: number, fieldName: string) => {
+    errors[fieldName] =
+      value <= 0
+        ? `${
+            fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+          } must be greater than 0.`
+        : '';
+  };
+
   return {
     errors,
     isFormValid,
     validateEmptyField,
     validatePassword,
     validatePasswordConfirmation,
+    validatePositiveValue,
   };
 }
