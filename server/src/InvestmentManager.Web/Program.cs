@@ -15,6 +15,7 @@ app.UseHsts();
 app.UseHttpsRedirection();
 app.UseSwagger();
 app.UseSwaggerUI();
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
