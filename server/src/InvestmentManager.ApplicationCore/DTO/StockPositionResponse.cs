@@ -24,6 +24,11 @@
         /// The average price of the stock position
         /// </summary>
         public required double AveragePrice { get; set; }
+
+        /// <summary>
+        /// Country in which the stock is traded
+        /// </summary>
+        public required string TradingCountry { get; set; }
     }
 
     public class StockPositionsResponse
