@@ -21,11 +21,6 @@
         public required double Price { get; set; }
 
         /// <summary>
-        /// The cost of the transaction
-        /// </summary>
-        public required double Cost { get; set; }
-
-        /// <summary>
         /// The date and time of the transaction
         /// </summary>
         public required DateTime DateAndTimeOfTransaction { get; set; }
@@ -34,6 +29,11 @@
         /// The type of the transaction (buy or sell)
         /// </summary>
         public required string TransactionType { get; set; }
+
+        /// <summary>
+        /// Trading country of the transaction
+        /// </summary>
+        public required string TradingCountry { get; set; }
     }
 
     public class TransactionsResponse
