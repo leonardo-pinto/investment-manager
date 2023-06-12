@@ -127,7 +127,7 @@ namespace InvestmentManager.UnitTests.Services
 
             // Assert
             stockPositionResponse?.PositionId.Should().NotBeEmpty();
-            stockPositionResponse?.Symbol.Should().Be(addStockPositionRequest.Symbol);
+            stockPositionResponse?.Symbol.Should().Be(addStockPositionRequest.Symbol.ToUpper());
             stockPositionResponse?.Quantity.Should().Be(addStockPositionRequest.Quantity);
             stockPositionResponse?.AveragePrice.Should().Be(addStockPositionRequest.AveragePrice);
         }

@@ -49,7 +49,7 @@ namespace InvestmentManager.Infrastructure.Repositories
         public async Task<bool> StockSymbolAlreadyExists(string symbol, string userId)
         {
             StockPosition? stockPosition = await _db.StockPositions
-                .FirstOrDefaultAsync(e => e.Symbol == symbol && e.UserId == userId);
+                .FirstOrDefaultAsync(e => e.Symbol.ToUpper() == symbol.ToUpper() && e.UserId == userId && e.Quantity != 0);
 
             return stockPosition != null;
         }
@@ -57,7 +57,7 @@ namespace InvestmentManager.Infrastructure.Repositories
         public async Task<IEnumerable<StockPosition>> GetAllStockPositionsByUserIdAndTradingCountry(string userId, string tradingCountry)
         {
             return await _db.StockPositions
-                .Where(e => e.UserId == userId && e.TradingCountry == tradingCountry).ToListAsync();
+                .Where(e => e.UserId == userId && e.TradingCountry == tradingCountry && e.Quantity != 0).ToListAsync();
         }
     }
 }

@@ -125,7 +125,7 @@ namespace InvestmentManager.IntegrationTests.Repositories
             // Arrange
             var db = new ApplicationDbContext(_dbContextOptions);
             var stockPositionRepository = new StockPositionRepository(db);
-            var stockPosition = _fixture.Build<StockPosition>().Create();
+            var stockPosition = _fixture.Build<StockPosition>().With(e => e.Quantity, 10).Create();
             db.StockPositions.Add(stockPosition);
             await db.SaveChangesAsync();
 
