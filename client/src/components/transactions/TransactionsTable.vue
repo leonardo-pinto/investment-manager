@@ -15,7 +15,7 @@
       >
         <td>{{ transaction.dateAndTimeOfTransaction }}</td>
         <td>{{ buildDescription(transaction) }}</td>
-        <td>{{ transaction.cost }}</td>
+        <td>{{ calculateAmount(transaction.quantity, transaction.price) }}</td>
       </tr>
     </tbody>
   </table>
@@ -31,7 +31,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const buildDescription = (transaction: Transaction): string => {
+function buildDescription(transaction: Transaction): string {
   const { quantity, symbol, price } = transaction;
 
   const transactionType =
@@ -39,4 +39,8 @@ const buildDescription = (transaction: Transaction): string => {
 
   return `${transactionType} ${quantity} ${symbol} @ ${price}`;
 };
+
+function calculateAmount(quantity: number, price: number): number {
+  return quantity * price;
+}
 </script>
