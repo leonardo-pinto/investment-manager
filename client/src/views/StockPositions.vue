@@ -31,7 +31,10 @@
     </h2>
     <div v-else>
       <p>Last update: {{ filteredStockPositions.updatedAt }}</p>
+      <!-- :key is used here to force StockPositionsTable update -->
+      <!-- Since the props change is not tracked -->
       <StockPositionsTable
+        :key="filteredStockPositions.updatedAt"
         :filteredStockPositions="filteredStockPositions.stockPositions"
         @openUpdateStock="openUpdateStock"
       />
