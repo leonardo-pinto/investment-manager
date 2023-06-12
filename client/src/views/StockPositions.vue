@@ -3,7 +3,7 @@
     <BaseButton @click="handleCreateStockPositionDialog"
       >REGISTER NEW POSITION</BaseButton
     >
-    <label for="tradingCountry"></label>
+    <label for="tradingCountry">Trading Country: </label>
     <select
       name="tradingCountry"
       id="tradingCountry"
