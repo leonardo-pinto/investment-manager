@@ -39,12 +39,6 @@ const getStockPositionById = async (
   return res.data;
 };
 
-const deleteStockPosition = async (positionId: string): Promise<void> => {
-  await httpClient.delete<StockPosition>(
-    `${STOCK_POSITION_ROUTE}/${positionId}`
-  );
-};
-
 const updateStockPosition = async (
   updateStockPosition: UpdateStockPositionRequest
 ): Promise<StockPosition> => {
@@ -59,6 +53,5 @@ export {
   createStockPosition,
   getAllStockPositions,
   getStockPositionById,
-  deleteStockPosition,
   updateStockPosition,
 };
