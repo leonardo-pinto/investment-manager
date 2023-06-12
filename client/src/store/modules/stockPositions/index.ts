@@ -72,7 +72,12 @@ const store: Module<StockPositionState, unknown> = {
       );
 
       if (index !== -1) {
-        state[state.selectedCountry].stockPositions[index] = payload;
+        if (payload.quantity == 0) {
+          state[state.selectedCountry].stockPositions.splice(index, 1);
+        } else {
+          state[state.selectedCountry].stockPositions[index] = payload;
+        }
+
         state[state.selectedCountry].stockPositions = [
           ...state[state.selectedCountry].stockPositions,
         ];
@@ -101,6 +106,8 @@ const store: Module<StockPositionState, unknown> = {
     async updatedStockPositionsQuote({ commit, getters }) {
       const symbols: string = getters['getStockSymbolsByCountry'];
       const selectedCountry: TradingCountry = getters['getSelectedCountry'];
+      if (!symbols.length) return;
+
       try {
         const stockQuotesList: StockQuotesList = await getUpdateStockQuotes(
           symbols,
