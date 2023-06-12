@@ -1,6 +1,5 @@
 import { Module } from 'vuex';
 import { Transaction } from '../../../types/transactions';
-import { TradingCountry } from '../../../enums';
 import { getAllTransactions } from '../../../api/transactions.api';
 
 export interface TransactionState {
@@ -15,7 +14,9 @@ const store: Module<TransactionState, unknown> = {
     };
   },
   mutations: {
-    async getTransactions() {},
+    async getTransactions(state: TransactionState, payload: Transaction[]) {
+      state.transactions = payload;
+    },
   },
   actions: {
     async getTransactions({ commit, rootGetters }) {
@@ -23,10 +24,7 @@ const store: Module<TransactionState, unknown> = {
 
       try {
         const transactions: Transaction[] = await getAllTransactions(userId);
-
         commit('getTransactions', transactions);
-
-        console.log(`transactions response:: ${transactions}`);
       } catch (error) {
         throw error;
       }
