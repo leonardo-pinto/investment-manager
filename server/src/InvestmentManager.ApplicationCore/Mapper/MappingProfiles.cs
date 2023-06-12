@@ -15,6 +15,10 @@ namespace InvestmentManager.ApplicationCore.Mapper
                     opt => opt.MapFrom(src => Guid.NewGuid())
                 )
                 .ForMember(
+                    dest => dest.Symbol,
+                    opt => opt.MapFrom(src => src.Symbol.ToUpper())
+                )
+                .ForMember(
                     dest => dest.TradingCountry,
                     opt => opt.MapFrom(src => src.TradingCountry.ToString()));
 
