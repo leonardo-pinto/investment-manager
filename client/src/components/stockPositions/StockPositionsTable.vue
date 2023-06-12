@@ -61,12 +61,16 @@
         </td>
         <td>
           <BaseButton
-            @click="openUpdateStock(stockPosition.positionId, TransactionType.Buy)"
+            @click="
+              openUpdateStock(stockPosition.positionId, TransactionType.Buy)
+            "
             mode="outline"
             >Buy</BaseButton
           >
           <BaseButton
-            @click="openUpdateStock(stockPosition.positionId, TransactionType.Sell)"
+            @click="
+              openUpdateStock(stockPosition.positionId, TransactionType.Sell)
+            "
             mode="outline"
             >Sell</BaseButton
           >
