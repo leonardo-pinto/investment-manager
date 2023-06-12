@@ -23,9 +23,13 @@
   <label for="symbol">Symbol</label>
   <input name="symbol" id="symbol" v-model="filters.symbol" />
 
-  <label>Date range</label>
-  <input type="date" name="startDate" v-model="filters.startDate" />to
-  <input type="date" name="endDate" v-model="filters.endDate" />
+  <fieldset>
+    <legend>Dates</legend>
+    <label for="startDate">From</label>
+    <input type="date" name="startDate" v-model="filters.startDate" />
+    <label for="endDate">To</label>
+    <input type="date" name="endDate" v-model="filters.endDate" />
+  </fieldset>
 
   <BaseButton @click="setFilters">View</BaseButton>
 </template>
