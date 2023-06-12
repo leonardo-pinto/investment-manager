@@ -26,9 +26,14 @@
   <fieldset>
     <legend>Dates</legend>
     <label for="startDate">From</label>
-    <input type="date" name="startDate" v-model="filters.startDate" />
+    <input
+      type="date"
+      name="startDate"
+      id="startDate"
+      v-model="filters.startDate"
+    />
     <label for="endDate">To</label>
-    <input type="date" name="endDate" v-model="filters.endDate" />
+    <input type="date" name="endDate" id="endDate" v-model="filters.endDate" />
   </fieldset>
 
   <BaseButton @click="setFilters">View</BaseButton>
