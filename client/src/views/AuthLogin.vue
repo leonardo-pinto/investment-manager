@@ -44,7 +44,7 @@ import { ref } from 'vue';
 import { useStore } from '../store';
 import { useRouter } from 'vue-router';
 import { AuthLoginRequest } from '../types/auth';
-import useFormValidation from '../hooks/useFormValidation';
+import useFormValidation from '../common/composables/useFormValidation';
 
 const store = useStore();
 const router = useRouter();

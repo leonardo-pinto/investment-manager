@@ -72,7 +72,7 @@ import { ref } from 'vue';
 import { useStore } from '../store/index.ts';
 import { useRouter } from 'vue-router';
 import { AuthRegisterRequest } from '../types/auth';
-import useFormValidation from '../hooks/useFormValidation';
+import useFormValidation from '../common/composables/useFormValidation.ts';
 
 const store = useStore();
 const router = useRouter();

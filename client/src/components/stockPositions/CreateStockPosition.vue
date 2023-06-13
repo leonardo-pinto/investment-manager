@@ -77,7 +77,7 @@ import { ref } from 'vue';
 import { useStore } from '../../store';
 import { CreateStockPositionRequest } from '../../types/stockPosition';
 import { TradingCountry } from '../../enums';
-import useFormValidation from '../../hooks/useFormValidation';
+import useFormValidation from '../../common/composables/useFormValidation';
 
 interface Props {
   show: boolean;

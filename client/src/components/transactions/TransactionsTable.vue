@@ -38,7 +38,7 @@ function buildDescription(transaction: Transaction): string {
     transaction.transactionType === TransactionType.Buy ? 'Bought' : 'Sold';
 
   return `${transactionType} ${quantity} ${symbol} @ ${price}`;
-};
+}
 
 function calculateAmount(quantity: number, price: number): number {
   return quantity * price;

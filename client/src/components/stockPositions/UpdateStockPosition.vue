@@ -62,7 +62,7 @@ import {
 } from '../../types/stockPosition';
 import { TransactionType } from '../../enums';
 import { useStore } from '../../store';
-import useFormValidation from '../../hooks/useFormValidation';
+import useFormValidation from '../../common/composables/useFormValidation';
 
 const store = useStore();
 
