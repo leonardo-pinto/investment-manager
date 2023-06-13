@@ -25,19 +25,11 @@
         <td>{{ stockPosition.averagePrice.toFixed(2) }}</td>
         <td>
           {{
-            calculateCostOrMarketValue(
-              stockPosition.quantity,
-              stockPosition.averagePrice
-            )
+            calculateValue(stockPosition.quantity, stockPosition.averagePrice)
           }}
         </td>
         <td>
-          {{
-            calculateCostOrMarketValue(
-              stockPosition.quantity,
-              stockPosition.price
-            )
-          }}
+          {{ calculateValue(stockPosition.quantity, stockPosition.price) }}
         </td>
         <td>
           {{
@@ -57,8 +49,10 @@
           }}
         </td>
         <td>
-          {{ calculatePositionWeight(stockPosition) }}
-        </td>
+          {{
+            calculatePositionWeight(stockPosition, props.filteredStockPositions)
+          }}
+        </td>``
         <td>
           <BaseButton
             @click="
@@ -83,6 +77,12 @@
 <script setup lang="ts">
 import { TransactionType } from '../../enums';
 import { StockPosition } from '../../types/stockPosition';
+import {
+  calculateValue,
+  calculateGainPercentage,
+  calculateGainMonetary,
+  calculatePositionWeight,
+} from '../../common/helpers/stockMetrics';
 
 interface Props {
   filteredStockPositions: StockPosition[];
@@ -94,41 +94,5 @@ const emit = defineEmits(['openUpdateStock']);
 
 function openUpdateStock(positionId: string, transactionType: TransactionType) {
   emit('openUpdateStock', { positionId, transactionType });
-}
-
-function calculateCostOrMarketValue(quantity: number, value: number): string {
-  return value ? (quantity * value).toFixed(2) : '';
-}
-
-function calculateGainPercentage(price: number, avgPrice: number): string {
-  return price ? ((price / avgPrice - 1) * 100).toFixed(2) : '';
-}
-
-function calculateGainMonetary(
-  qty: number,
-  price: number,
-  avgPrice: number
-): string {
-  return price ? (qty * price - qty * avgPrice).toFixed(2) : '';
-}
-
-function calculateMktValueSum(): number {
-  return props.filteredStockPositions.reduce(
-    (acc, curr) =>
-      acc + Number(calculateCostOrMarketValue(curr.quantity, curr.price)),
-    0
-  );
-}
-
-const mktValueSum: number = calculateMktValueSum();
-
-function calculatePositionWeight(stockPosition: StockPosition): string {
-  const positionWeight =
-    (100 *
-      Number(
-        calculateCostOrMarketValue(stockPosition.quantity, stockPosition.price)
-      )) /
-    mktValueSum;
-  return String(positionWeight.toFixed(2));
 }
 </script>
