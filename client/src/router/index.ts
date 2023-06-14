@@ -18,24 +18,15 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      component: () => import('../views/AuthLogin.vue'),
-      meta: {
-        requiresAuth: false,
-      },
+      redirect: '/stock-positions',
     },
     {
       path: '/login',
       component: () => import('../views/AuthLogin.vue'),
-      meta: {
-        requiresAuth: false,
-      },
     },
     {
       path: '/register',
       component: () => import('../views/AuthRegister.vue'),
-      meta: {
-        requiresAuth: false,
-      },
     },
     {
       path: '/stock-positions',
@@ -47,6 +38,13 @@ const router = createRouter({
     {
       path: '/transactions',
       component: () => import('../views/Transactions.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: '/avg-price-calculator',
+      component: () => import('../views/AveragePriceCalculator.vue'),
       meta: {
         requiresAuth: true,
       },

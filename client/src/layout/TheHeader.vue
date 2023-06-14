@@ -18,6 +18,11 @@
           <BaseButton link to="/transactions">Transactions</BaseButton>
         </li>
         <li>
+          <BaseButton link to="/avg-price-calculator"
+            >Average Price Calculator</BaseButton
+          >
+        </li>
+        <li>
           <BaseButton @click="logout" mode="outline">Logout</BaseButton>
         </li>
       </ul>
@@ -36,7 +41,7 @@ const isAuth = computed<boolean>(() => store.getters['auth/isAuthenticated']);
 
 const logout = () => {
   store.dispatch('auth/logout');
-  router.replace('/');
+  router.replace('/login');
 };
 </script>
 
