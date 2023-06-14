@@ -34,9 +34,25 @@ function calculatePositionWeight(
   return String(positionWeight.toFixed(2));
 }
 
+function calculateAveragePrice(
+  firstQuantity: number,
+  firstPrice: number,
+  secondQuantity: number,
+  secondPrice: number
+): string {
+  // since for this method we wont have null price values
+  // it is easier to calculate inside the function than use the
+  // calculateValue method
+  return (
+    (firstQuantity * firstPrice + secondQuantity * secondPrice) /
+    (firstQuantity + secondQuantity)
+  ).toFixed(2);
+}
+
 export {
   calculateValue,
   calculateGainPercentage,
   calculateGainMonetary,
   calculatePositionWeight,
+  calculateAveragePrice,
 };
