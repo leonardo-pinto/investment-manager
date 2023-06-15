@@ -120,6 +120,7 @@ const submitForm = async () => {
     await store.dispatch('auth/register', authCredentials);
     router.replace('/stock-positions');
   } catch (error) {
+    console.error((error as any).response?.data);
     apiResponseError.value = (error as any).response?.data?.error;
   }
   isLoading.value = false;
