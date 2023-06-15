@@ -49,11 +49,13 @@ namespace InvestmentManager.Web.Controllers
             }
             else
             {
+                List<string> errors = new List<string>();
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError("Register", error.Description);
+                    errors.Add(error.Description);
                 }
-                return BadRequest(ModelState);
+
+                return BadRequest(new ErrorResponse() { Error = string.Join(", ", errors)});
             }
         }
 

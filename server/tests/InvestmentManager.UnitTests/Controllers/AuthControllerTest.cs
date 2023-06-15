@@ -42,9 +42,9 @@ namespace InvestmentManager.UnitTests.Controllers
             var result = await _sut.Register(registerRequest);
 
             // Assert
-            var badRequestObject = result.Result as BadRequestObjectResult;
-            badRequestObject?.Value.Should().BeEquivalentTo(
-                new SerializableError{ { "Register", new []{ "Test error" } } });
+            var badRequestResult = result.Result as BadRequestObjectResult;
+            badRequestResult?.Value.Should()
+                .BeEquivalentTo(new ErrorResponse() { Error = "Test error" });
         }
 
         [Fact]
