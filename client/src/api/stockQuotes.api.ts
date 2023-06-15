@@ -7,11 +7,11 @@ const getUpdateStockQuotes = async (
   symbols: string,
   tradingCountry: string
 ): Promise<StockQuotesList> => {
-  const res = await httpClient.get<StockQuotesList>(
-    `${STOCK_QUOTE_ROUTE}/${tradingCountry}?symbols=${symbols}`
-  );
-
-  return res.data;
+  return (
+    await httpClient.get<StockQuotesList>(
+      `${STOCK_QUOTE_ROUTE}/${tradingCountry}?symbols=${symbols}`
+    )
+  ).data;
 };
 
 export { getUpdateStockQuotes };

@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import router from '../router';
 
 const httpClient = axios.create({
@@ -15,7 +15,7 @@ const authInterceptor = (config: any) => {
   return config;
 };
 
-const responseInterceptor = (response: AxiosResponse) => response;
+const responseInterceptor = (response: any) => response;
 
 const unauthErrorInterceptor = (error: any) => {
   if (

@@ -24,29 +24,30 @@ const getAllStockPositions = async (
   userId: string,
   tradingCountry: TradingCountry
 ): Promise<StockPosition[]> => {
-  const res = await httpClient.get<StockPositions>(
-    `${STOCK_POSITION_ROUTE}/user-id/${userId}/trading-country/${tradingCountry}`
-  );
-  return res.data.stockPositions;
+  return (
+    await httpClient.get<StockPositions>(
+      `${STOCK_POSITION_ROUTE}/user-id/${userId}/trading-country/${tradingCountry}`
+    )
+  ).data.stockPositions;
 };
 
 const getStockPositionById = async (
   positionId: string
 ): Promise<StockPosition> => {
-  const res = await httpClient.get<StockPosition>(
-    `${STOCK_POSITION_ROUTE}/${positionId}`
-  );
-  return res.data;
+  return (
+    await httpClient.get<StockPosition>(`${STOCK_POSITION_ROUTE}/${positionId}`)
+  ).data;
 };
 
 const updateStockPosition = async (
   updateStockPosition: UpdateStockPositionRequest
 ): Promise<StockPosition> => {
-  const res = await httpClient.put<StockPosition>(
-    STOCK_POSITION_ROUTE,
-    updateStockPosition
-  );
-  return res.data;
+  return (
+    await httpClient.put<StockPosition>(
+      STOCK_POSITION_ROUTE,
+      updateStockPosition
+    )
+  ).data;
 };
 
 export {

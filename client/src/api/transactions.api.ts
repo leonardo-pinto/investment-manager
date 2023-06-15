@@ -4,10 +4,11 @@ import httpClient from './httpClient';
 const TRANSACTIONS_ROUTE = '/transactions';
 
 const getAllTransactions = async (userId: string): Promise<Transaction[]> => {
-  const res = await httpClient.get<Transactions>(
-    `${TRANSACTIONS_ROUTE}/user-id/${userId}`
-  );
-  return res.data.transactions;
+  return (
+    await httpClient.get<Transactions>(
+      `${TRANSACTIONS_ROUTE}/user-id/${userId}`
+    )
+  ).data.transactions;
 };
 
 export { getAllTransactions };
