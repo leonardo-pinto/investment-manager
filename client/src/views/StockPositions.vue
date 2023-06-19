@@ -71,7 +71,7 @@ watch(selectedTradingCountry, (value) => {
 });
 
 const currency = computed<string>(() => {
-  return selectedTradingCountry.value == TradingCountry.US ? "$" : "R$"
+  return selectedTradingCountry.value == TradingCountry.US ? '$' : 'R$';
 });
 
 const filteredStockPositions = computed<StockPositionsByCountry>(() => {
@@ -96,8 +96,12 @@ const handleUpdateStockPositionDialog = () => {
     !isUpdateStockPositionDialogOpen.value;
 };
 
-const openUpdateStock = (payload: any): void => {
-  // add type
+interface openUpdateStockPayload {
+  positionId: string;
+  transactionType: TransactionType;
+}
+
+const openUpdateStock = (payload: openUpdateStockPayload): void => {
   isUpdateStockPositionDialogOpen.value = true;
 
   selectedStockPosition.value =
