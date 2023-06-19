@@ -1,6 +1,8 @@
 import { Module } from 'vuex';
 import { Transaction } from '../../../types/transactions';
-import { getAllTransactions } from '../../../api/transactions.api';
+import mutations from './mutations.ts';
+import actions from './actions.ts';
+import getters from './getters.ts';
 
 export interface TransactionState {
   transactions: Transaction[];
@@ -13,28 +15,9 @@ const store: Module<TransactionState, unknown> = {
       transactions: [],
     };
   },
-  mutations: {
-    async getTransactions(state: TransactionState, payload: Transaction[]) {
-      state.transactions = payload;
-    },
-  },
-  actions: {
-    async getTransactions({ commit, rootGetters }) {
-      const userId: string = rootGetters['auth/getUserId'];
-
-      try {
-        const transactions: Transaction[] = await getAllTransactions(userId);
-        commit('getTransactions', transactions);
-      } catch (error) {
-        throw error;
-      }
-    },
-  },
-  getters: {
-    getTransactions(state: TransactionState): Transaction[] {
-      return state.transactions;
-    },
-  },
+  mutations,
+  actions,
+  getters,
 };
 
 export default store;
