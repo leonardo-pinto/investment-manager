@@ -61,7 +61,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { calculateAveragePrice } from '../common/helpers/stockMetrics';
+import { calculateAveragePrice } from '../common/helpers';
 
 const firstQuantity = ref<number>(0);
 const firstPrice = ref<number>(0);

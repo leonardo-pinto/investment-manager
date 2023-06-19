@@ -95,7 +95,7 @@ import {
   calculateGainPercentage,
   calculateGainMonetary,
   calculatePositionWeight,
-} from '../../common/helpers/stockMetrics';
+} from '../../common/helpers';
 
 interface Props {
   filteredStockPositions: StockPosition[];

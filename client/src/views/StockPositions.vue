@@ -24,6 +24,7 @@
       :stockPosition="selectedStockPosition"
       :transactionType="selectedTransactionType"
       @close="handleUpdateStockPosition"
+      @keydown.esc="handleUpdateStockPosition"
     />
 
     <div></div>
