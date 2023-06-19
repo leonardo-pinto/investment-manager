@@ -13,7 +13,8 @@
         v-for="(transaction, index) in props.filteredTransactions"
         :key="index"
       >
-        <td>{{ transaction.dateAndTimeOfTransaction }}</td>
+        <!-- <td>{{ transaction.dateAndTimeOfTransaction }}</td> -->
+        <td>{{ formatDate(transaction.dateAndTimeOfTransaction) }}</td>
         <td>{{ buildDescription(transaction) }}</td>
         <td>
           {{ props.currency }}
@@ -27,6 +28,7 @@
 <script setup lang="ts">
 import { Transaction } from '../../types/transactions';
 import { TransactionType } from '../../enums';
+import { formatDate } from '../../common/helpers';
 
 interface Props {
   filteredTransactions: Transaction[];
