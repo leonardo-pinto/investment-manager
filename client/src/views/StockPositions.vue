@@ -1,6 +1,6 @@
 <template>
   <BaseCard cardWidth="80%">
-    <BaseButton @click="handleCreateStockPositionDialog"
+    <BaseButton @click="handleCreateStockPosition"
       >REGISTER NEW POSITION</BaseButton
     >
     <label for="tradingCountry">Trading Country: </label>
@@ -15,15 +15,15 @@
     <BaseButton @click="refreshStockQuotes">Refresh Quotes</BaseButton>
 
     <CreateStockPosition
-      :show="isCreateStockPositionDialogOpen"
-      @close="handleCreateStockPositionDialog"
+      :show="showCreateStockPosition"
+      @close="handleCreateStockPosition"
       :tradingCountry="selectedTradingCountry"
     />
     <UpdateStockPosition
-      :show="isUpdateStockPositionDialogOpen"
+      :show="showUpdateStockPosition"
       :stockPosition="selectedStockPosition"
       :transactionType="selectedTransactionType"
-      @close="handleUpdateStockPositionDialog"
+      @close="handleUpdateStockPosition"
     />
 
     <div></div>
@@ -80,20 +80,18 @@ const filteredStockPositions = computed<StockPositionsByCountry>(() => {
   ];
 });
 
-const isCreateStockPositionDialogOpen = ref(false);
+const showCreateStockPosition = ref(false);
 
-const handleCreateStockPositionDialog = () => {
-  isCreateStockPositionDialogOpen.value =
-    !isCreateStockPositionDialogOpen.value;
+const handleCreateStockPosition = () => {
+  showCreateStockPosition.value = !showCreateStockPosition.value;
 };
 
 const selectedStockPosition: Ref<StockPosition | null> = ref(null);
 const selectedTransactionType: Ref<TransactionType> = ref(TransactionType.Buy);
-const isUpdateStockPositionDialogOpen = ref(false);
+const showUpdateStockPosition = ref(false);
 
-const handleUpdateStockPositionDialog = () => {
-  isUpdateStockPositionDialogOpen.value =
-    !isUpdateStockPositionDialogOpen.value;
+const handleUpdateStockPosition = () => {
+  showUpdateStockPosition.value = !showUpdateStockPosition.value;
 };
 
 interface openUpdateStockPayload {
@@ -102,8 +100,7 @@ interface openUpdateStockPayload {
 }
 
 const openUpdateStock = (payload: openUpdateStockPayload): void => {
-  isUpdateStockPositionDialogOpen.value = true;
-
+  handleUpdateStockPosition();
   selectedStockPosition.value =
     filteredStockPositions.value.stockPositions.find(
       (s) => s.positionId === payload.positionId
