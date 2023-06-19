@@ -78,6 +78,7 @@ import { useStore } from '../../store';
 import { CreateStockPositionRequest } from '../../types/stockPosition';
 import { TradingCountry } from '../../enums';
 import useFormValidation from '../../common/composables/useFormValidation';
+import { useLoading } from 'vue-loading-overlay';
 
 interface Props {
   show: boolean;
@@ -87,6 +88,9 @@ interface Props {
 const store = useStore();
 const props = defineProps<Props>();
 const emit = defineEmits(['close']);
+const $loading = useLoading({
+  color: '#ff6000',
+});
 
 const { errors, validateEmptyField, validatePositiveValue, isFormValid } =
   useFormValidation();
@@ -129,6 +133,7 @@ const submitForm = async () => {
     tradingCountry: props.tradingCountry as TradingCountry,
   };
 
+  const loader = $loading.show();
   try {
     await store.dispatch(
       'stockPositions/createStockPosition',
@@ -138,6 +143,8 @@ const submitForm = async () => {
     handleClose();
   } catch (error) {
     errors['symbol'] = (error as any).response.data.error;
+  } finally {
+    loader.hide();
   }
 };
 </script>

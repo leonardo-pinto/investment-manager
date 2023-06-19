@@ -63,6 +63,7 @@ import {
 import { TransactionType } from '../../enums';
 import { useStore } from '../../store';
 import useFormValidation from '../../common/composables/useFormValidation';
+import { useLoading } from 'vue-loading-overlay';
 
 const store = useStore();
 
@@ -74,6 +75,10 @@ interface Props {
 
 const props = defineProps<Props>();
 const emit = defineEmits(['close']);
+
+const $loading = useLoading({
+  color: '#ff6000',
+});
 
 const { errors, validatePositiveValue, isFormValid } = useFormValidation();
 
@@ -122,12 +127,15 @@ const submitForm = async () => {
     dateAndTimeOfStockPosition: new Date().toISOString(),
   };
 
+  const loader = $loading.show();
   try {
     await store.dispatch('stockPositions/updateStockPosition', updateStock);
     await store.dispatch('stockPositions/updatedStockPositionsQuote');
     handleClose();
   } catch (error) {
     apiResponseError.value = (error as any).response?.data?.error;
+  } finally {
+    loader.hide();
   }
 };
 </script>

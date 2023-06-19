@@ -52,7 +52,7 @@
           {{
             calculatePositionWeight(stockPosition, props.filteredStockPositions)
           }}
-        </td>``
+        </td>
         <td>
           <BaseButton
             @click="

@@ -25,8 +25,10 @@
       :transactionType="selectedTransactionType"
       @close="handleUpdateStockPositionDialog"
     />
-    <h1 v-if="isLoading">LOADING . . .</h1>
-    <h2 v-else-if="!filteredStockPositions.stockPositions.length">
+
+    <div></div>
+    <div v-if="isLoading"></div>
+    <h2 v-if="!filteredStockPositions.stockPositions.length">
       There are no stock positions for {{ selectedTradingCountry }}
     </h2>
     <div v-else>
@@ -34,7 +36,7 @@
       <!-- :key is used here to force StockPositionsTable update -->
       <!-- Since the props change is not tracked -->
       <StockPositionsTable
-        :key="filteredStockPositions.updatedAt"
+        :key="filteredStockPositions.updatedAt ?? ''"
         :filteredStockPositions="filteredStockPositions.stockPositions"
         @openUpdateStock="openUpdateStock"
       />
@@ -50,9 +52,13 @@ import CreateStockPosition from '../components/stockPositions/CreateStockPositio
 import UpdateStockPosition from '../components/stockPositions/UpdateStockPosition.vue';
 import { TradingCountry, TransactionType } from '../enums';
 import { StockPosition, StockPositionsByCountry } from '../types/stockPosition';
+import { useLoading } from 'vue-loading-overlay';
 
 const store = useStore();
 const isLoading = ref(false);
+const $loading = useLoading({
+  color: '#ff6000',
+});
 
 const selectedTradingCountry = ref<TradingCountry>(
   store.getters['stockPositions/getSelectedCountry']
@@ -98,6 +104,7 @@ const openUpdateStock = (payload: any): void => {
 };
 
 const getStockPositionsAndStockQuotes = async () => {
+  const loader = $loading.show();
   try {
     isLoading.value = true;
     await store.dispatch('stockPositions/getAllStockPositions');
@@ -108,19 +115,24 @@ const getStockPositionsAndStockQuotes = async () => {
     console.log(`ERROR ::: ${error}`);
   } finally {
     isLoading.value = false;
+    loader.hide();
   }
 };
 
 getStockPositionsAndStockQuotes();
 
 const refreshStockQuotes = () => {
-  try {
-    isLoading.value = true;
-    store.dispatch('stockPositions/updatedStockPositionsQuote');
-  } catch (error) {
-    console.log(`ERROR ::: ${error}`);
-  } finally {
-    isLoading.value = false;
+  if (filteredStockPositions.value.stockPositions.length) {
+    const loader = $loading.show();
+    try {
+      isLoading.value = true;
+      store.dispatch('stockPositions/updatedStockPositionsQuote');
+    } catch (error) {
+      console.log(`ERROR ::: ${error}`);
+    } finally {
+      isLoading.value = false;
+      loader.hide();
+    }
   }
 };
 </script>

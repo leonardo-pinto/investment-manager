@@ -14,9 +14,13 @@ import { useStore } from '../store';
 import TransactionsTable from '../components/transactions/TransactionsTable.vue';
 import TransactionsFilter from '../components/transactions/TransactionsFilter.vue';
 import { Transaction } from '../types/transactions';
+import { useLoading } from 'vue-loading-overlay';
 
 const store = useStore();
 const isLoading = ref(false);
+const $loading = useLoading({
+  color: '#ff6000',
+});
 
 const selectedFilters = reactive({
   tradingCountry: store.getters['stockPositions/getSelectedCountry'],
@@ -77,6 +81,7 @@ const filteredTransactions = computed(() => {
 });
 
 const getTransactions = () => {
+  const loader = $loading.show();
   try {
     isLoading.value = true;
     store.dispatch('transactions/getTransactions');
@@ -84,6 +89,7 @@ const getTransactions = () => {
     console.log(`ERROR ::: ${error}`);
   } finally {
     isLoading.value = false;
+    loader.hide();
   }
 };
 

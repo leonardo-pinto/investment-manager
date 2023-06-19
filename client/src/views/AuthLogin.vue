@@ -1,8 +1,7 @@
 <template>
   <BaseCard cardWidth="40%">
     <h2>Login</h2>
-    <h1 v-if="isLoading">LOADING. . .</h1>
-    <form v-else @submit.prevent="submitForm">
+    <form @submit.prevent="submitForm">
       <div class="form-control" :class="{ invalid: errors.username }">
         <label for="username">Username</label>
         <input
@@ -45,16 +44,20 @@ import { useStore } from '../store';
 import { useRouter } from 'vue-router';
 import { AuthLoginRequest } from '../types/auth';
 import useFormValidation from '../common/composables/useFormValidation';
+import { useLoading } from 'vue-loading-overlay';
 
 const store = useStore();
 const router = useRouter();
 const { errors, validateEmptyField, isFormValid } = useFormValidation();
+
 const loginData = ref({
   username: '',
   password: '',
 });
 
-const isLoading = ref(false);
+const $loading = useLoading({
+  color: '#ff6000'
+});
 
 const validateAllFormFields = (): void => {
   validateEmptyField(loginData.value.username, 'username');
@@ -74,15 +77,16 @@ const submitForm = async () => {
     password: loginData.value.password,
   };
 
-  isLoading.value = true;
+  const loader = $loading.show();
   try {
     await store.dispatch('auth/login', authCredentials);
     router.replace('/stock-positions');
   } catch (error) {
     console.error((error as any).response?.data);
     apiResponseError.value = (error as any).response?.data?.error;
+  } finally {
+    loader.hide();
   }
-  isLoading.value = false;
 };
 </script>
 
