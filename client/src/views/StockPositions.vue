@@ -37,7 +37,7 @@
       <!-- :key is used here to force StockPositionsTable update -->
       <!-- Since the props change is not tracked -->
       <StockPositionsTable
-        :key="filteredStockPositions.updatedAt ?? ''"
+        :key="filteredStockPositions.updatedAt"
         :filteredStockPositions="filteredStockPositions.stockPositions"
         :currency="currency"
         @openUpdateStock="openUpdateStock"

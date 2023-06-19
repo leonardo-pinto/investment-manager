@@ -27,6 +27,10 @@ function calculatePositionWeight(
   stockPosition: StockPosition,
   stockPositions: StockPosition[]
 ): string {
+  if (!stockPosition.price) {
+    return '';
+  }
+
   const positionWeight =
     (100 *
       Number(calculateValue(stockPosition.quantity, stockPosition.price))) /
