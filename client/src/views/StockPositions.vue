@@ -33,7 +33,7 @@
       There are no stock positions for {{ selectedTradingCountry }}
     </h2>
     <div v-else>
-      <p>Last update: {{ filteredStockPositions.updatedAt }}</p>
+      <p>Last update: {{ formatDate(filteredStockPositions.updatedAt) }}</p>
       <!-- :key is used here to force StockPositionsTable update -->
       <!-- Since the props change is not tracked -->
       <StockPositionsTable
@@ -55,6 +55,7 @@ import UpdateStockPosition from '../components/stockPositions/UpdateStockPositio
 import { TradingCountry, TransactionType } from '../enums';
 import { StockPosition, StockPositionsByCountry } from '../types/stockPosition';
 import { useLoading } from 'vue-loading-overlay';
+import { formatDate } from '../common/helpers';
 
 const store = useStore();
 const isLoading = ref(false);
