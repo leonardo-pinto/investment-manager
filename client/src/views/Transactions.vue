@@ -5,6 +5,7 @@
   <TransactionsFilter @changeFilters="setFilters" />
   <TransactionsTable
     :filteredTransactions="filteredTransactions"
+    :currency="currency"
   ></TransactionsTable>
 </template>
 
@@ -15,6 +16,7 @@ import TransactionsTable from '../components/transactions/TransactionsTable.vue'
 import TransactionsFilter from '../components/transactions/TransactionsFilter.vue';
 import { Transaction } from '../types/transactions';
 import { useLoading } from 'vue-loading-overlay';
+import { TradingCountry } from '../enums';
 
 const store = useStore();
 const isLoading = ref(false);
@@ -28,6 +30,10 @@ const selectedFilters = reactive({
   symbol: '',
   startDate: '',
   endDate: '',
+});
+
+const currency = computed<string>(() => {
+  return selectedFilters.tradingCountry == TradingCountry.US ? '$' : 'R$';
 });
 
 function setFilters(filters: any) {

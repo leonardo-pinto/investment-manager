@@ -15,7 +15,10 @@
       >
         <td>{{ transaction.dateAndTimeOfTransaction }}</td>
         <td>{{ buildDescription(transaction) }}</td>
-        <td>{{ calculateAmount(transaction.quantity, transaction.price) }}</td>
+        <td>
+          {{ props.currency }}
+          {{ calculateAmount(transaction.quantity, transaction.price) }}
+        </td>
       </tr>
     </tbody>
   </table>
@@ -27,6 +30,7 @@ import { TransactionType } from '../../enums';
 
 interface Props {
   filteredTransactions: Transaction[];
+  currency: string;
 }
 
 const props = defineProps<Props>();
@@ -37,7 +41,7 @@ function buildDescription(transaction: Transaction): string {
   const transactionType =
     transaction.transactionType === TransactionType.Buy ? 'Bought' : 'Sold';
 
-  return `${transactionType} ${quantity} ${symbol} @ ${price}`;
+  return `${transactionType} ${quantity} ${symbol} @ ${props.currency} ${price}`;
 }
 
 function calculateAmount(quantity: number, price: number): number {

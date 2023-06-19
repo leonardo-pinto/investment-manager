@@ -8,9 +8,9 @@
         <th>Average Price</th>
         <th>Cost</th>
         <th>Market Value</th>
-        <th>Gain (%)</th>
-        <th>Gain ($)</th>
-        <th>Position Weight (%)</th>
+        <th>Percentual Gain</th>
+        <th>Monetary Gain</th>
+        <th>Position Weight</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -21,14 +21,22 @@
       >
         <td>{{ stockPosition.symbol }}</td>
         <td>{{ stockPosition.quantity }}</td>
-        <td>{{ stockPosition.price?.toFixed(2) }}</td>
-        <td>{{ stockPosition.averagePrice.toFixed(2) }}</td>
         <td>
+          {{ props.currency }}
+          {{ stockPosition.price?.toFixed(2) }}
+        </td>
+        <td>
+          {{ props.currency }}
+          {{ stockPosition.averagePrice.toFixed(2) }}
+        </td>
+        <td>
+          {{ props.currency }}
           {{
             calculateValue(stockPosition.quantity, stockPosition.averagePrice)
           }}
         </td>
         <td>
+          {{ props.currency }}
           {{ calculateValue(stockPosition.quantity, stockPosition.price) }}
         </td>
         <td>
@@ -38,8 +46,10 @@
               stockPosition.averagePrice
             )
           }}
+          %
         </td>
         <td>
+          {{ props.currency }}
           {{
             calculateGainMonetary(
               stockPosition.quantity,
@@ -50,8 +60,11 @@
         </td>
         <td>
           {{
-            calculatePositionWeight(stockPosition, props.filteredStockPositions)
-          }}
+            calculatePositionWeight(
+              stockPosition,
+              props.filteredStockPositions
+            )
+          }}%
         </td>
         <td>
           <BaseButton
@@ -86,6 +99,7 @@ import {
 
 interface Props {
   filteredStockPositions: StockPosition[];
+  currency: string;
 }
 
 const props = defineProps<Props>();

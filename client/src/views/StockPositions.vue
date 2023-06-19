@@ -38,6 +38,7 @@
       <StockPositionsTable
         :key="filteredStockPositions.updatedAt ?? ''"
         :filteredStockPositions="filteredStockPositions.stockPositions"
+        :currency="currency"
         @openUpdateStock="openUpdateStock"
       />
     </div>
@@ -67,6 +68,10 @@ const selectedTradingCountry = ref<TradingCountry>(
 watch(selectedTradingCountry, (value) => {
   store.dispatch('stockPositions/setSelectedTradingCountry', value);
   getStockPositionsAndStockQuotes();
+});
+
+const currency = computed<string>(() => {
+  return selectedTradingCountry.value == TradingCountry.US ? "$" : "R$"
 });
 
 const filteredStockPositions = computed<StockPositionsByCountry>(() => {
