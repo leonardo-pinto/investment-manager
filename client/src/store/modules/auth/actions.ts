@@ -6,6 +6,7 @@ import {
 } from '../../../types/auth';
 import { AuthState } from '.';
 import { loginUser, registerUser } from '../../../api/auth.api';
+import { removeAuthFromLocalStorage, setAuthToLocalStorage } from '../../../common/helpers';
 
 export default {
   async register(
@@ -14,11 +15,7 @@ export default {
   ) {
     try {
       const authResponse: AuthResponse = await registerUser(payload);
-
-      localStorage.setItem('userId', authResponse.id);
-      localStorage.setItem('token', authResponse.accessToken);
-      localStorage.setItem('username', authResponse.username);
-
+      setAuthToLocalStorage(authResponse);
       commit('authUser', authResponse);
     } catch (error) {
       throw error;
@@ -30,20 +27,14 @@ export default {
   ) {
     try {
       const authResponse: AuthResponse = await loginUser(payload);
-      localStorage.setItem('userId', authResponse.id);
-      localStorage.setItem('token', authResponse.accessToken);
-      localStorage.setItem('username', authResponse.username);
-
+      setAuthToLocalStorage(authResponse);
       commit('authUser', authResponse);
     } catch (error) {
       throw error;
     }
   },
   logout({ commit }: ActionContext<AuthState, unknown>) {
-    localStorage.removeItem('userId');
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-
+    removeAuthFromLocalStorage();
     commit('logout');
   },
   autoLogin({ commit }: ActionContext<AuthState, unknown>) {

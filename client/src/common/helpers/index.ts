@@ -1,3 +1,4 @@
+import { AuthResponse } from '../../types/auth';
 import { StockPosition } from '../../types/stockPosition';
 
 function calculateValue(quantity: number, price: number): string {
@@ -72,6 +73,19 @@ function formatDate(date: string | null): string {
   }
 }
 
+function setAuthToLocalStorage(authResponse: AuthResponse): void {
+  const { id, accessToken, username } = authResponse;
+  localStorage.setItem('userId', id);
+  localStorage.setItem('token', accessToken);
+  localStorage.setItem('username', username);
+}
+
+function removeAuthFromLocalStorage() {
+  localStorage.removeItem('userId');
+  localStorage.removeItem('token');
+  localStorage.removeItem('username');
+}
+
 export {
   calculateValue,
   calculateGainPercentage,
@@ -79,4 +93,6 @@ export {
   calculatePositionWeight,
   calculateAveragePrice,
   formatDate,
+  setAuthToLocalStorage,
+  removeAuthFromLocalStorage,
 };
