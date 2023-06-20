@@ -80,7 +80,8 @@ const $loading = useLoading({
   color: '#ff6000',
 });
 
-const { errors, validatePositiveValue, isFormValid } = useFormValidation();
+const { errors, validatePositiveValue, isFormValid, clearFormErrors } =
+  useFormValidation();
 
 const stockPositionData = ref({
   quantity: 1,
@@ -106,6 +107,7 @@ function clearFields() {
 
 function handleClose(): void {
   clearFields();
+  clearFormErrors();
   emit('close');
 }
 
@@ -130,7 +132,6 @@ const submitForm = async () => {
   const loader = $loading.show();
   try {
     await store.dispatch('stockPositions/updateStockPosition', updateStock);
-    await store.dispatch('stockPositions/updatedStockPositionsQuote');
     handleClose();
   } catch (error) {
     apiResponseError.value = (error as any).response?.data?.error;

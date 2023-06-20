@@ -54,6 +54,12 @@ export default function useFormValidation() {
         : '';
   };
 
+  const clearFormErrors = () => {
+    Object.keys(errors).forEach((key) => {
+      delete errors[key];
+    });
+  };
+
   return {
     errors,
     isFormValid,
@@ -61,5 +67,6 @@ export default function useFormValidation() {
     validatePassword,
     validatePasswordConfirmation,
     validatePositiveValue,
+    clearFormErrors,
   };
 }
