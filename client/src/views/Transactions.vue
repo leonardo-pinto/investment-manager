@@ -3,7 +3,11 @@
   <h1 v-if="isLoading">LOADING...</h1>
   <h2 v-else-if="!filteredTransactions.length">There are no transactions</h2>
   <TransactionsFilter @changeFilters="setFilters" />
+  <div v-if="apiResponseError" class="error-api-response-message">
+    {{ apiResponseError }}
+  </div>
   <TransactionsTable
+    v-else
     :filteredTransactions="filteredTransactions"
     :currency="currency"
   ></TransactionsTable>
@@ -86,13 +90,16 @@ const filteredTransactions = computed(() => {
   );
 });
 
+const apiResponseError = ref('');
+
 const getTransactions = () => {
   const loader = $loading.show();
   try {
     isLoading.value = true;
     store.dispatch('transactions/getTransactions');
-  } catch (error) {
-    console.log(`ERROR ::: ${error}`);
+  } catch (_error) {
+    apiResponseError.value =
+      'An error occurred while consulting stock positions. Please try again.';
   } finally {
     isLoading.value = false;
     loader.hide();

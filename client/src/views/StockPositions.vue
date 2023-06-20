@@ -28,7 +28,10 @@
 
     <div></div>
     <div v-if="isLoading"></div>
-    <h2 v-if="!filteredStockPositions.stockPositions.length">
+    <div v-else-if="apiResponseError" class="error-api-response-message">
+      {{ apiResponseError }}
+    </div>
+    <h2 v-else-if="!filteredStockPositions.stockPositions.length">
       There are no stock positions for {{ selectedTradingCountry }}
     </h2>
     <div v-else>
@@ -110,13 +113,16 @@ const openUpdateStock = (payload: openUpdateStockPayload): void => {
   selectedTransactionType.value = payload.transactionType;
 };
 
+const apiResponseError = ref('');
+
 const getStockPositionsAndStockQuotes = async () => {
   const loader = $loading.show();
   try {
     isLoading.value = true;
     await store.dispatch('stockPositions/getAllStockPositions');
-  } catch (error) {
-    console.log(`ERROR ::: ${error}`);
+  } catch (_error) {
+    apiResponseError.value =
+      'An error occurred while consulting stock positions. Please try again.';
   } finally {
     isLoading.value = false;
     loader.hide();
@@ -130,8 +136,9 @@ const refreshStockQuotes = () => {
   try {
     isLoading.value = true;
     store.dispatch('stockPositions/getStockPositionQuotes');
-  } catch (error) {
-    console.log(`ERROR ::: ${error}`);
+  } catch (_error) {
+    apiResponseError.value =
+      'An error occurred while consulting stock quotes. Please try again.';
   } finally {
     isLoading.value = false;
     loader.hide();
