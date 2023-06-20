@@ -1,5 +1,6 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios from 'axios';
 import router from '../router';
+import { removeAuthFromLocalStorage } from '../common/helpers';
 
 const httpClient = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
@@ -22,12 +23,9 @@ const unauthErrorInterceptor = (error: any) => {
     error?.response?.status === 401 &&
     router.currentRoute.value.meta.requiresAuth
   ) {
-    localStorage.removeItem('userId');
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
+    removeAuthFromLocalStorage();
     router.push('/register');
   }
-
   return Promise.reject(error);
 };
 
