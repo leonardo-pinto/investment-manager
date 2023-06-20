@@ -9,6 +9,7 @@ import BaseDialog from './common/components/BaseDialog.vue';
 
 import { LoadingPlugin } from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/css/index.css';
+import Notifications from '@kyvg/vue3-notification';
 
 const app = createApp(App);
 
@@ -20,5 +21,6 @@ app.component('BaseCard', BaseCard);
 app.component('BaseDialog', BaseDialog);
 
 app.use(LoadingPlugin);
+app.use(Notifications);
 
 app.mount('#app');

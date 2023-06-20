@@ -1,5 +1,6 @@
 <template>
   <TheHeader />
+  <Notifications position="center right" classes="notify vue-notification" />
   <router-view></router-view>
 </template>
 
@@ -42,5 +43,10 @@ body {
 
 .invalid input {
   border: 1px solid red;
+}
+
+.notify {
+  font-size: 1.1rem;
+  margin: 0;
 }
 </style>
