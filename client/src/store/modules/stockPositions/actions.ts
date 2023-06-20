@@ -25,6 +25,7 @@ export default {
     commit,
     getters,
     rootGetters,
+    dispatch,
   }: ActionContext<StockPositionState, unknown>) {
     const selectedCountry: TradingCountry = getters['getSelectedCountry'];
     const userId: string = rootGetters['auth/getUserId'];
@@ -34,13 +35,13 @@ export default {
         userId,
         selectedCountry
       );
-
       commit('getAllStockPositions', stockPositions);
+      dispatch('getStockPositionQuotes');
     } catch (error) {
       throw error;
     }
   },
-  async updatedStockPositionsQuote({
+  async getStockPositionQuotes({
     commit,
     getters,
   }: ActionContext<StockPositionState, unknown>) {
@@ -65,7 +66,6 @@ export default {
   ) {
     try {
       const stockPosition: StockPosition = await createStockPosition(payload);
-
       commit('createStockPosition', stockPosition);
     } catch (error) {
       throw error;
@@ -79,7 +79,6 @@ export default {
       const updatedStockPosition: StockPosition = await updateStockPosition(
         payload
       );
-
       commit('updateStockPosition', updatedStockPosition);
     } catch (error) {
       throw error;
