@@ -24,7 +24,6 @@
       :stockPosition="selectedStockPosition"
       :transactionType="selectedTransactionType"
       @close="handleUpdateStockPosition"
-      @keydown.esc="handleUpdateStockPosition"
     />
 
     <div></div>
@@ -116,9 +115,6 @@ const getStockPositionsAndStockQuotes = async () => {
   try {
     isLoading.value = true;
     await store.dispatch('stockPositions/getAllStockPositions');
-    if (filteredStockPositions.value.stockPositions.length) {
-      await store.dispatch('stockPositions/updatedStockPositionsQuote');
-    }
   } catch (error) {
     console.log(`ERROR ::: ${error}`);
   } finally {
@@ -130,17 +126,15 @@ const getStockPositionsAndStockQuotes = async () => {
 getStockPositionsAndStockQuotes();
 
 const refreshStockQuotes = () => {
-  if (filteredStockPositions.value.stockPositions.length) {
-    const loader = $loading.show();
-    try {
-      isLoading.value = true;
-      store.dispatch('stockPositions/updatedStockPositionsQuote');
-    } catch (error) {
-      console.log(`ERROR ::: ${error}`);
-    } finally {
-      isLoading.value = false;
-      loader.hide();
-    }
+  const loader = $loading.show();
+  try {
+    isLoading.value = true;
+    store.dispatch('stockPositions/getStockPositionQuotes');
+  } catch (error) {
+    console.log(`ERROR ::: ${error}`);
+  } finally {
+    isLoading.value = false;
+    loader.hide();
   }
 };
 </script>
