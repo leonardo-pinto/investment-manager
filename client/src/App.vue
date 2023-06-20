@@ -25,4 +25,22 @@ html {
 body {
   margin: 0;
 }
+
+.invalid label,
+.error-message,
+.error-api-response-message {
+  color: red;
+}
+
+.error-message {
+  font-size: 0.8rem;
+}
+
+.error-api-response-message {
+  font-size: 1.1rem;
+}
+
+.invalid input {
+  border: 1px solid red;
+}
 </style>

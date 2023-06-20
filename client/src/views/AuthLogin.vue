@@ -56,7 +56,7 @@ const loginData = ref({
 });
 
 const $loading = useLoading({
-  color: '#ff6000'
+  color: '#ff6000',
 });
 
 const validateAllFormFields = (): void => {
@@ -82,7 +82,6 @@ const submitForm = async () => {
     await store.dispatch('auth/login', authCredentials);
     router.replace('/stock-positions');
   } catch (error) {
-    console.error((error as any).response?.data);
     apiResponseError.value = (error as any).response?.data?.error;
   } finally {
     loader.hide();
@@ -147,23 +146,5 @@ p {
 .register a {
   text-decoration: none;
   color: #ff6000;
-}
-
-.invalid label,
-.error-message,
-.error-api-response-message {
-  color: red;
-}
-
-.error-message {
-  font-size: 0.8rem;
-}
-
-.error-api-response-message {
-  font-size: 1.1rem;
-}
-
-.invalid input {
-  border: 1px solid red;
 }
 </style>
