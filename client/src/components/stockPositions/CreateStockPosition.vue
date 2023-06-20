@@ -139,7 +139,7 @@ const submitForm = async () => {
       'stockPositions/createStockPosition',
       createStockPositionRequest
     );
-    await store.dispatch('stockPositions/updatedStockPositionsQuote');
+    await store.dispatch('stockPositions/getStockPositionQuotes');
     handleClose();
   } catch (error) {
     errors['symbol'] = (error as any).response.data.error;
