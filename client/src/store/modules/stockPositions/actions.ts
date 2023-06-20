@@ -72,7 +72,7 @@ export default {
     }
   },
   async updateStockPosition(
-    { commit }: ActionContext<StockPositionState, unknown>,
+    { commit, dispatch }: ActionContext<StockPositionState, unknown>,
     payload: UpdateStockPositionRequest
   ) {
     try {
@@ -80,6 +80,7 @@ export default {
         payload
       );
       commit('updateStockPosition', updatedStockPosition);
+      dispatch('getStockPositionQuotes');
     } catch (error) {
       throw error;
     }
