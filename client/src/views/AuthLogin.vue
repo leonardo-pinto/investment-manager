@@ -1,6 +1,7 @@
 <template>
   <BaseCard cardWidth="40%">
     <h2>Login</h2>
+    <!-- <font-awesome-icon icon="fa-solid fa-eye-slash" /> -->
     <form @submit.prevent="submitForm">
       <div class="form-control" :class="{ invalid: errors.username }">
         <label for="username">Username</label>
@@ -17,10 +18,22 @@
       <div class="form-control" :class="{ invalid: errors.password }">
         <label for="password">Password</label>
         <input
-          type="password"
+          :type="passwordType"
           id="password"
           v-model.trim="loginData.password"
           @blur="validateEmptyField(loginData.password, 'password')"
+        />
+        <font-awesome-icon
+          v-if="passwordType == 'password'"
+          id="eye-icon"
+          icon="fa-solid fa-eye-slash"
+          @click="togglePasswordType"
+        />
+        <font-awesome-icon
+          v-else
+          id="eye-icon"
+          icon="fa-solid fa-eye"
+          @click="togglePasswordType"
         />
         <p v-if="errors.password" class="error-message">
           {{ errors.password }}
@@ -58,6 +71,16 @@ const loginData = ref({
 const $loading = useLoading({
   color: '#ff6000',
 });
+
+const passwordType = ref<string>('password');
+
+const togglePasswordType = () => {
+  if (passwordType.value == 'password') {
+    passwordType.value = 'text';
+  } else {
+    passwordType.value = 'password';
+  }
+};
 
 const validateAllFormFields = (): void => {
   validateEmptyField(loginData.value.username, 'username');

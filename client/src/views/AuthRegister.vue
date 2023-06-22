@@ -23,10 +23,22 @@
           <div :class="{ invalid: errors.password }" id="password-container">
             <label for="password">Password</label>
             <input
-              type="password"
+              :type="passwordType"
               id="password"
               v-model.trim="registerData.password"
               @blur="validatePassword(registerData.password)"
+            />
+            <font-awesome-icon
+              v-if="passwordType == 'password'"
+              id="eye-icon"
+              icon="fa-solid fa-eye-slash"
+              @click="togglePasswordType"
+            />
+            <font-awesome-icon
+              v-else
+              id="eye-icon"
+              icon="fa-solid fa-eye"
+              @click="togglePasswordType"
             />
           </div>
           <div
@@ -35,7 +47,7 @@
           >
             <label for="passwordConfirmation">Confirmation</label>
             <input
-              type="password"
+              :type="passwordConfType"
               id="passwordConfirmation"
               v-model="registerData.passwordConfirmation"
               @blur="
@@ -44,6 +56,18 @@
                   registerData.passwordConfirmation
                 )
               "
+            />
+            <font-awesome-icon
+              v-if="passwordConfType == 'password'"
+              id="eye-icon"
+              icon="fa-solid fa-eye-slash"
+              @click="togglePasswordConfType"
+            />
+            <font-awesome-icon
+              v-else
+              id="eye-icon"
+              icon="fa-solid fa-eye"
+              @click="togglePasswordConfType"
             />
           </div>
         </div>
@@ -89,6 +113,25 @@ const registerData = ref({
   password: '',
   passwordConfirmation: '',
 });
+
+const passwordType = ref<string>('password');
+const passwordConfType = ref<string>('password');
+
+const togglePasswordType = () => {
+  if (passwordType.value == 'password') {
+    passwordType.value = 'text';
+  } else {
+    passwordType.value = 'password';
+  }
+};
+
+const togglePasswordConfType = () => {
+  if (passwordConfType.value == 'password') {
+    passwordConfType.value = 'text';
+  } else {
+    passwordConfType.value = 'password';
+  }
+};
 
 const $loading = useLoading({
   color: '#ff6000',

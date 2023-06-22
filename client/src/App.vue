@@ -49,4 +49,11 @@ body {
   font-size: 1.1rem;
   margin: 0;
 }
+
+#eye-icon {
+  float: right;
+  position: relative;
+  margin-top: -35px;
+  margin-right: 10px;
+}
 </style>
