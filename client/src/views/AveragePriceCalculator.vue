@@ -1,61 +1,70 @@
 <template>
-  <BaseCard cardWidth="70%">
+  <BaseCard>
     <h2>Average Price Calculator</h2>
-    <div>
+    <div class="flex content-wrapper">
       <form @submit.prevent="doAverageCalculation">
         <fieldset>
-          First transaction
-          <label for="firstQuantity">Quantity</label>
-          <input
-            type="number"
-            min="1"
-            id="firstQuantity"
-            v-model="firstQuantity"
-          />
-
-          <label for="firstPrice">Price</label>
-          <input
-            type="number"
-            min="0.01"
-            step=".01"
-            id="firstPrice"
-            v-model="firstPrice"
-          />
+          <p>First transaction</p>
+          <div class="flex">
+            <div>
+              <label for="firstQuantity">Quantity</label>
+              <input
+                type="number"
+                min="1"
+                id="firstQuantity"
+                v-model="firstQuantity"
+              />
+            </div>
+            <div>
+              <label for="firstPrice">Price</label>
+              <input
+                type="number"
+                min="0.01"
+                step=".01"
+                id="firstPrice"
+                v-model="firstPrice"
+              />
+            </div>
+          </div>
         </fieldset>
-
         <fieldset>
-          Second transaction
-          <label for="secondQuantity">Quantity</label>
-          <input
-            type="number"
-            min="1"
-            id="secondQuantity"
-            v-model="secondQuantity"
-          />
-
-          <label for="secondPrice">Price</label>
-          <input
-            type="number"
-            min="0.01"
-            step=".01"
-            id="secondPrice"
-            v-model="secondPrice"
-          />
+          <p>Second transaction</p>
+          <div class="flex">
+            <div>
+              <label for="secondQuantity">Quantity</label>
+              <input
+                type="number"
+                min="1"
+                id="secondQuantity"
+                v-model="secondQuantity"
+              />
+            </div>
+            <div>
+              <label for="secondPrice">Price</label>
+              <input
+                type="number"
+                min="0.01"
+                step=".01"
+                id="secondPrice"
+                v-model="secondPrice"
+              />
+            </div>
+          </div>
         </fieldset>
-        <BaseButton>Calculate</BaseButton>
+        <BaseButton @click="doAverageCalculation">Calculate</BaseButton>
       </form>
+      <BaseCard width="50%" class="avg-price-content">
+        <h3>Stock Average Price</h3>
+        <div v-if="averagePrice.length">
+          <p>Average price: ${{ averagePrice }}</p>
+          <p>Total Quantity: {{ totalQuantity }}</p>
+        </div>
+        <p>
+          Stock average is calculated by dividing the total cost of the stock by
+          the total quantity of stocks.
+        </p>
+      </BaseCard>
     </div>
-    <BaseCard cardWidth="70%">
-      <h3>Stock Average Price</h3>
-      <div v-if="averagePrice.length">
-        <p>Average price: ${{ averagePrice }}</p>
-        <p>Total Quantity: {{ totalQuantity }}</p>
-      </div>
-      <p>
-        Stock average is calculated by dividing the total cost of the stock by
-        the total quantity of stocks.
-      </p>
-    </BaseCard>
   </BaseCard>
 </template>
 
@@ -84,7 +93,30 @@ const totalQuantity = computed<number>(
 </script>
 
 <style scoped>
-h2 {
+.content-wrapper {
+  align-items: center;
+  justify-content: center;
+}
+
+.avg-price-content {
   text-align: center;
+}
+
+.avg-price-content div p {
+  font-weight: bold;
+}
+
+input {
+  margin-right: 0.5rem;
+  width: 80%;
+}
+
+fieldset {
+  font-weight: bold;
+  border: 0;
+}
+
+button {
+  margin-top: 1rem;
 }
 </style>
