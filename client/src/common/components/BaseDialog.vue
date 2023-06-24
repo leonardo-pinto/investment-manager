@@ -1,5 +1,6 @@
 <template>
   <teleport to="body">
+    <div v-if="show" @click="handleClose" class="backdrop"></div>
     <transition name="dialog">
       <dialog open v-if="props.show" :style="{ width: props.width }">
         <header>
@@ -51,20 +52,19 @@ const handleClose = () => {
 
 dialog {
   position: fixed;
-  top: 20vh;
-  left: 10%;
+  top: 10vh;
   z-index: 100;
   border-radius: 12px;
   border: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
   padding: 0;
-  margin: 0;
+  margin: 0 auto;
   overflow: hidden;
   background-color: white;
 }
 
 header {
-  background-color: #3a0061;
+  background-color: #ff6000;
   color: white;
   width: 100%;
   padding: 1rem;
@@ -104,11 +104,4 @@ menu {
   opacity: 1;
   transform: scale(1);
 }
-
-/* @media (min-width: 768px) {
-  dialog {
-    left: calc(50% - 20rem);
-    width: 40rem;
-  }
-} */
 </style>
