@@ -26,7 +26,7 @@ button,
 a {
   background-color: #ff6000;
   border: 1px solid #ff6000;
-  border-radius: 30px;
+  border-radius: 15px;
   cursor: pointer;
   color: white;
   font-weight: bold;
@@ -36,6 +36,7 @@ a {
 
 .outline {
   background-color: transparent;
+  border: 2px solid;
   color: #ff6000;
 }
 </style>
