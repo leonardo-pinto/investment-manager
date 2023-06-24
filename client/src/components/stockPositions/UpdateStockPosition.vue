@@ -2,7 +2,7 @@
   <BaseDialog
     :show="props.show"
     :title="title"
-    width="50%"
+    width="30%"
     @close="handleClose"
   >
     <form>
@@ -15,6 +15,7 @@
           :value="props.stockPosition?.symbol"
         />
       </div>
+
       <div class="form-control" :class="{ invalid: errors.quantity }">
         <label for="quantity">Quantity</label>
         <input
@@ -42,6 +43,7 @@
           {{ errors.price }}
         </p>
       </div>
+
       <div v-if="apiResponseError" class="error-api-response-message">
         {{ apiResponseError }}
       </div>
@@ -142,37 +144,7 @@ const submitForm = async () => {
 </script>
 
 <style scoped>
-form {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  margin: 0 auto;
-  padding: 1rem;
-}
-
-.form-control {
-  margin: 0.5rem 0;
-}
-
-label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
 input {
-  border: 1px solid #454545;
-  border-radius: 10px;
-  display: block;
-  font: inherit;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
   width: 100%;
-}
-
-input:focus {
-  border-color: #ff6000;
-  outline: none;
 }
 </style>

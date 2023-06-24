@@ -1,8 +1,7 @@
 <template>
-  <BaseCard cardWidth="40%">
+  <BaseCard width="40%">
     <h2>Login</h2>
-    <!-- <font-awesome-icon icon="fa-solid fa-eye-slash" /> -->
-    <form @submit.prevent="submitForm">
+    <form @submit.prevent="submitForm" class="w-70">
       <div class="form-control" :class="{ invalid: errors.username }">
         <label for="username">Username</label>
         <input
@@ -113,47 +112,7 @@ const submitForm = async () => {
 </script>
 
 <style scoped>
-h2 {
-  text-align: center;
-}
-
-form {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  margin: 0 auto;
-  padding: 1rem;
-  width: 70%;
-}
-
-.form-control {
-  margin: 0.5rem 0;
-}
-
-label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-input {
-  border: 1px solid #454545;
-  border-radius: 10px;
-  display: block;
-  font: inherit;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
-  width: 15rem;
-}
-
-input:focus {
-  border-color: #ff6000;
-  outline: none;
-}
-
 .login-btn {
-  width: 10rem;
   margin-top: 1.25rem;
 }
 

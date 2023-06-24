@@ -1,12 +1,12 @@
 <template>
   <BaseDialog
     :show="props.show"
-    width="80%"
-    title="Register new stock position"
+    width="50%"
+    title="New stock position"
     @close="handleClose"
   >
-    <form>
-      <div class="form-row">
+    <form class="w-70">
+      <div class="flex">
         <div class="form-control" :class="{ invalid: errors.symbol }">
           <label for="symbol">Stock Symbol</label>
           <input
@@ -35,7 +35,7 @@
           </p>
         </div>
       </div>
-      <div class="form-row">
+      <div class="flex">
         <div class="form-control" :class="{ invalid: errors.averagePrice }">
           <label for="averagePrice">Average Price</label>
           <input
@@ -67,7 +67,7 @@
       </div>
     </form>
     <template #actions>
-      <BaseButton @click="submitForm">REGISTER</BaseButton>
+      <BaseButton @click="submitForm">Create</BaseButton>
     </template>
   </BaseDialog>
 </template>
@@ -148,57 +148,3 @@ const submitForm = async () => {
   }
 };
 </script>
-
-<style scoped>
-form {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  margin: 0 auto;
-  padding: 1rem;
-  width: 70%;
-}
-
-.form-row {
-  display: flex;
-}
-
-.form-control {
-  margin: 0.5rem;
-}
-
-label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-input {
-  border: 1px solid #454545;
-  border-radius: 10px;
-  display: block;
-  font: inherit;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
-  width: 15rem;
-}
-
-input:focus {
-  border-color: #ff6000;
-  outline: none;
-}
-
-.invalid label,
-.error-message {
-  color: red;
-}
-
-.error-message {
-  font-size: 0.8rem;
-}
-
-.invalid input {
-  border: 1px solid red;
-}
-</style>

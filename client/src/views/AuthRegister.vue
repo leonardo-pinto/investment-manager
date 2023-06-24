@@ -1,12 +1,8 @@
 <template>
-  <BaseCard cardWidth="40%">
+  <BaseCard width="40%">
     <h2>Register</h2>
-    <form @submit.prevent="submitForm">
-      <div
-        class="form-control"
-        :class="{ invalid: errors.username }"
-        id="username-container"
-      >
+    <form @submit.prevent="submitForm" class="w-50">
+      <div class="form-control" :class="{ invalid: errors.username }">
         <label for="username">Username</label>
         <input
           type="text"
@@ -18,62 +14,58 @@
           {{ errors.username }}
         </p>
       </div>
-      <div>
-        <div class="form-control" id="passwords-row">
-          <div :class="{ invalid: errors.password }" id="password-container">
-            <label for="password">Password</label>
-            <input
-              :type="passwordType"
-              id="password"
-              v-model.trim="registerData.password"
-              @blur="validatePassword(registerData.password)"
-            />
-            <font-awesome-icon
-              v-if="passwordType == 'password'"
-              id="eye-icon"
-              icon="fa-solid fa-eye-slash"
-              @click="togglePasswordType"
-            />
-            <font-awesome-icon
-              v-else
-              id="eye-icon"
-              icon="fa-solid fa-eye"
-              @click="togglePasswordType"
-            />
-          </div>
-          <div
-            :class="{ invalid: errors.passwordConfirmation }"
-            id="password-confirmation-container"
-          >
-            <label for="passwordConfirmation">Confirmation</label>
-            <input
-              :type="passwordConfType"
-              id="passwordConfirmation"
-              v-model="registerData.passwordConfirmation"
-              @blur="
-                validatePasswordConfirmation(
-                  registerData.password,
-                  registerData.passwordConfirmation
-                )
-              "
-            />
-            <font-awesome-icon
-              v-if="passwordConfType == 'password'"
-              id="eye-icon"
-              icon="fa-solid fa-eye-slash"
-              @click="togglePasswordConfType"
-            />
-            <font-awesome-icon
-              v-else
-              id="eye-icon"
-              icon="fa-solid fa-eye"
-              @click="togglePasswordConfType"
-            />
-          </div>
-        </div>
+      <div class="form-control" :class="{ invalid: errors.password }">
+        <label for="password">Password</label>
+        <input
+          :type="passwordType"
+          id="password"
+          v-model.trim="registerData.password"
+          @blur="validatePassword(registerData.password)"
+        />
+        <font-awesome-icon
+          v-if="passwordType == 'password'"
+          id="eye-icon"
+          icon="fa-solid fa-eye-slash"
+          @click="togglePasswordType"
+        />
+        <font-awesome-icon
+          v-else
+          id="eye-icon"
+          icon="fa-solid fa-eye"
+          @click="togglePasswordType"
+        />
         <p v-if="errors.password" class="error-message">
           {{ errors.password }}
         </p>
+      </div>
+      <div
+        class="form-control"
+        :class="{ invalid: errors.passwordConfirmation }"
+      >
+        <label for="passwordConfirmation">Confirmation</label>
+        <input
+          :type="passwordConfType"
+          id="passwordConfirmation"
+          v-model="registerData.passwordConfirmation"
+          @blur="
+            validatePasswordConfirmation(
+              registerData.password,
+              registerData.passwordConfirmation
+            )
+          "
+        />
+        <font-awesome-icon
+          v-if="passwordConfType == 'password'"
+          id="eye-icon"
+          icon="fa-solid fa-eye-slash"
+          @click="togglePasswordConfType"
+        />
+        <font-awesome-icon
+          v-else
+          id="eye-icon"
+          icon="fa-solid fa-eye"
+          @click="togglePasswordConfType"
+        />
         <p v-if="errors.passwordConfirmation" class="error-message">
           {{ errors.passwordConfirmation }}
         </p>
@@ -82,11 +74,13 @@
         {{ apiResponseError }}
       </div>
       <BaseButton class="register-btn">Register</BaseButton>
-      <div class="register">
-        <p>Are you a member already?</p>
-        <router-link to="/login">Login here.</router-link>
-      </div>
     </form>
+    <div class="register flex">
+      <p>
+        Are you a member already?
+        <router-link to="/login"> Login here.</router-link>
+      </p>
+    </div>
   </BaseCard>
 </template>
 
@@ -173,65 +167,8 @@ const submitForm = async () => {
 </script>
 
 <style scoped>
-h2 {
+p {
   text-align: center;
-}
-
-form {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  margin: 0 auto;
-  padding: 1rem;
-  width: 60%;
-}
-
-.form-control {
-  margin: 0.5rem 0;
-}
-
-#passwords-row {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-}
-
-#username-container,
-#username-container input,
-#password-container input,
-#password-confirmation-container input {
-  width: 100%;
-}
-
-#password-container,
-#password-confirmation-container {
-  width: 50%;
-}
-
-#password-confirmation-container {
-  margin-left: 1.5rem;
-}
-
-label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-input {
-  border: 1px solid #454545;
-  border-radius: 10px;
-  display: block;
-  font: inherit;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
-  width: 15rem;
-}
-
-input:focus {
-  border-color: #ff6000;
-  outline: none;
 }
 
 .register-btn {
@@ -239,13 +176,10 @@ input:focus {
   margin-top: 1.25rem;
 }
 
-p {
-  display: inline;
-  padding: 0 0.5rem;
-}
-
 .register {
   margin-top: 2rem;
+  justify-content: center;
+  align-items: center;
 }
 
 .register a {
