@@ -1,16 +1,19 @@
 <template>
-  Transactions view
-  <h1 v-if="isLoading">LOADING...</h1>
-  <h2 v-else-if="!filteredTransactions.length">There are no transactions</h2>
-  <TransactionsFilter @changeFilters="setFilters" />
-  <div v-if="apiResponseError" class="error-api-response-message">
-    {{ apiResponseError }}
-  </div>
-  <TransactionsTable
-    v-else
-    :filteredTransactions="filteredTransactions"
-    :currency="currency"
-  ></TransactionsTable>
+  <BaseCard width="80%">
+    <TransactionsFilter @changeFilters="setFilters" />
+    <div v-if="isLoading"></div>
+    <div v-else-if="apiResponseError" class="error-api-response-message">
+      {{ apiResponseError }}
+    </div>
+    <h2 v-else-if="!filteredTransactions.length">
+      There are no transactions for the selected trading country.
+    </h2>
+    <TransactionsTable
+      v-else
+      :filteredTransactions="filteredTransactions"
+      :currency="currency"
+    ></TransactionsTable>
+  </BaseCard>
 </template>
 
 <script setup lang="ts">
@@ -42,6 +45,10 @@ const currency = computed<string>(() => {
 
 function setFilters(filters: any) {
   selectedFilters.tradingCountry = filters.tradingCountry;
+  store.dispatch(
+    'stockPositions/setSelectedTradingCountry',
+    selectedFilters.tradingCountry
+  );
   selectedFilters.transactionType = filters.transactionType;
   selectedFilters.symbol = filters.symbol;
   selectedFilters.startDate = filters.startDate;
