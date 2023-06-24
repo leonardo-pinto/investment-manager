@@ -1,12 +1,12 @@
 <template>
-  <BaseCard width="90%">
+  <BaseCard width="80%">
     <TransactionsFilter @changeFilters="setFilters" />
     <div v-if="isLoading"></div>
     <div v-else-if="apiResponseError" class="error-api-response-message">
       {{ apiResponseError }}
     </div>
     <h2 v-else-if="!filteredTransactions.length">
-      There are no transactions for the selected trading country.
+      There are no transactions for the selected filter.
     </h2>
     <TransactionsTable
       v-else
