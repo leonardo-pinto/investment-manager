@@ -1,0 +1,185 @@
+<template>
+  <BaseCard width="90%">
+    <div id="top-actions-wrapper">
+      <div id="trading-country-wrapper" class="flex">
+        <label for="tradingCountry">Trading Country: </label>
+        <select
+          name="tradingCountry"
+          id="tradingCountry"
+          v-model="selectedTradingCountry"
+        >
+          <option :value="TradingCountry.US">US</option>
+          <option :value="TradingCountry.BR">BR</option>
+        </select>
+      </div>
+      <BaseButton @click="handleCreateStockPosition"
+        >New Stock Position</BaseButton
+      >
+    </div>
+    <CreateStockPosition
+      :show="showCreateStockPosition"
+      @close="handleCreateStockPosition"
+      :tradingCountry="selectedTradingCountry"
+    />
+    <UpdateStockPosition
+      :show="showUpdateStockPosition"
+      :stockPosition="selectedStockPosition"
+      :transactionType="selectedTransactionType"
+      @close="handleUpdateStockPosition"
+    />
+    <div v-if="isLoading"></div>
+    <div v-else-if="apiResponseError" class="error-api-response-message">
+      {{ apiResponseError }}
+    </div>
+    <div v-else-if="!filteredStockPositions.stockPositions.length">
+      <h3>There are no stock positions for the selected trading country</h3>
+      <p>Create a new stock position to get started!</p>
+    </div>
+    <div v-else>
+      <!-- :key is used here to force StockPositionsTable update -->
+      <!-- Since the props change is not tracked -->
+      <StockPositionsTable
+        :key="filteredStockPositions.updatedAt"
+        :filteredStockPositions="filteredStockPositions.stockPositions"
+        :currency="currency"
+        @openUpdateStock="openUpdateStock"
+      />
+      <div class="update-container">
+        <p>Last update: {{ formatDate(filteredStockPositions.updatedAt) }}</p>
+        <a href="#" @click.prevent="getStockPositionQuotes">Update Quotes</a>
+      </div>
+    </div>
+  </BaseCard>
+</template>
+
+<script setup lang="ts">
+import { Ref, computed, ref, watch } from 'vue';
+import { useStore } from '../store';
+import StockPositionsTable from '../components/stockPositions/StockPositionsTable.vue';
+import CreateStockPosition from '../components/stockPositions/CreateStockPosition.vue';
+import UpdateStockPosition from '../components/stockPositions/UpdateStockPosition.vue';
+import { TradingCountry, TransactionType } from '../enums';
+import { StockPosition, StockPositionsByCountry } from '../types/stockPosition';
+import { useLoading } from 'vue-loading-overlay';
+import { formatDate } from '../common/helpers';
+
+const store = useStore();
+
+const isLoading = ref(false);
+const $loading = useLoading({
+  color: '#ff6000',
+});
+
+const selectedTradingCountry = ref<TradingCountry>(
+  store.getters['stockPositions/getSelectedCountry']
+);
+
+watch(selectedTradingCountry, (value) => {
+  store.dispatch('stockPositions/setSelectedTradingCountry', value);
+  getStockPositionsAndStockQuotes();
+});
+
+const currency = computed<string>(() => {
+  return selectedTradingCountry.value == TradingCountry.US ? '$' : 'R$';
+});
+
+const filteredStockPositions = computed<StockPositionsByCountry>(() => {
+  return store.getters['stockPositions/getStockPositions'][
+    selectedTradingCountry.value
+  ];
+});
+
+const showCreateStockPosition = ref(false);
+const handleCreateStockPosition = () => {
+  showCreateStockPosition.value = !showCreateStockPosition.value;
+};
+
+const selectedStockPosition: Ref<StockPosition | null> = ref(null);
+const selectedTransactionType: Ref<TransactionType> = ref(TransactionType.Buy);
+const showUpdateStockPosition = ref(false);
+
+const handleUpdateStockPosition = () => {
+  showUpdateStockPosition.value = !showUpdateStockPosition.value;
+};
+
+interface openUpdateStockPayload {
+  positionId: string;
+  transactionType: TransactionType;
+}
+
+const openUpdateStock = (payload: openUpdateStockPayload): void => {
+  handleUpdateStockPosition();
+  selectedStockPosition.value =
+    filteredStockPositions.value.stockPositions.find(
+      (s) => s.positionId === payload.positionId
+    ) ?? null;
+
+  selectedTransactionType.value = payload.transactionType;
+};
+
+const apiResponseError = ref('');
+
+const getStockPositionsAndStockQuotes = async () => {
+  const loader = $loading.show();
+  try {
+    isLoading.value = true;
+    await store.dispatch('stockPositions/getAllStockPositions');
+  } catch (_error) {
+    apiResponseError.value =
+      'An error occurred while consulting stock positions. Please try again.';
+  } finally {
+    isLoading.value = false;
+    loader.hide();
+  }
+};
+
+getStockPositionsAndStockQuotes();
+
+const getStockPositionQuotes = () => {
+  const loader = $loading.show();
+  try {
+    isLoading.value = true;
+    store.dispatch('stockPositions/getStockPositionQuotes');
+  } catch (_error) {
+    apiResponseError.value =
+      'An error occurred while consulting stock quotes. Please try again.';
+  } finally {
+    isLoading.value = false;
+    loader.hide();
+  }
+};
+</script>
+
+<style scoped>
+#top-actions-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#trading-country-wrapper {
+  justify-content: center;
+  align-items: center;
+}
+
+#trading-country-wrapper label {
+  margin: 0;
+}
+
+#trading-country-wrapper select {
+  margin-left: 0.5rem;
+}
+
+.update-container {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+}
+
+.update-container a {
+  color: #ff6000;
+  margin-left: 0.8rem;
+}
+</style>
