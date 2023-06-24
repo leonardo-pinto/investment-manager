@@ -50,7 +50,6 @@ namespace InvestmentManager.UnitTests.Services
             transactionResponse.Symbol.Should().Be(addTransactionRequest.Symbol);
             transactionResponse.Quantity.Should().Be(addTransactionRequest.Quantity);
             transactionResponse.Price.Should().Be(addTransactionRequest.Price);
-            transactionResponse.DateAndTimeOfTransaction.Should().Be(addTransactionRequest.DateAndTimeOfTransaction);
             transactionResponse.TransactionType.Should().Be(addTransactionRequest.TransactionType.ToString());
 
             _transactionRepositoryMock.Verify(m => m.CreateTransaction(It.IsAny<Transaction>()), Times.Once);

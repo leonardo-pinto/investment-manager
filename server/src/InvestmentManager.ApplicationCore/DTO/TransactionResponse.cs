@@ -23,7 +23,7 @@
         /// <summary>
         /// The date and time of the transaction
         /// </summary>
-        public required DateTime DateAndTimeOfTransaction { get; set; }
+        public required DateTimeOffset DateAndTimeOfTransaction { get; set; }
 
         /// <summary>
         /// The type of the transaction (buy or sell)

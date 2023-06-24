@@ -26,6 +26,7 @@ namespace InvestmentManager.ApplicationCore.Services
         public async Task<TransactionResponse> CreateTransaction(AddTransactionRequest addTransactionRequest)
         {
             Transaction transaction = _mapper.Map<Transaction>(addTransactionRequest);
+            transaction.DateAndTimeOfTransaction = DateTimeOffset.Now;
             await _transactionRepository.CreateTransaction(transaction);
 
             _memoryCache.Remove($"transactionsUser{transaction.UserId}");
