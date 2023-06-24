@@ -43,7 +43,7 @@ namespace InvestmentManager.ApplicationCore.Domain.Entities
         /// <summary>
         /// The date and time of the transaction
         /// </summary>
-        public DateTime DateAndTimeOfTransaction { get; set; }
+        public DateTimeOffset DateAndTimeOfTransaction { get; set; }
 
         /// <summary>
         /// Type of the transaction (buy or sell)
