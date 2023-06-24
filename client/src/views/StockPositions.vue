@@ -1,19 +1,21 @@
 <template>
-  <BaseCard cardWidth="80%">
-    <BaseButton @click="handleCreateStockPosition"
-      >REGISTER NEW POSITION</BaseButton
-    >
-    <label for="tradingCountry">Trading Country: </label>
-    <select
-      name="tradingCountry"
-      id="tradingCountry"
-      v-model="selectedTradingCountry"
-    >
-      <option :value="TradingCountry.US">US</option>
-      <option :value="TradingCountry.BR">BR</option>
-    </select>
-    <BaseButton @click="refreshStockQuotes">Refresh Quotes</BaseButton>
-
+  <BaseCard width="90%">
+    <div id="top-actions-wrapper">
+      <div id="trading-country-wrapper" class="flex">
+        <label for="tradingCountry">Trading Country: </label>
+        <select
+          name="tradingCountry"
+          id="tradingCountry"
+          v-model="selectedTradingCountry"
+        >
+          <option :value="TradingCountry.US">US</option>
+          <option :value="TradingCountry.BR">BR</option>
+        </select>
+      </div>
+      <BaseButton @click="handleCreateStockPosition"
+        >New Stock Position</BaseButton
+      >
+    </div>
     <CreateStockPosition
       :show="showCreateStockPosition"
       @close="handleCreateStockPosition"
@@ -25,17 +27,15 @@
       :transactionType="selectedTransactionType"
       @close="handleUpdateStockPosition"
     />
-
-    <div></div>
     <div v-if="isLoading"></div>
     <div v-else-if="apiResponseError" class="error-api-response-message">
       {{ apiResponseError }}
     </div>
-    <h2 v-else-if="!filteredStockPositions.stockPositions.length">
-      There are no stock positions for {{ selectedTradingCountry }}
-    </h2>
+    <div v-else-if="!filteredStockPositions.stockPositions.length">
+      <h3>There are no stock positions for the selected trading country</h3>
+      <p>Create a new stock position to get started!</p>
+    </div>
     <div v-else>
-      <p>Last update: {{ formatDate(filteredStockPositions.updatedAt) }}</p>
       <!-- :key is used here to force StockPositionsTable update -->
       <!-- Since the props change is not tracked -->
       <StockPositionsTable
@@ -44,6 +44,10 @@
         :currency="currency"
         @openUpdateStock="openUpdateStock"
       />
+      <div class="update-container">
+        <p>Last update: {{ formatDate(filteredStockPositions.updatedAt) }}</p>
+        <a href="#" @click.prevent="getStockPositionQuotes">Update Quotes</a>
+      </div>
     </div>
   </BaseCard>
 </template>
@@ -60,6 +64,7 @@ import { useLoading } from 'vue-loading-overlay';
 import { formatDate } from '../common/helpers';
 
 const store = useStore();
+
 const isLoading = ref(false);
 const $loading = useLoading({
   color: '#ff6000',
@@ -85,7 +90,6 @@ const filteredStockPositions = computed<StockPositionsByCountry>(() => {
 });
 
 const showCreateStockPosition = ref(false);
-
 const handleCreateStockPosition = () => {
   showCreateStockPosition.value = !showCreateStockPosition.value;
 };
@@ -131,7 +135,7 @@ const getStockPositionsAndStockQuotes = async () => {
 
 getStockPositionsAndStockQuotes();
 
-const refreshStockQuotes = () => {
+const getStockPositionQuotes = () => {
   const loader = $loading.show();
   try {
     isLoading.value = true;
@@ -145,3 +149,37 @@ const refreshStockQuotes = () => {
   }
 };
 </script>
+
+<style scoped>
+#top-actions-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#trading-country-wrapper {
+  justify-content: center;
+  align-items: center;
+}
+
+#trading-country-wrapper label {
+  margin: 0;
+}
+
+#trading-country-wrapper select {
+  margin-left: 0.5rem;
+}
+
+.update-container {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+}
+
+.update-container a {
+  color: #ff6000;
+  margin-left: 0.8rem;
+}
+</style>
