@@ -128,7 +128,6 @@ const submitForm = async () => {
     quantity: stockPositionData.value.quantity,
     price: stockPositionData.value.price,
     transactionType: props.transactionType,
-    dateAndTimeOfStockPosition: new Date().toISOString(),
   };
 
   const loader = $loading.show();
