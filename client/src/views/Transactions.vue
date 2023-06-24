@@ -1,5 +1,5 @@
 <template>
-  <BaseCard width="80%">
+  <BaseCard width="90%">
     <TransactionsFilter @changeFilters="setFilters" />
     <div v-if="isLoading"></div>
     <div v-else-if="apiResponseError" class="error-api-response-message">
@@ -111,7 +111,7 @@ function getTransactions() {
     isLoading.value = false;
     loader.hide();
   }
-};
+}
 
 getTransactions();
 </script>
