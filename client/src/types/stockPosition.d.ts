@@ -14,7 +14,7 @@ export interface StockPositions {
 
 export interface StockPositionsByCountry {
   stockPositions: StockPosition[];
-  updatedAt?: string | null;
+  updatedAt: string;
 }
 
 export interface CreateStockPositionRequest {
