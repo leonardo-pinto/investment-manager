@@ -115,7 +115,7 @@ function handleClose(): void {
 
 const apiResponseError = ref('');
 
-const submitForm = async () => {
+async function submitForm () {
   validateAllFormFields();
   if (!isFormValid(stockPositionData)) {
     return;

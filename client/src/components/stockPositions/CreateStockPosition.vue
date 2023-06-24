@@ -112,13 +112,13 @@ function handleClose(): void {
   emit('close');
 }
 
-const validateAllFormFields = (): void => {
+function validateAllFormFields() {
   validateEmptyField(stockPositionData.value.symbol, 'symbol');
   validatePositiveValue(stockPositionData.value.quantity, 'quantity');
   validatePositiveValue(stockPositionData.value.averagePrice, 'averagePrice');
 };
 
-const submitForm = async () => {
+async function submitForm() {
   validateAllFormFields();
   if (!isFormValid(stockPositionData.value)) {
     return;

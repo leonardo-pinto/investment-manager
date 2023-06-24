@@ -111,7 +111,7 @@ const registerData = ref({
 const passwordType = ref<string>('password');
 const passwordConfType = ref<string>('password');
 
-const togglePasswordType = () => {
+function togglePasswordType() {
   if (passwordType.value == 'password') {
     passwordType.value = 'text';
   } else {
@@ -119,7 +119,7 @@ const togglePasswordType = () => {
   }
 };
 
-const togglePasswordConfType = () => {
+function togglePasswordConfType() {
   if (passwordConfType.value == 'password') {
     passwordConfType.value = 'text';
   } else {
@@ -131,7 +131,7 @@ const $loading = useLoading({
   color: '#ff6000',
 });
 
-const validateAllFormFields = (): void => {
+function validateAllFormFields() {
   validateEmptyField(registerData.value.username, 'username');
   validatePassword(registerData.value.password);
   validatePasswordConfirmation(
@@ -142,7 +142,7 @@ const validateAllFormFields = (): void => {
 
 const apiResponseError = ref('');
 
-const submitForm = async () => {
+async function submitForm() {
   validateAllFormFields();
   if (!isFormValid(registerData.value)) {
     return;

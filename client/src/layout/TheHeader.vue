@@ -39,10 +39,10 @@ const store = useStore();
 const router = useRouter();
 const isAuth = computed<boolean>(() => store.getters['auth/isAuthenticated']);
 
-const logout = () => {
+function logout() {
   store.dispatch('auth/logout');
   router.replace('/login');
-};
+}
 </script>
 
 <style scoped>
