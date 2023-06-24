@@ -1,5 +1,4 @@
 <template>
-  <h1>transactions</h1>
   <table>
     <thead>
       <tr>
@@ -13,12 +12,11 @@
         v-for="(transaction, index) in props.filteredTransactions"
         :key="index"
       >
-        <!-- <td>{{ transaction.dateAndTimeOfTransaction }}</td> -->
         <td>{{ formatDate(transaction.dateAndTimeOfTransaction) }}</td>
         <td>{{ buildDescription(transaction) }}</td>
-        <td>
+        <td :style="{ color: isBuy(transaction) }">
           {{ props.currency }}
-          {{ calculateAmount(transaction.quantity, transaction.price) }}
+          {{ calculateAmount(transaction) }}
         </td>
       </tr>
     </tbody>
@@ -46,7 +44,16 @@ function buildDescription(transaction: Transaction): string {
   return `${transactionType} ${quantity} ${symbol} @ ${props.currency} ${price}`;
 }
 
-function calculateAmount(quantity: number, price: number): number {
-  return quantity * price;
+function calculateAmount(transaction: Transaction): string {
+  const { quantity, price, transactionType } = transaction;
+  const amount = (quantity * price).toString();
+
+  return transactionType == TransactionType.Buy ? `-${amount}` : amount;
+}
+
+function isBuy(transaction: Transaction): string {
+  return transaction.transactionType == TransactionType.Sell
+    ? '#228B22'
+    : '#FF0000';
 }
 </script>

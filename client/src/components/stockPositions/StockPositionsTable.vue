@@ -39,16 +39,15 @@
           {{ props.currency }}
           {{ calculateValue(stockPosition.quantity, stockPosition.price) }}
         </td>
-        <td>
+        <td :style="{ color: checkProfit(stockPosition) }">
           {{
             calculateGainPercentage(
               stockPosition.price,
               stockPosition.averagePrice
             )
-          }}
-          %
+          }}%
         </td>
-        <td>
+        <td :style="{ color: checkProfit(stockPosition) }">
           {{ props.currency }}
           {{
             calculateGainMonetary(
@@ -72,6 +71,7 @@
               openUpdateStock(stockPosition.positionId, TransactionType.Buy)
             "
             mode="outline"
+            class="action-buttons"
             >Buy</BaseButton
           >
           <BaseButton
@@ -79,6 +79,7 @@
               openUpdateStock(stockPosition.positionId, TransactionType.Sell)
             "
             mode="outline"
+            class="action-buttons"
             >Sell</BaseButton
           >
         </td>
@@ -109,4 +110,17 @@ const emit = defineEmits(['openUpdateStock']);
 function openUpdateStock(positionId: string, transactionType: TransactionType) {
   emit('openUpdateStock', { positionId, transactionType });
 }
+
+function checkProfit(stockPosition: StockPosition): string {
+  const { price, averagePrice } = stockPosition;
+  return price > averagePrice ? '#228B22' : '#FF0000';
+}
 </script>
+
+<style scoped>
+.action-buttons {
+  margin-right: 0.4rem;
+  padding: 0.25rem 1rem;
+  font-weight: 200;
+}
+</style>
