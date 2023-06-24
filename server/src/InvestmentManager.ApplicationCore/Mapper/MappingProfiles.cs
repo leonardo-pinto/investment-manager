@@ -29,17 +29,11 @@ namespace InvestmentManager.ApplicationCore.Mapper
                     dest => dest.Price,
                     opt => opt.MapFrom(src => src.AveragePrice))
                 .ForMember(
-                    dest => dest.DateAndTimeOfTransaction,
-                    opt => opt.MapFrom(src => src.DateAndTimeOfStockPosition))
-                .ForMember(
                     dest => dest.TransactionType,
                     opt => opt.MapFrom(src => TransactionType.Buy));
 
-            CreateMap<UpdateStockPositionRequest, AddTransactionRequest>()
-                .ForMember(
-                    dest => dest.DateAndTimeOfTransaction,
-                    opt => opt.MapFrom(src => src.DateAndTimeOfStockPosition));
-
+            CreateMap<UpdateStockPositionRequest, AddTransactionRequest>();
+               
             CreateMap<AddTransactionRequest, Transaction>()
                 .ForMember(
                     dest => dest.TransactionId,
