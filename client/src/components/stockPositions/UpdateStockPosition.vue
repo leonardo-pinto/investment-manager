@@ -128,6 +128,7 @@ const submitForm = async () => {
     quantity: stockPositionData.value.quantity,
     price: stockPositionData.value.price,
     transactionType: props.transactionType,
+    tradingCountry: store.getters['stockPositions/getSelectedCountry'],
   };
 
   const loader = $loading.show();
