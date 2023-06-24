@@ -1,7 +1,9 @@
 <template>
   <header>
     <nav>
-      <h1><router-link to="/">Investment Manager</router-link></h1>
+      <router-link to="/"
+        ><img id="logo" src="../assets/logo.png"
+      /></router-link>
       <ul v-if="!isAuth">
         <li>
           <BaseButton link to="/register">Register</BaseButton>
@@ -47,19 +49,14 @@ function logout() {
 
 <style scoped>
 header {
-  align-items: center;
-  background-color: #fff;
-  display: flex;
   height: 8rem;
-  justify-content: center;
-  width: 100%;
+  padding: 1rem 2.5rem;
 }
 
 header nav {
   align-items: center;
   display: flex;
   justify-content: space-between;
-  width: 90%;
 }
 
 header ul {
@@ -70,11 +67,19 @@ header ul {
 }
 
 header a {
-  padding: 0.75rem 1.25rem;
   text-decoration: none;
 }
 
 li {
   margin: 0 0.5rem;
+}
+
+a {
+  margin: 0;
+  padding: 0;
+}
+
+#logo {
+  height: 5rem;
 }
 </style>
