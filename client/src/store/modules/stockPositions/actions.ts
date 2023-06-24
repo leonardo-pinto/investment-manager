@@ -36,7 +36,7 @@ export default {
         selectedCountry
       );
       commit('getAllStockPositions', stockPositions);
-      dispatch('getStockPositionQuotes');
+      await dispatch('getStockPositionQuotes');
     } catch (error) {
       throw error;
     }
