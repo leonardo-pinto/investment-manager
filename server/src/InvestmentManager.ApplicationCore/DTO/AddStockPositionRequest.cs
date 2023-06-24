@@ -36,14 +36,6 @@ namespace InvestmentManager.ApplicationCore.DTO
         public required double AveragePrice { get; set; }
 
         /// <summary>
-        /// The date and time of the stock position
-        /// </summary>
-        [Required(ErrorMessage = "Date and time of stock position can't be null or empty")]
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
-        public required DateTime DateAndTimeOfStockPosition { get; set; }
-
-        /// <summary>
         /// The country in which the stock is negotiated
         /// </summary>
         [Required(ErrorMessage = "Trading country can't be null or empty")]

@@ -48,10 +48,10 @@ namespace InvestmentManager.ApplicationCore.DTO
         public required TransactionType TransactionType { get; set; }
 
         /// <summary>
-        /// The date and time of the stock position
+        /// The country in which the stock is negotiated
         /// </summary>
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
-        public required DateTime DateAndTimeOfStockPosition { get; set; }
+        [Required(ErrorMessage = "Trading country can't be null or empty")]
+        [EnumDataType(typeof(TradingCountry))]
+        public required TradingCountry TradingCountry { get; set; }
     }
 }

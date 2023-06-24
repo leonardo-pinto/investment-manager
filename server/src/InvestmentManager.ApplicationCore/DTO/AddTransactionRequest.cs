@@ -41,13 +41,6 @@ namespace InvestmentManager.ApplicationCore.DTO
         public required double Price { get; set; }
 
         /// <summary>
-        /// The date and time of the transaction
-        /// </summary>
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
-        public required DateTime DateAndTimeOfTransaction { get; set; }
-
-        /// <summary>
         /// Type of the transaction (buy or sell)
         /// </summary>
         [Required(ErrorMessage = "Invalid transaction type")]
