@@ -6,7 +6,11 @@ import {
 } from '../../../types/auth';
 import { AuthState } from '.';
 import { loginUser, registerUser } from '../../../api/auth.api';
-import { removeAuthFromLocalStorage, setAuthToLocalStorage } from '../../../common/helpers';
+import {
+  removeAuthFromLocalStorage,
+  setAuthToLocalStorage,
+} from '../../../common/helpers';
+import router from '../../../router';
 
 export default {
   async register(
@@ -34,6 +38,7 @@ export default {
     }
   },
   logout({ commit }: ActionContext<AuthState, unknown>) {
+    router.replace('/login');
     removeAuthFromLocalStorage();
     commit('logout');
   },

@@ -115,7 +115,7 @@ function handleClose(): void {
 
 const apiResponseError = ref('');
 
-const submitForm = async () => {
+async function submitForm () {
   validateAllFormFields();
   if (!isFormValid(stockPositionData)) {
     return;
@@ -128,7 +128,7 @@ const submitForm = async () => {
     quantity: stockPositionData.value.quantity,
     price: stockPositionData.value.price,
     transactionType: props.transactionType,
-    dateAndTimeOfStockPosition: new Date().toISOString(),
+    tradingCountry: store.getters['stockPositions/getSelectedCountry'],
   };
 
   const loader = $loading.show();

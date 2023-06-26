@@ -73,7 +73,7 @@ const $loading = useLoading({
 
 const passwordType = ref<string>('password');
 
-const togglePasswordType = () => {
+function togglePasswordType() {
   if (passwordType.value == 'password') {
     passwordType.value = 'text';
   } else {
@@ -81,14 +81,14 @@ const togglePasswordType = () => {
   }
 };
 
-const validateAllFormFields = (): void => {
+function validateAllFormFields() {
   validateEmptyField(loginData.value.username, 'username');
   validateEmptyField(loginData.value.password, 'password');
 };
 
 const apiResponseError = ref('');
 
-const submitForm = async () => {
+async function submitForm() {
   validateAllFormFields();
   if (!isFormValid(loginData.value)) {
     return;

@@ -6,7 +6,7 @@
       {{ apiResponseError }}
     </div>
     <h2 v-else-if="!filteredTransactions.length">
-      There are no transactions for the selected trading country.
+      There are no transactions for the selected filter.
     </h2>
     <TransactionsTable
       v-else
@@ -31,16 +31,16 @@ const $loading = useLoading({
   color: '#ff6000',
 });
 
+const currency = computed<string>(() => {
+  return selectedFilters.tradingCountry == TradingCountry.US ? '$' : 'R$';
+});
+
 const selectedFilters = reactive({
   tradingCountry: store.getters['stockPositions/getSelectedCountry'],
   transactionType: '',
   symbol: '',
   startDate: '',
   endDate: '',
-});
-
-const currency = computed<string>(() => {
-  return selectedFilters.tradingCountry == TradingCountry.US ? '$' : 'R$';
 });
 
 function setFilters(filters: any) {
@@ -99,7 +99,7 @@ const filteredTransactions = computed(() => {
 
 const apiResponseError = ref('');
 
-const getTransactions = () => {
+function getTransactions() {
   const loader = $loading.show();
   try {
     isLoading.value = true;
@@ -111,7 +111,7 @@ const getTransactions = () => {
     isLoading.value = false;
     loader.hide();
   }
-};
+}
 
 getTransactions();
 </script>

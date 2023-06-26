@@ -33,5 +33,5 @@ export interface UpdateStockPositionRequest {
   quantity: number;
   price: number;
   transactionType: TransactionType;
-  dateAndTimeOfStockPosition: string;
+  tradingCountry: TradingCountry;
 }

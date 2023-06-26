@@ -98,16 +98,16 @@ const selectedStockPosition: Ref<StockPosition | null> = ref(null);
 const selectedTransactionType: Ref<TransactionType> = ref(TransactionType.Buy);
 const showUpdateStockPosition = ref(false);
 
-const handleUpdateStockPosition = () => {
+function handleUpdateStockPosition() {
   showUpdateStockPosition.value = !showUpdateStockPosition.value;
-};
+}
 
 interface openUpdateStockPayload {
   positionId: string;
   transactionType: TransactionType;
 }
 
-const openUpdateStock = (payload: openUpdateStockPayload): void => {
+function openUpdateStock(payload: openUpdateStockPayload) {
   handleUpdateStockPosition();
   selectedStockPosition.value =
     filteredStockPositions.value.stockPositions.find(
@@ -115,11 +115,11 @@ const openUpdateStock = (payload: openUpdateStockPayload): void => {
     ) ?? null;
 
   selectedTransactionType.value = payload.transactionType;
-};
+}
 
 const apiResponseError = ref('');
 
-const getStockPositionsAndStockQuotes = async () => {
+async function getStockPositionsAndStockQuotes() {
   const loader = $loading.show();
   try {
     isLoading.value = true;
@@ -131,11 +131,11 @@ const getStockPositionsAndStockQuotes = async () => {
     isLoading.value = false;
     loader.hide();
   }
-};
+}
 
 getStockPositionsAndStockQuotes();
 
-const getStockPositionQuotes = () => {
+function getStockPositionQuotes() {
   const loader = $loading.show();
   try {
     isLoading.value = true;
@@ -147,7 +147,7 @@ const getStockPositionQuotes = () => {
     isLoading.value = false;
     loader.hide();
   }
-};
+}
 </script>
 
 <style scoped>
