@@ -1,4 +1,7 @@
-﻿namespace InvestmentManager.ApplicationCore.DTO
+﻿using InvestmentManager.ApplicationCore.Enums;
+using System.ComponentModel.DataAnnotations;
+
+namespace InvestmentManager.ApplicationCore.DTO
 {
     /// <summary>
     /// DTO class that represents the return of a single stock position
@@ -29,6 +32,11 @@
         /// Country in which the stock is traded
         /// </summary>
         public required string TradingCountry { get; set; }
+
+        /// <summary>
+        /// Type of the stock. e.g., stock, reit or bond
+        /// </summary>
+        public required string Type { get; set; }
     }
 
     public class StockPositionsResponse

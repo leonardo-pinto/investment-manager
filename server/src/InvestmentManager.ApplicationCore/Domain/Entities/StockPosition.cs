@@ -1,5 +1,4 @@
-﻿using InvestmentManager.ApplicationCore.DTO;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace InvestmentManager.ApplicationCore.Domain.Entities
 {
@@ -39,6 +38,13 @@ namespace InvestmentManager.ApplicationCore.Domain.Entities
         /// Country in which the stock is traded
         /// </summary>
         public required string TradingCountry { get; set; }
+
+        /// <summary>
+        /// Type of the stock. e.g., stock, reit or bond
+        /// </summary>
+        public required  string Type { get; set; }
+
+
 
         /// <summary>
         /// Calculates an updated average price

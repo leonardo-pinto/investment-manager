@@ -1,5 +1,4 @@
-﻿using InvestmentManager.ApplicationCore.Domain.Entities;
-using InvestmentManager.ApplicationCore.Enums;
+﻿using InvestmentManager.ApplicationCore.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace InvestmentManager.ApplicationCore.DTO
@@ -41,5 +40,12 @@ namespace InvestmentManager.ApplicationCore.DTO
         [Required(ErrorMessage = "Trading country can't be null or empty")]
         [EnumDataType(typeof(TradingCountry))]
         public required TradingCountry TradingCountry { get; set; }
+
+        /// <summary>
+        /// Type of the stock. e.g., stock, reit or bond
+        /// </summary>
+        [Required(ErrorMessage = "Invalid type of position")]
+        [EnumDataType(typeof(PositionType))]
+        public required PositionType Type { get; set; }
     }
 }
