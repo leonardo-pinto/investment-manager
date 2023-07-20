@@ -20,7 +20,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-if (builder.Environment.IsEnvironment("Development"))
+if (builder.Environment.IsEnvironment("Development") || builder.Environment.IsEnvironment("Docker"))
 {
 	using (var scope = app.Services.CreateScope())
 	{
@@ -33,7 +33,7 @@ if (builder.Environment.IsEnvironment("Development"))
 		catch (Exception ex)
 		{
 			var logger = services.GetRequiredService<ILogger<Program>>();
-			logger.LogError(ex, "An error occurred while migrating the database.");
+			logger.LogError(ex, "An error occurred while accessing the database.");
 		}   
 	}
 }
