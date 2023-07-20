@@ -20,7 +20,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-if (builder.Environment.IsEnvironment("Docker"))
+if (builder.Environment.IsEnvironment("Development"))
 {
 	using (var scope = app.Services.CreateScope())
 	{
@@ -28,7 +28,7 @@ if (builder.Environment.IsEnvironment("Docker"))
 		try
 		{
 			var db = services.GetRequiredService<ApplicationDbContext>();
-			db.Database.Migrate();
+			db.Database.EnsureCreated();
 		}
 		catch (Exception ex)
 		{
