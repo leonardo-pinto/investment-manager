@@ -2,7 +2,7 @@
 using InvestmentManager.ApplicationCore.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace InvestmentManager.Web.Controllers
 {
@@ -27,7 +27,7 @@ namespace InvestmentManager.Web.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("br")]
-        public async Task<ActionResult<StockQuotesResponse>> GetBrStockQuotes([FromQuery] string symbols)
+        public async Task<ActionResult<StockQuotesResponse>> GetBrStockQuotes([FromQuery, BindRequired] string symbols)
         {
             var stockQuotes = await _brApiService.GetStocksPriceQuote(symbols);
 
@@ -45,7 +45,7 @@ namespace InvestmentManager.Web.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("us")]
-        public async Task<ActionResult<StockQuotesResponse>> GetUsStockQuotes([FromQuery] string symbols) 
+        public async Task<ActionResult<StockQuotesResponse>> GetUsStockQuotes([FromQuery, BindRequired] string symbols) 
         {
             string[] symbolsArr = symbols.Split(",");
             var stockQuotes = await _finnhubService.GetMultipleStockPriceQuote(symbolsArr);
