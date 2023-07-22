@@ -1,5 +1,5 @@
 <template>
-  <table>
+  <table id="transactions-table">
     <thead>
       <tr>
         <th>Date/Time</th>
@@ -57,3 +57,9 @@ function isBuy(transaction: Transaction): string {
     : '#FF0000';
 }
 </script>
+
+<style scoped>
+#transactions-table {
+  margin-top: 25px;
+}
+</style>
