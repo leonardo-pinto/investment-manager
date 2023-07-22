@@ -60,7 +60,6 @@ body {
 table {
   border-radius: 15px;
   border-collapse: collapse;
-  margin-top: 25px;
   min-width: 400px;
   overflow: hidden;
   width: 100%;

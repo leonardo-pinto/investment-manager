@@ -6,6 +6,7 @@ export interface StockPosition {
   quantity: number;
   averagePrice: number;
   price: number;
+  type: PositionType;
 }
 
 export interface StockPositions {

@@ -11,4 +11,7 @@ export default {
   getStockSymbolsByCountry(state: StockPositionState): string[] {
     return state[state.selectedCountry].stockPositions.map((e) => e.symbol);
   },
+  getUpdateAtByCountry(state: StockPositionState): string {
+    return state[state.selectedCountry].updatedAt;
+  },
 };

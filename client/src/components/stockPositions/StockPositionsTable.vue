@@ -2,6 +2,9 @@
   <table>
     <thead>
       <tr>
+        <th id="table-title" colspan="10">{{ props.title }}</th>
+      </tr>
+      <tr>
         <th>Symbol</th>
         <th>Quantity</th>
         <th>Price</th>
@@ -99,6 +102,7 @@ import {
 } from '../../common/helpers';
 
 interface Props {
+  title: string;
   filteredStockPositions: StockPosition[];
   currency: string;
 }
@@ -118,6 +122,12 @@ function checkProfit(stockPosition: StockPosition): string {
 </script>
 
 <style scoped>
+#table-title {
+  border-bottom: 1px solid #dddddd;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
 .action-buttons {
   margin-right: 0.4rem;
   padding: 0.25rem 1rem;
