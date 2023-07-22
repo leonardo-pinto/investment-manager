@@ -56,13 +56,16 @@
           </p>
         </div>
         <div class="form-control">
-          <label for="tradingCountry">Trading Country</label>
-          <input
-            type="text"
-            id="tradingCountry"
-            disabled
-            :value="props.tradingCountry"
-          />
+          <label for="positionType">Type: </label>
+          <select
+            name="positionType"
+            id="positionType"
+            v-model="stockPositionData.positionType"
+          >
+            <option :value="PositionType.Stocks">Stock</option>
+            <option :value="PositionType.REITs">REIT</option>
+            <option :value="PositionType.Bonds">Bond</option>
+          </select>
         </div>
       </div>
     </form>
@@ -76,7 +79,7 @@
 import { ref } from 'vue';
 import { useStore } from '../../store';
 import { CreateStockPositionRequest } from '../../types/stockPosition';
-import { TradingCountry } from '../../enums';
+import { PositionType, TradingCountry } from '../../enums';
 import useFormValidation from '../../common/composables/useFormValidation';
 import { useLoading } from 'vue-loading-overlay';
 
@@ -99,6 +102,7 @@ const stockPositionData = ref({
   symbol: '',
   quantity: 1,
   averagePrice: 0.01,
+  positionType: PositionType.Stocks,
 });
 
 function clearFields() {
@@ -116,7 +120,7 @@ function validateAllFormFields() {
   validateEmptyField(stockPositionData.value.symbol, 'symbol');
   validatePositiveValue(stockPositionData.value.quantity, 'quantity');
   validatePositiveValue(stockPositionData.value.averagePrice, 'averagePrice');
-};
+}
 
 async function submitForm() {
   validateAllFormFields();
@@ -131,6 +135,7 @@ async function submitForm() {
     averagePrice: stockPositionData.value.averagePrice,
     dateAndTimeOfStockPosition: new Date().toISOString(),
     tradingCountry: props.tradingCountry as TradingCountry,
+    type: stockPositionData.value.positionType,
   };
 
   const loader = $loading.show();
@@ -146,5 +151,17 @@ async function submitForm() {
   } finally {
     loader.hide();
   }
-};
+}
 </script>
+
+<style scoped>
+select {
+  border: 1px solid #454545;
+  border-radius: 10px;
+  display: block;
+  font: inherit;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  width: 15rem;
+}
+</style>
