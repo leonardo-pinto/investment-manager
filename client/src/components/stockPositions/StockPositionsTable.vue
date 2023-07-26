@@ -18,10 +18,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr
-        v-for="(stockPosition, index) in props.filteredStockPositions"
-        :key="index"
-      >
+      <tr v-for="(stockPosition, index) in sortedStockPositions" :key="index">
         <td>{{ stockPosition.symbol }}</td>
         <td>{{ stockPosition.quantity }}</td>
         <td>
@@ -111,6 +108,10 @@ const props = defineProps<Props>();
 
 const emit = defineEmits(['openUpdateStock']);
 
+const sortedStockPositions = [...props.filteredStockPositions].sort((a, b) =>
+  a.symbol > b.symbol ? 1 : b.symbol > a.symbol ? -1 : 0
+);
+
 function openUpdateStock(positionId: string, transactionType: TransactionType) {
   emit('openUpdateStock', { positionId, transactionType });
 }
@@ -124,7 +125,6 @@ function checkProfit(stockPosition: StockPosition): string {
 <style scoped>
 #table-title {
   border-bottom: 1px solid #dddddd;
-  font-size: 1.3rem;
   text-align: center;
 }
 
