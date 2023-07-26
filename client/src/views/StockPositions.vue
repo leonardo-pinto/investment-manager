@@ -40,6 +40,12 @@
         <p>Last update: {{ formatDate(quoteUpdatedAt) }}</p>
         <a href="#" @click.prevent="getStockPositionQuotes">Update Quotes</a>
       </div>
+      <PositionsSummaryTable
+        :positions="filteredStockPositions.stockPositions"
+        :currency="currency"
+        :trading-country="selectedTradingCountry"
+        :key="filteredStockPositions.updatedAt"
+      />
       <!-- :key is used here to force StockPositionsTable update -->
       <!-- Since the props change is not tracked -->
       <StockPositionsTable
@@ -79,6 +85,7 @@ import { useStore } from '../store';
 import StockPositionsTable from '../components/stockPositions/StockPositionsTable.vue';
 import CreateStockPosition from '../components/stockPositions/CreateStockPosition.vue';
 import UpdateStockPosition from '../components/stockPositions/UpdateStockPosition.vue';
+import PositionsSummaryTable from '../components/stockPositions/PositionsSummaryTable.vue';
 import { PositionType, TradingCountry, TransactionType } from '../enums';
 import { StockPosition, StockPositionsByCountry } from '../types/stockPosition';
 import { useLoading } from 'vue-loading-overlay';
