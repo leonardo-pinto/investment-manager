@@ -1,4 +1,4 @@
-import { TradingCountry, TransactionType } from '../enums';
+import { PositionType, TradingCountry, TransactionType } from '../enums';
 
 export interface StockPosition {
   positionId: string;
@@ -6,6 +6,7 @@ export interface StockPosition {
   quantity: number;
   averagePrice: number;
   price: number;
+  type: PositionType;
 }
 
 export interface StockPositions {
@@ -24,6 +25,7 @@ export interface CreateStockPositionRequest {
   averagePrice: number;
   dateAndTimeOfStockPosition: string;
   tradingCountry: TradingCountry;
+  type: PositionType
 }
 
 export interface UpdateStockPositionRequest {

@@ -7,3 +7,9 @@ export enum TransactionType {
   Buy = 'Buy',
   Sell = 'Sell',
 }
+
+export enum PositionType {
+  Stocks = 'Stocks',
+  REITs = 'REITs',
+  Bonds = 'Bonds',
+}

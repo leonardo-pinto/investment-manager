@@ -1,3 +1,4 @@
+import { PositionType, TradingCountry } from '../../enums';
 import { AuthResponse } from '../../types/auth';
 import { StockPosition } from '../../types/stockPosition';
 
@@ -14,13 +15,30 @@ function calculateGainMonetary(
   price: number,
   avgPrice: number
 ): string {
+  qty * price - qty * avgPrice;
   return price ? (qty * price - qty * avgPrice).toFixed(2) : '';
 }
 
-function calculateMarketValueSum(stockPositions: StockPosition[]): number {
-  return stockPositions.reduce(
-    (acc, curr) => acc + Number(calculateValue(curr.quantity, curr.price)),
-    0
+function calculateMarketValueSum(stockPositions: StockPosition[]): string {
+  return (
+    stockPositions
+      .reduce(
+        (acc, curr) => acc + Number(calculateValue(curr.quantity, curr.price)),
+        0
+      )
+      .toFixed(2) ?? ''
+  );
+}
+
+function calculateCostSum(stockPositions: StockPosition[]): string {
+  return (
+    stockPositions
+      .reduce(
+        (acc, curr) =>
+          acc + Number(calculateValue(curr.quantity, curr.averagePrice)),
+        0
+      )
+      .toFixed(2) ?? ''
   );
 }
 
@@ -35,7 +53,7 @@ function calculatePositionWeight(
   const positionWeight =
     (100 *
       Number(calculateValue(stockPosition.quantity, stockPosition.price))) /
-    calculateMarketValueSum(stockPositions);
+    Number(calculateMarketValueSum(stockPositions));
   return String(positionWeight.toFixed(2));
 }
 
@@ -86,13 +104,25 @@ function removeAuthFromLocalStorage() {
   localStorage.removeItem('username');
 }
 
+const validPositionTypes: { [key: string]: string[] } = {
+  [TradingCountry.BR]: [PositionType.Stocks, PositionType.REITs],
+  [TradingCountry.US]: [
+    PositionType.Stocks,
+    PositionType.REITs,
+    PositionType.Bonds,
+  ],
+};
+
 export {
   calculateValue,
   calculateGainPercentage,
   calculateGainMonetary,
   calculatePositionWeight,
   calculateAveragePrice,
+  calculateMarketValueSum,
+  calculateCostSum,
   formatDate,
   setAuthToLocalStorage,
   removeAuthFromLocalStorage,
+  validPositionTypes,
 };

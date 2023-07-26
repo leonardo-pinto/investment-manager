@@ -2,6 +2,9 @@
   <table>
     <thead>
       <tr>
+        <th id="table-title" colspan="10">{{ props.title }}</th>
+      </tr>
+      <tr>
         <th>Symbol</th>
         <th>Quantity</th>
         <th>Price</th>
@@ -15,10 +18,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr
-        v-for="(stockPosition, index) in props.filteredStockPositions"
-        :key="index"
-      >
+      <tr v-for="(stockPosition, index) in sortedStockPositions" :key="index">
         <td>{{ stockPosition.symbol }}</td>
         <td>{{ stockPosition.quantity }}</td>
         <td>
@@ -99,6 +99,7 @@ import {
 } from '../../common/helpers';
 
 interface Props {
+  title: string;
   filteredStockPositions: StockPosition[];
   currency: string;
 }
@@ -106,6 +107,10 @@ interface Props {
 const props = defineProps<Props>();
 
 const emit = defineEmits(['openUpdateStock']);
+
+const sortedStockPositions = [...props.filteredStockPositions].sort((a, b) =>
+  a.symbol > b.symbol ? 1 : b.symbol > a.symbol ? -1 : 0
+);
 
 function openUpdateStock(positionId: string, transactionType: TransactionType) {
   emit('openUpdateStock', { positionId, transactionType });
@@ -118,6 +123,11 @@ function checkProfit(stockPosition: StockPosition): string {
 </script>
 
 <style scoped>
+#table-title {
+  border-bottom: 1px solid #dddddd;
+  text-align: center;
+}
+
 .action-buttons {
   margin-right: 0.4rem;
   padding: 0.25rem 1rem;

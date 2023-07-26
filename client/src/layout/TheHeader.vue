@@ -49,7 +49,6 @@ function logout() {
 
 <style scoped>
 header {
-  height: 8rem;
   padding: 1rem 2.5rem;
 }
 

@@ -16,7 +16,7 @@ const props = defineProps<Props>();
 .card {
   border-radius: 10px;
   box-shadow: 0 2px 6px #454545;
-  margin: 1rem auto;
+  margin: 0 auto 20px;
   max-width: 90%;
   padding: 1rem;
 }

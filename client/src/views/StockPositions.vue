@@ -36,18 +36,45 @@
       <p>Create a new stock position to get started!</p>
     </div>
     <div v-else>
+      <div class="update-container">
+        <p>Last update: {{ formatDate(quoteUpdatedAt) }}</p>
+        <a href="#" @click.prevent="getStockPositionQuotes">Update Quotes</a>
+      </div>
+      <PositionsSummaryTable
+        :positions="filteredStockPositions.stockPositions"
+        :currency="currency"
+        :trading-country="selectedTradingCountry"
+        :key="filteredStockPositions.updatedAt"
+      />
       <!-- :key is used here to force StockPositionsTable update -->
       <!-- Since the props change is not tracked -->
       <StockPositionsTable
+        v-if="stocks.length"
+        :title="PositionType.Stocks"
         :key="filteredStockPositions.updatedAt"
-        :filteredStockPositions="filteredStockPositions.stockPositions"
+        :filteredStockPositions="stocks"
         :currency="currency"
         @openUpdateStock="openUpdateStock"
+        class="stock-position-table"
       />
-      <div class="update-container">
-        <p>Last update: {{ formatDate(filteredStockPositions.updatedAt) }}</p>
-        <a href="#" @click.prevent="getStockPositionQuotes">Update Quotes</a>
-      </div>
+      <StockPositionsTable
+        v-if="reits.length"
+        :title="PositionType.REITs"
+        :key="filteredStockPositions.updatedAt"
+        :filteredStockPositions="reits"
+        :currency="currency"
+        @openUpdateStock="openUpdateStock"
+        class="stock-position-table"
+      />
+      <StockPositionsTable
+        v-if="bonds.length"
+        :title="PositionType.Bonds"
+        :key="filteredStockPositions.updatedAt"
+        :filteredStockPositions="bonds"
+        :currency="currency"
+        @openUpdateStock="openUpdateStock"
+        class="stock-position-table"
+      />
     </div>
   </BaseCard>
 </template>
@@ -58,7 +85,8 @@ import { useStore } from '../store';
 import StockPositionsTable from '../components/stockPositions/StockPositionsTable.vue';
 import CreateStockPosition from '../components/stockPositions/CreateStockPosition.vue';
 import UpdateStockPosition from '../components/stockPositions/UpdateStockPosition.vue';
-import { TradingCountry, TransactionType } from '../enums';
+import PositionsSummaryTable from '../components/stockPositions/PositionsSummaryTable.vue';
+import { PositionType, TradingCountry, TransactionType } from '../enums';
 import { StockPosition, StockPositionsByCountry } from '../types/stockPosition';
 import { useLoading } from 'vue-loading-overlay';
 import { formatDate } from '../common/helpers';
@@ -87,6 +115,28 @@ const filteredStockPositions = computed<StockPositionsByCountry>(() => {
   return store.getters['stockPositions/getStockPositions'][
     selectedTradingCountry.value
   ];
+});
+
+const stocks = computed<StockPosition[]>(() => {
+  return filteredStockPositions.value.stockPositions.filter(
+    (e) => e.type == PositionType.Stocks
+  );
+});
+
+const reits = computed<StockPosition[]>(() => {
+  return filteredStockPositions.value.stockPositions.filter(
+    (e) => e.type == PositionType.REITs
+  );
+});
+
+const bonds = computed<StockPosition[]>(() => {
+  return filteredStockPositions.value.stockPositions.filter(
+    (e) => e.type == PositionType.Bonds
+  );
+});
+
+const quoteUpdatedAt = computed<string>(() => {
+  return store.getters['stockPositions/getUpdateAtByCountry'];
 });
 
 const showCreateStockPosition = ref(false);
@@ -175,11 +225,14 @@ function getStockPositionQuotes() {
   justify-content: left;
   align-items: center;
   font-size: 0.9rem;
-  margin-left: 0.5rem;
 }
 
 .update-container a {
   color: #ff6000;
   margin-left: 0.8rem;
+}
+
+.stock-position-table {
+  margin-bottom: 2rem;
 }
 </style>
