@@ -5,12 +5,12 @@
     <div v-else-if="apiResponseError" class="error-api-response-message">
       {{ apiResponseError }}
     </div>
-    <h2 v-else-if="!filteredTransactions.length">
+    <h2 v-else-if="!sortedTransactions.length">
       There are no transactions for the selected filter.
     </h2>
     <TransactionsTable
       v-else
-      :filteredTransactions="filteredTransactions"
+      :transactions="sortedTransactions"
       :currency="currency"
     ></TransactionsTable>
   </BaseCard>
@@ -23,7 +23,7 @@ import TransactionsTable from '../components/transactions/TransactionsTable.vue'
 import TransactionsFilter from '../components/transactions/TransactionsFilter.vue';
 import { Transaction } from '../types/transactions';
 import { useLoading } from 'vue-loading-overlay';
-import { TradingCountry } from '../enums';
+import { TradingCountry, TransactionType } from '../enums';
 
 const store = useStore();
 const isLoading = ref(false);
@@ -55,45 +55,80 @@ function setFilters(filters: any) {
   selectedFilters.endDate = filters.endDate;
 }
 
+function filterByTradingCountry(value: TradingCountry): boolean {
+  if (
+    selectedFilters.tradingCountry &&
+    selectedFilters.tradingCountry !== value
+  ) {
+    return false;
+  }
+  return true;
+}
+
+function filterByTransactionType(value: TransactionType): boolean {
+  if (
+    selectedFilters.transactionType &&
+    selectedFilters.transactionType !== value
+  ) {
+    return false;
+  }
+  return true;
+}
+
+function filterBySymbol(value: string): boolean {
+  if (
+    selectedFilters.symbol &&
+    selectedFilters.symbol.toUpperCase() !== value
+  ) {
+    return false;
+  }
+  return true;
+}
+
+function filterByDate(value: string): boolean {
+  if (
+    selectedFilters.startDate &&
+    selectedFilters.endDate &&
+    (selectedFilters.startDate > value || selectedFilters.endDate < value)
+  ) {
+    return false;
+  }
+  return true;
+}
+
 const filteredTransactions = computed(() => {
   const transactions: Transaction[] =
     store.getters['transactions/getTransactions'];
   return transactions.filter(
     ({ tradingCountry, transactionType, symbol, dateAndTimeOfTransaction }) => {
       const formattedDate = dateAndTimeOfTransaction.split('T')[0];
-
-      if (
-        selectedFilters.tradingCountry &&
-        selectedFilters.tradingCountry !== tradingCountry
-      ) {
+      console.log(transactions);
+      if (!filterByTradingCountry(tradingCountry)) {
+        return false;
+      }
+      if (!filterByTransactionType(transactionType)) {
+        return false;
+      }
+      if (!filterBySymbol(symbol)) {
         return false;
       }
 
-      if (
-        selectedFilters.transactionType &&
-        selectedFilters.transactionType !== transactionType
-      ) {
-        return false;
-      }
-
-      if (
-        selectedFilters.symbol &&
-        selectedFilters.symbol.toUpperCase() !== symbol
-      ) {
-        return false;
-      }
-
-      if (
-        selectedFilters.startDate &&
-        selectedFilters.endDate &&
-        (selectedFilters.startDate > formattedDate ||
-          selectedFilters.endDate < formattedDate)
-      ) {
+      if (!filterByDate(formattedDate)) {
         return false;
       }
 
       return true;
     }
+  );
+});
+
+const sortedTransactions = computed(() => {
+  return filteredTransactions.value.sort((a, b) =>
+    a.dateAndTimeOfTransaction > b.dateAndTimeOfTransaction
+      ? -1
+      : b.dateAndTimeOfTransaction > a.dateAndTimeOfTransaction
+      ? 1
+      : 0
   );
 });
 
