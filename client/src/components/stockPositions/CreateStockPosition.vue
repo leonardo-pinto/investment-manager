@@ -62,9 +62,13 @@
             id="positionType"
             v-model="stockPositionData.positionType"
           >
-            <option :value="PositionType.Stocks">Stock</option>
-            <option :value="PositionType.REITs">REIT</option>
-            <option :value="PositionType.Bonds">Bond</option>
+            <option
+              v-for="(type, index) in validPositionTypes[props.tradingCountry]"
+              :key="index"
+              :value="type"
+            >
+              {{ type }}
+            </option>
           </select>
         </div>
       </div>
@@ -82,6 +86,7 @@ import { CreateStockPositionRequest } from '../../types/stockPosition';
 import { PositionType, TradingCountry } from '../../enums';
 import useFormValidation from '../../common/composables/useFormValidation';
 import { useLoading } from 'vue-loading-overlay';
+import { validPositionTypes } from '../../common/helpers';
 
 interface Props {
   show: boolean;
