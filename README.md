@@ -35,7 +35,7 @@
 * Docker
 * .NET Core 7.0 SDK (optional)
 
-#### :exclamation: Create a Finnhub API Token :exclamation:
+## :exclamation: Create a Finnhub API Token :exclamation:
 1. The server connects to Finnhub API to consume US stock price quotes.  Please register [here](https://finnhub.io/) to get an individual access token.
 
 2. Add the token in the `appsettings.json` (investment-manager/server/src/InvestmentManager.Web/appsettings.json)
@@ -47,7 +47,7 @@
   }
   ```
 
-#### :star: Running the server and database using Docker
+## :star: Running the server and database using Docker
 
 Both the server application and database can run inside a Docker container following the steps below:
 
@@ -63,7 +63,7 @@ b) **investment_manager_web** which contains the .NET application and connects t
 
 2. The application should be running on http://localhost:5000/api
 
-#### :star: Running only the database using Docker
+## :star: Running only the database using Docker
 
 The application can be run without Docker, however, still using a container as an Microsoft SQL database following the steps below:
 
