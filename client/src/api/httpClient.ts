@@ -20,6 +20,14 @@ const authInterceptor = (config: any) => {
 const responseInterceptor = (response: any) => response;
 
 const errorInterceptor = (error: any) => {
+  if (!error.response) {
+    notify({
+      title: 'Connection error',
+      type: 'error',
+      text: 'Please check if the server is running.',
+    });
+  }
+
   if (
     error?.response?.status === 401 &&
     router.currentRoute.value.meta.requiresAuth
