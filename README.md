@@ -22,6 +22,10 @@ Since this is a personal project, security measures were not a priority for this
 * Average price calculator to simulate transactions
 
 
+![](./img-demo/img-demo-1.jpg)
+
+![](./img-demo/img-demo-2.jpg)
+
 ## Technologies
 
 ### Client
