@@ -30,6 +30,9 @@ namespace InvestmentManager.ApplicationCore.Services
                         Symbol = stockSymbol,
                         Price = stockPriceQuote
                     });
+                    // Due to the Finnhub call/min limit, it is necessary to add an interval
+                    // between API calls to ensure that the request will be successfull
+                    Thread.Sleep(50);
                 }
                 return stockQuoteResult;
             }
