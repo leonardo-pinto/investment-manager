@@ -1,7 +1,7 @@
 # :chart_with_upwards_trend: investment-manager
 
-## About the project
-:bulb: The strategy of investing in different countries results in great diversification for your investments. While this approach offers enhanced risk protection, sometimes is difficult to manage all of your applications, especially if multiple stock brokers are used. \
+## :bulb: About the project
+The strategy of investing in different countries results in great diversification for your investments. While this approach offers enhanced risk protection, sometimes is difficult to manage all of your applications, especially if multiple stock brokers are used. \
 As a result, this project consists of an application that combines your investments in the United States and Brazil in a single platform. \
 The idea was to develop an easy-to-use application to check your position quotes and metrics while enabling to check all of your past transactions.
 
