@@ -1,10 +1,28 @@
 # :chart_with_upwards_trend: investment-manager
 
-:bulb: The aim of this application...
-
 ## About the project
+:bulb: The strategy of investing in different countries results in great diversification for your investments. While this approach offers enhanced risk protection, sometimes is difficult to manage all of your applications, especially if multiple stock brokers are used. \
+As a result, this project consists of an application that combines your investments in the United States and Brazil in a single platform. \
+The idea was to develop an easy-to-use application to check your position quotes and metrics while enabling to check all of your past transactions.
 
-## Technologies and Features
+## :computer: Software Engineer point-of-view
+By identifying a way to improve my daily tasks as an investor through the use of technology, I decided to practice my Full Stack Software Engineering skills through the development of this application.\
+The client was developed using Vue3 and VueX for state management, and I tried to keep a minimum number of dependencies to practice developing custom reusable components.\
+The server was developed using .NET and C#, leveraging Entity Framework Core to manage an MS SQL database. I could practice writing unit/integration tests using xUNIT, and also implementing containerization to run the application.\
+The clean-architecture used in the server development enable the easy addition of another countries in the future!\
+Since this is a personal project, security measures were not a priority for this project in terms of storing environment variables and database credentials.
+
+## Features
+
+* Register a new stock positions for United States and Brazil as trading countries
+* Real time stock quote prices for United States and Brazil stocks
+* Edit a position (buy/sell) and automatically updates metrics such as average price, gain/loss and position weight
+* Dynamic summary based on trading country and stock types
+* List of all transactions performed, which may be filtered by type, date, and symbol
+* Average price calculator to simulate transactions
+
+
+## Technologies
 
 ### Client
 * Vite
