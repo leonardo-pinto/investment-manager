@@ -22,20 +22,14 @@ app.MapControllers();
 
 if (builder.Environment.IsEnvironment("Development") || builder.Environment.IsEnvironment("Docker"))
 {
-	using (var scope = app.Services.CreateScope())
-	{
-		var services = scope.ServiceProvider;
-		try
-		{
-			var db = services.GetRequiredService<ApplicationDbContext>();
-			db.Database.EnsureCreated();
-		}
-		catch (Exception ex)
-		{
-			var logger = services.GetRequiredService<ILogger<Program>>();
-			logger.LogError(ex, "An error occurred while accessing the database.");
-		}   
-	}
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+
+        var db = services.GetRequiredService<ApplicationDbContext>();
+        db.Database.EnsureCreated();
+
+    }
 }
 
 app.Run();
