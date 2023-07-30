@@ -7,6 +7,11 @@
 ## Technologies and Features
 
 ### Client
+* Vite
+* TypeScript
+* Vue 3
+* VueX
+* Vue Router
 
 ### Server
 * .NET Core 7.0
@@ -93,5 +98,31 @@ This command will create and run a container only for the database.
 This command will start the .NET application
 
 5. The application should be running on https://localhost:5252/api
+   
+## Client
+
+#### Prerequisites
+* Node Package Manager (NPM)
+
+## Running the client
+
+1. Install the project dependencies from the client folder (investment-manager/client/) using the following command: 
+```sh
+  npm install
+```
+
+2. Rename the file ***.env.example*** to ***.env*** in the investment-manager/client directory
+
+3. Insert the correct server URL to the property ***VITE_BASE_URL*** according to the address where the server is running.
+
+If the server and the database are running in a Docker container, the URL must be http://localhost:5000/api \
+If only the database is running in a Docker container, the URL must be https://localhost:5252/api
+
+4. To run the client, use the following command:
+```sh
+  npm run dev
+```
+
+:warning: Please remember to create and insert a [Finnhub token](https://finnhub.io/) before using the application.
 
 
