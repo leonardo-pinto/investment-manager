@@ -3,6 +3,7 @@ using InvestmentManager.ApplicationCore.Exceptions;
 using InvestmentManager.ApplicationCore.Interfaces;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace InvestmentManager.ApplicationCore.Services
 {
@@ -10,11 +11,13 @@ namespace InvestmentManager.ApplicationCore.Services
     {
         private readonly IFinnhubRepository _finnhubRepository;
         private readonly ILogger<IFinnhubService> _logger;
+        private readonly IMemoryCache _memoryCache;
 
-        public FinnhubService(IFinnhubRepository finnhubRepository, ILogger<FinnhubService> logger)
+        public FinnhubService(IFinnhubRepository finnhubRepository, ILogger<FinnhubService> logger, IMemoryCache memoryCache)
         {
             _finnhubRepository = finnhubRepository;
             _logger = logger;
+            _memoryCache = memoryCache;
         }
 
         async public Task<List<StockQuoteResult>> GetMultipleStockPriceQuote(string[] stockSymbols)
@@ -24,15 +27,26 @@ namespace InvestmentManager.ApplicationCore.Services
             {
                 foreach (string stockSymbol in stockSymbols)
                 {
-                    double stockPriceQuote = await _finnhubRepository.GetStockPriceQuote(stockSymbol);
+                    string cacheKey = $"stockSymbol-{stockSymbol}";
+                    if (!_memoryCache.TryGetValue(cacheKey, out double stockPriceQuote))
+                    {
+                        stockPriceQuote = await _finnhubRepository.GetStockPriceQuote(stockSymbol);
+
+                        _memoryCache.Set(
+                            cacheKey,
+                            stockPriceQuote,
+                            TimeSpan.FromMinutes(5));
+
+                    // Due to the Finnhub call/min limit, it is necessary to add an interval
+                    // between API calls to ensure that the request will be successfull
+                    Thread.Sleep(50);
+                    }
+                    
                     stockQuoteResult.Add(new StockQuoteResult()
                     {
                         Symbol = stockSymbol,
                         Price = stockPriceQuote
                     });
-                    // Due to the Finnhub call/min limit, it is necessary to add an interval
-                    // between API calls to ensure that the request will be successfull
-                    Thread.Sleep(50);
                 }
                 return stockQuoteResult;
             }
