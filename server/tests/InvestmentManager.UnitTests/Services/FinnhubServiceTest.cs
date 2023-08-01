@@ -3,8 +3,10 @@ using FluentAssertions;
 using InvestmentManager.ApplicationCore.DTO;
 using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Services;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Moq;
+
 
 namespace InvestmentManager.UnitTests.Services
 {
@@ -14,12 +16,15 @@ namespace InvestmentManager.UnitTests.Services
         private readonly Mock<IFinnhubRepository> _finnhubRepositoryMock;
         private readonly IFixture _fixture;
         private readonly Mock<ILogger<FinnhubService>> _loggerMock;
+        private readonly Mock<IMemoryCache> _memoryCacheMock;
+
 
         public FinnhubServiceTest()
         {
             _finnhubRepositoryMock = new Mock<IFinnhubRepository>(MockBehavior.Strict);
             _loggerMock = new Mock<ILogger<FinnhubService>>(MockBehavior.Loose);
-            _sut = new FinnhubService(_finnhubRepositoryMock.Object, _loggerMock.Object);
+            _memoryCacheMock = new Mock<IMemoryCache>(MockBehavior.Loose);
+            _sut = new FinnhubService(_finnhubRepositoryMock.Object, _loggerMock.Object, _memoryCacheMock.Object);
             _fixture = new Fixture();
         }
 
