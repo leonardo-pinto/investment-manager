@@ -52,6 +52,8 @@ namespace InvestmentManager.UnitTests.Services
                 .ReturnsAsync(DEFStockQuote)
                 .ReturnsAsync(GHIStockQuote);
 
+            _memoryCacheMock.Setup(x => x.CreateEntry(It.IsAny<object>())).Returns(Mock.Of<ICacheEntry>);
+
             var result = await _sut.GetMultipleStockPriceQuote(stockSymbols);
 
             result.Should().BeEquivalentTo(stockQuoteResultMock);
