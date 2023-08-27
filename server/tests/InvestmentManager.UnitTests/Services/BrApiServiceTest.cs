@@ -1,7 +1,9 @@
-﻿using FluentAssertions;
+﻿using AutoFixture;
+using FluentAssertions;
 using InvestmentManager.ApplicationCore.DTO;
 using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Services;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -12,13 +14,15 @@ namespace InvestmentManager.UnitTests.Services
         private readonly BrApiService _sut;
         private readonly Mock<IBrApiRepository> _brApiRepositoryMock;
         private readonly Mock<ILogger<BrApiService>> _loggerMock;
+        private readonly Mock<IMemoryCache> _memoryCacheMock;
 
 
         public BrApiServiceTest()
         {
             _brApiRepositoryMock = new Mock<IBrApiRepository>(MockBehavior.Strict);
             _loggerMock = new Mock<ILogger<BrApiService>>(MockBehavior.Loose);
-            _sut = new BrApiService(_brApiRepositoryMock.Object, _loggerMock.Object);
+            _memoryCacheMock = new Mock<IMemoryCache>(MockBehavior.Loose);
+            _sut = new BrApiService(_brApiRepositoryMock.Object, _loggerMock.Object, _memoryCacheMock.Object);
         }
 
         #region IsStockSymbolValid
@@ -90,6 +94,8 @@ namespace InvestmentManager.UnitTests.Services
             _brApiRepositoryMock
                .Setup(m => m.GetStocksPriceQuote(It.IsAny<string>()))
                .ReturnsAsync(brApiResponseMock);
+
+            _memoryCacheMock.Setup(x => x.CreateEntry(It.IsAny<object>())).Returns(Mock.Of<ICacheEntry>);
 
             // Act
             var result = await _sut.GetStocksPriceQuote(concatenatedStockSymbols);
