@@ -1,6 +1,7 @@
 ﻿using InvestmentManager.ApplicationCore.DTO;
 using InvestmentManager.ApplicationCore.Exceptions;
 using InvestmentManager.ApplicationCore.Interfaces;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
@@ -10,22 +11,33 @@ namespace InvestmentManager.ApplicationCore.Services
     {
         private readonly IBrApiRepository _brApiRepository;
         private readonly ILogger<BrApiService> _logger;
+        private readonly IMemoryCache _memoryCache;
 
-        public BrApiService(IBrApiRepository brApiRepository, ILogger<BrApiService> logger)
+        public BrApiService(IBrApiRepository brApiRepository, ILogger<BrApiService> logger, IMemoryCache memoryCache)
         {
             _brApiRepository = brApiRepository;
             _logger = logger;
+            _memoryCache = memoryCache;
         }
 
         public async Task<List<StockQuoteResult>> GetStocksPriceQuote(string concatenatedStockSymbols)
         {
-            BrApiResponse response = await _brApiRepository.GetStocksPriceQuote(concatenatedStockSymbols);
-            List<StockQuoteResult> stockQuoteResult = new ();
+            string cacheKey = $"stockSymbols-{concatenatedStockSymbols}";
+            if (!_memoryCache.TryGetValue(cacheKey, out BrApiResponse stockPriceResult))
+            {
+                stockPriceResult = await _brApiRepository.GetStocksPriceQuote(concatenatedStockSymbols);
+
+                _memoryCache.Set(
+                    cacheKey, stockPriceResult, TimeSpan.FromMinutes(5));
+            }
+
+
             try
             {
-                if (response.Results != null && response.Results.Length > 0)
+                List<StockQuoteResult> stockQuoteResult = new();
+                if (stockPriceResult.Results != null && stockPriceResult.Results.Length > 0)
                 {
-                    foreach (Result result in response.Results)
+                    foreach (Result result in stockPriceResult.Results)
                     {
                         var element = new StockQuoteResult()
                         {
