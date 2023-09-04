@@ -15,15 +15,13 @@
       <tr>
         <th class="vertical-header">Cost</th>
         <td v-for="(type, index) in Object.keys(summaryData)" :key="index">
-          {{ props.currency }}
-          {{ summaryData[type].cost }}
+          {{ currencyFormatter.format(summaryData[type].cost) }}
         </td>
       </tr>
       <tr>
         <th class="vertical-header">Market value</th>
         <td v-for="(type, index) in Object.keys(summaryData)" :key="index">
-          {{ props.currency }}
-          {{ summaryData[type].marketValue }}
+          {{ currencyFormatter.format(summaryData[type].marketValue) }}
         </td>
       </tr>
       <tr>
@@ -31,10 +29,9 @@
         <td
           v-for="(type, index) in Object.keys(summaryData)"
           :key="index"
-          :class="checkProfit(summaryData[type].monetaryGain)"
+          :class="checkProfit(summaryData[type].monetaryGain.toString())"
         >
-          {{ props.currency }}
-          {{ summaryData[type].monetaryGain }}
+          {{ currencyFormatter.format(summaryData[type].monetaryGain) }}
         </td>
       </tr>
       <tr>
@@ -42,9 +39,9 @@
         <td
           v-for="(type, index) in Object.keys(summaryData)"
           :key="index"
-          :class="checkProfit(summaryData[type].percentageGain)"
+          :class="checkProfit(summaryData[type].percentageGain.toString())"
         >
-          {{ summaryData[type].percentageGain }}%
+          {{ currencyFormatter.format(summaryData[type].percentageGain) }}%
         </td>
       </tr>
     </tbody>
@@ -66,10 +63,10 @@ interface Props {
 }
 
 type summaryDataProps = {
-  cost: string;
-  marketValue: string;
-  monetaryGain: string;
-  percentageGain: string;
+  cost: number;
+  marketValue: number;
+  monetaryGain: number;
+  percentageGain: number;
 };
 
 const props = defineProps<Props>();
@@ -104,19 +101,25 @@ function filterPositionByType(type: PositionType): StockPosition[] {
   return props.positions.filter((position) => position.type == type);
 }
 
-function calculatePercentageGain(data: summaryDataProps): string {
+function calculatePercentageGain(data: summaryDataProps) {
   return Number(data.cost) != 0
-    ? ((Number(data.marketValue) / Number(data.cost) - 1) * 100).toFixed(2)
-    : '0.00';
+    ? (Number(data.marketValue) / Number(data.cost) - 1) * 100
+    : 0;
 }
 
-function calculateMonetaryGain(data: summaryDataProps): string {
-  return (Number(data.marketValue) - Number(data.cost)).toFixed(2);
+function calculateMonetaryGain(data: summaryDataProps) {
+  return Number(data.marketValue) - Number(data.cost);
 }
 
 function checkProfit(value: string): string {
   return Number(value) > 0 ? 'positive' : 'negative';
 }
+
+const currencyFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: props.currency === '$' ? 'USD' : 'BRL',
+  minimumFractionDigits: 2,
+});
 </script>
 
 <style scoped>

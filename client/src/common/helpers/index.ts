@@ -2,59 +2,42 @@ import { PositionType, TradingCountry } from '../../enums';
 import { AuthResponse } from '../../types/auth';
 import { StockPosition } from '../../types/stockPosition';
 
-function calculateValue(quantity: number, price: number): string {
-  return price ? (quantity * price).toFixed(2) : '';
+function calculateValue(quantity: number, price: number) {
+  return quantity * price;
 }
 
-function calculateGainPercentage(price: number, avgPrice: number): string {
-  return price ? ((price / avgPrice - 1) * 100).toFixed(2) : '';
+function calculateGainPercentage(price: number, avgPrice: number) {
+  return (price / avgPrice - 1) * 100;
 }
 
-function calculateGainMonetary(
-  qty: number,
-  price: number,
-  avgPrice: number
-): string {
-  qty * price - qty * avgPrice;
-  return price ? (qty * price - qty * avgPrice).toFixed(2) : '';
+function calculateGainMonetary(qty: number, price: number, avgPrice: number) {
+  return qty * price - qty * avgPrice;
 }
 
-function calculateMarketValueSum(stockPositions: StockPosition[]): string {
-  return (
-    stockPositions
-      .reduce(
-        (acc, curr) => acc + Number(calculateValue(curr.quantity, curr.price)),
-        0
-      )
-      .toFixed(2) ?? ''
+function calculateMarketValueSum(stockPositions: StockPosition[]) {
+  return stockPositions.reduce(
+    (acc, curr) => acc + Number(calculateValue(curr.quantity, curr.price)),
+    0
   );
 }
 
-function calculateCostSum(stockPositions: StockPosition[]): string {
-  return (
-    stockPositions
-      .reduce(
-        (acc, curr) =>
-          acc + Number(calculateValue(curr.quantity, curr.averagePrice)),
-        0
-      )
-      .toFixed(2) ?? ''
+function calculateCostSum(stockPositions: StockPosition[]): number {
+  return stockPositions.reduce(
+    (acc, curr) =>
+      acc + Number(calculateValue(curr.quantity, curr.averagePrice)),
+    0
   );
 }
 
 function calculatePositionWeight(
   stockPosition: StockPosition,
   stockPositions: StockPosition[]
-): string {
-  if (!stockPosition.price) {
-    return '';
-  }
-
+) {
   const positionWeight =
     (100 *
       Number(calculateValue(stockPosition.quantity, stockPosition.price))) /
     Number(calculateMarketValueSum(stockPositions));
-  return String(positionWeight.toFixed(2));
+  return positionWeight;
 }
 
 function calculateAveragePrice(
@@ -62,14 +45,14 @@ function calculateAveragePrice(
   firstPrice: number,
   secondQuantity: number,
   secondPrice: number
-): string {
+) {
   // since for this method we wont have null price values
   // it is easier to calculate inside the function than use the
   // calculateValue method
   return (
     (firstQuantity * firstPrice + secondQuantity * secondPrice) /
     (firstQuantity + secondQuantity)
-  ).toFixed(2);
+  );
 }
 
 function formatDate(date: string | null): string {

@@ -22,47 +22,52 @@
         <td>{{ stockPosition.symbol }}</td>
         <td>{{ stockPosition.quantity }}</td>
         <td>
-          {{ props.currency }}
-          {{ stockPosition.price?.toFixed(2) }}
+          {{ currencyFormatter.format(stockPosition.price) }}
         </td>
         <td>
-          {{ props.currency }}
-          {{ stockPosition.averagePrice.toFixed(2) }}
+          {{ currencyFormatter.format(stockPosition.averagePrice) }}
         </td>
         <td>
-          {{ props.currency }}
           {{
-            calculateValue(stockPosition.quantity, stockPosition.averagePrice)
+            currencyFormatter.format(
+              calculateValue(stockPosition.quantity, stockPosition.averagePrice)
+            )
           }}
         </td>
         <td>
-          {{ props.currency }}
-          {{ calculateValue(stockPosition.quantity, stockPosition.price) }}
+          {{
+            currencyFormatter.format(
+              calculateValue(stockPosition.quantity, stockPosition.price)
+            )
+          }}
         </td>
         <td :style="{ color: checkProfit(stockPosition) }">
           {{
-            calculateGainPercentage(
-              stockPosition.price,
-              stockPosition.averagePrice
+            currencyFormatter.format(
+              calculateGainPercentage(
+                stockPosition.price,
+                stockPosition.averagePrice
+              )
             )
           }}%
         </td>
         <td :style="{ color: checkProfit(stockPosition) }">
-          {{ props.currency }}
           {{
-            calculateGainMonetary(
-              stockPosition.quantity,
-              stockPosition.price,
-              stockPosition.averagePrice
+            currencyFormatter.format(
+              calculateGainMonetary(
+                stockPosition.quantity,
+                stockPosition.price,
+                stockPosition.averagePrice
+              )
             )
           }}
         </td>
         <td>
           {{
-            calculatePositionWeight(
+             currencyFormatter.format(calculatePositionWeight(
               stockPosition,
               props.filteredStockPositions
-            )
+            ))
           }}%
         </td>
         <td>
@@ -120,6 +125,12 @@ function checkProfit(stockPosition: StockPosition): string {
   const { price, averagePrice } = stockPosition;
   return price > averagePrice ? '#228B22' : '#FF0000';
 }
+
+const currencyFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: props.currency === '$' ? 'USD' : 'BRL',
+  minimumFractionDigits: 2,
+});
 </script>
 
 <style scoped>
