@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -54,6 +53,7 @@ namespace InvestmentManager.ApplicationCore.Services
         {
             return new List<Claim>
             {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName), // represents the subject of the jwt
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // unique id of the jwt
             };
