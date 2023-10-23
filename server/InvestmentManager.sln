@@ -15,13 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InvestmentManager.Web", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InvestmentManager.ApplicationCore", "src\InvestmentManager.ApplicationCore\InvestmentManager.ApplicationCore.csproj", "{5C113421-7D89-4383-8E38-54019DD6544E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{475ACC5D-D1A8-494F-B814-741296FC933A}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-		docker-compose.yml = docker-compose.yml
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InvestmentManager.IntegrationTests", "tests\InvestmentManager.IntegrationTests\InvestmentManager.IntegrationTests.csproj", "{21E85DF7-6255-4CF1-B7C5-013B85056F79}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InvestmentManager.IntegrationTests", "tests\InvestmentManager.IntegrationTests\InvestmentManager.IntegrationTests.csproj", "{21E85DF7-6255-4CF1-B7C5-013B85056F79}"
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{337A2798-27DB-4517-B5D2-89F9BCB2632A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +45,10 @@ Global
 		{21E85DF7-6255-4CF1-B7C5-013B85056F79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21E85DF7-6255-4CF1-B7C5-013B85056F79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21E85DF7-6255-4CF1-B7C5-013B85056F79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{337A2798-27DB-4517-B5D2-89F9BCB2632A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{337A2798-27DB-4517-B5D2-89F9BCB2632A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{337A2798-27DB-4517-B5D2-89F9BCB2632A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{337A2798-27DB-4517-B5D2-89F9BCB2632A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
