@@ -6,8 +6,11 @@ using InvestmentManager.ApplicationCore.Enums;
 using InvestmentManager.ApplicationCore.Interfaces;
 using InvestmentManager.ApplicationCore.Mapper;
 using InvestmentManager.Web.Controllers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using System.Security.Claims;
+using System.Security.Principal;
 
 namespace InvestmentManager.UnitTests.Controllers
 {
@@ -29,6 +32,14 @@ namespace InvestmentManager.UnitTests.Controllers
             _sut = new StockPositionController(
                 _stockPositionServiceMock.Object, _transactionServiceMock.Object, _mapper);
             _fixture = new Fixture();
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+           {
+                new Claim(ClaimTypes.NameIdentifier, "1")
+           }, "mock"));
+            _sut.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = user }
+            };
         }
 
         #region CreateStockPosition
@@ -84,13 +95,11 @@ namespace InvestmentManager.UnitTests.Controllers
 
         #endregion
 
-        #region GetAllStockPositionsByUserId
+        #region GetAllStockPositionsByTradingCountry
         [Fact]
-        async public Task GetAllStockPositionsByUserId_ToBeOk()
+        async public Task GetAllStockPositionsByTradingCountry_ToBeOk()
         {
             // Arrange
-            string userId = _fixture.Create<string>();
-
             List<StockPositionResponse> stockPositionResponse = new()
             {
                 _fixture.Build<StockPositionResponse>().Create(),
@@ -103,13 +112,14 @@ namespace InvestmentManager.UnitTests.Controllers
                 .ReturnsAsync(stockPositionResponse);
 
             // Act
-            var result = await _sut.GetAllStockPositionsByUserIdAndTradingCountry(userId, "BR");
+            var result = await _sut.GetAllStockPositionsByTradingCountry("BR");
 
             // Assert
             result.Should().BeOfType<ActionResult<StockPositionsResponse>>();
             var okObjectResult = result.Result as OkObjectResult;
             okObjectResult?.Value.Should().BeEquivalentTo(new StockPositionsResponse() { StockPositions = stockPositionResponse });
-            _stockPositionServiceMock.Verify(m => m.GetAllStockPositionsByUserIdAndTradingCountry(userId, "BR"), Times.Once);
+            _stockPositionServiceMock.Verify(m => m.GetAllStockPositionsByUserIdAndTradingCountry("1", "BR"), Times.Once);
+
         }
 
         #endregion
