@@ -14,9 +14,9 @@
             Login an existing user
             </summary>
         </member>
-        <member name="M:InvestmentManager.Web.Controllers.StockPositionController.GetAllStockPositionsByUserIdAndTradingCountry(System.String,System.String)">
+        <member name="M:InvestmentManager.Web.Controllers.StockPositionController.GetAllStockPositionsByTradingCountry(System.String)">
             <summary>
-            Gets all stock positions traded in a country for a given user id
+            Gets all stock positions by trading country
             </summary>
         </member>
         <member name="M:InvestmentManager.Web.Controllers.StockPositionController.GetSingleStockPosition(System.Guid)">
@@ -53,9 +53,9 @@
             <param name="symbols"></param>
             <returns></returns>
         </member>
-        <member name="M:InvestmentManager.Web.Controllers.TransactionController.GetAllTransactionsByUserId(System.String)">
+        <member name="M:InvestmentManager.Web.Controllers.TransactionController.GetAllTransactions">
             <summary>
-            Get all transactions for a user id
+            Get all transactions
             </summary>
         </member>
     </members>
