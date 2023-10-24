@@ -1,7 +1,7 @@
 <template>
   <v-card
     title="Log in to Investment Manager"
-    class="text-center"
+    class="mx-auto mt-5 text-center"
     elevation="8"
     max-width="448"
     rounded="lg"
