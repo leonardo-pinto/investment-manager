@@ -1,104 +1,93 @@
 <template>
-  <BaseCard width="40%">
-    <h2>Login</h2>
-    <form @submit.prevent="submitForm" class="w-70">
-      <div class="form-control" :class="{ invalid: errors.username }">
-        <label for="username">Username</label>
-        <input
-          type="text"
-          id="username"
-          v-model.trim="loginData.username"
-          @blur="validateEmptyField(loginData.username, 'username')"
-        />
-        <p v-if="errors.username" class="error-message">
-          {{ errors.username }}
-        </p>
-      </div>
-      <div class="form-control" :class="{ invalid: errors.password }">
-        <label for="password">Password</label>
-        <input
-          :type="passwordType"
-          id="password"
-          v-model.trim="loginData.password"
-          @blur="validateEmptyField(loginData.password, 'password')"
-        />
-        <font-awesome-icon
-          v-if="passwordType == 'password'"
-          id="eye-icon"
-          icon="fa-solid fa-eye-slash"
-          @click="togglePasswordType"
-        />
-        <font-awesome-icon
-          v-else
-          id="eye-icon"
-          icon="fa-solid fa-eye"
-          @click="togglePasswordType"
-        />
-        <p v-if="errors.password" class="error-message">
-          {{ errors.password }}
-        </p>
-      </div>
-      <div v-if="apiResponseError" class="error-api-response-message">
-        {{ apiResponseError }}
-      </div>
-      <BaseButton class="login-btn">Login</BaseButton>
-      <div class="register">
-        <p>Not a member yet?</p>
-        <router-link to="/register">Register here.</router-link>
-      </div>
+  <v-card
+    title="Log in to Investment Manager"
+    class="text-center"
+    elevation="8"
+    max-width="448"
+    rounded="lg"
+  >
+    <form @submit.prevent="submitForm">
+      <v-container>
+        <v-col>
+          <v-row>
+            <v-text-field
+              label="Username"
+              v-model.trim="userName.value.value"
+              prepend-inner-icon="mdi-account"
+              density="compact"
+              :error-messages="userName.errorMessage.value"
+            ></v-text-field>
+          </v-row>
+          <v-row>
+            <v-text-field
+              label="Password"
+              v-model.trim="password.value.value"
+              :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+              :type="visible ? 'text' : 'password'"
+              density="compact"
+              prepend-inner-icon="mdi-lock-outline"
+              @click:append-inner="visible = !visible"
+              :error-messages="password.errorMessage.value"
+            ></v-text-field>
+          </v-row>
+          <v-row class="d-flex justify-center">
+            <v-btn type="submit" class="w-50 mt-4" color="#06C"> Log In </v-btn>
+          </v-row>
+          <v-row>
+            <v-card-text class="register">
+              Not a member yet?
+              <router-link to="/register">Register here</router-link>
+            </v-card-text>
+          </v-row>
+        </v-col>
+      </v-container>
     </form>
-  </BaseCard>
+  </v-card>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useField, useForm } from 'vee-validate';
 import { useStore } from '../store';
 import { useRouter } from 'vue-router';
 import { AuthLoginRequest } from '../types/auth';
-import useFormValidation from '../common/composables/useFormValidation';
 import { useLoading } from 'vue-loading-overlay';
+import * as yup from 'yup';
 
 const store = useStore();
 const router = useRouter();
-const { errors, validateEmptyField, isFormValid } = useFormValidation();
 
-const loginData = ref({
-  username: '',
-  password: '',
+const validationSchema = yup.object().shape({
+  userName: yup.string().required('Username is required'),
+  password: yup
+    .string()
+    .matches(
+      /^(?=.*[A-Z])(?=.*\W).{8,}$/,
+      'Password must contain at least 8 characters including one non alphanumeric and one upper case character.'
+    )
+    .required('Password is required'),
 });
+
+const { handleSubmit } = useForm({
+  validationSchema,
+});
+
+const userName = useField<string>('userName', validationSchema);
+const password = useField<string>('password', validationSchema);
 
 const $loading = useLoading({
   color: '#ff6000',
 });
 
-const passwordType = ref<string>('password');
-
-function togglePasswordType() {
-  if (passwordType.value == 'password') {
-    passwordType.value = 'text';
-  } else {
-    passwordType.value = 'password';
-  }
-};
-
-function validateAllFormFields() {
-  validateEmptyField(loginData.value.username, 'username');
-  validateEmptyField(loginData.value.password, 'password');
-};
+const visible = ref(false);
 
 const apiResponseError = ref('');
 
-async function submitForm() {
-  validateAllFormFields();
-  if (!isFormValid(loginData.value)) {
-    return;
-  }
-
+const submitForm = handleSubmit(async () => {
   const authCredentials: AuthLoginRequest = {
-    userName: loginData.value.username,
-    password: loginData.value.password,
+    userName: userName.value.value,
+    password: password.value.value,
   };
-
   const loader = $loading.show();
   try {
     await store.dispatch('auth/login', authCredentials);
@@ -108,25 +97,12 @@ async function submitForm() {
   } finally {
     loader.hide();
   }
-};
+});
 </script>
 
 <style scoped>
-.login-btn {
-  margin-top: 1.25rem;
-}
-
-p {
-  display: inline;
-  padding: 0 0.5rem;
-}
-
-.register {
-  margin-top: 2rem;
-}
-
 .register a {
   text-decoration: none;
-  color: #ff6000;
+  color: #06c;
 }
 </style>
