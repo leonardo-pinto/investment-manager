@@ -1,11 +1,9 @@
 import { InjectionKey } from 'vue';
 import { createStore, useStore as baseUseStore, Store } from 'vuex';
-import auth, { AuthState } from './modules/auth';
 import stockPositions, { StockPositionState } from './modules/stockPositions';
 import transactions, { TransactionState } from './modules/transactions';
 
 export interface State {
-  auth: AuthState;
   stockPositions: StockPositionState;
   transactions: TransactionState;
 }
@@ -13,7 +11,7 @@ export interface State {
 export const key: InjectionKey<Store<State>> = Symbol();
 
 export const store = createStore({
-  modules: { auth, stockPositions, transactions },
+  modules: { stockPositions, transactions },
   strict: true,
 });
 
