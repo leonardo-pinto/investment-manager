@@ -34,15 +34,14 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useStore } from '../store';
 import { useRouter } from 'vue-router';
+import { removeAuthFromLocalStorage } from '../common/helpers';
 
-const store = useStore();
 const router = useRouter();
-const isAuth = computed<boolean>(() => store.getters['auth/isAuthenticated']);
+const isAuth = computed<boolean>(() => !!localStorage.getItem('token'));
 
 function logout() {
-  store.dispatch('auth/logout');
+  removeAuthFromLocalStorage();
   router.replace('/login');
 }
 </script>
