@@ -6,40 +6,40 @@
     max-width="448"
     rounded="lg"
   >
-    <form @submit.prevent="submitForm">
+    <v-form ref="form" validate-on="blur lazy" @submit.prevent="submitForm">
       <v-container>
         <v-col>
           <v-row>
             <v-text-field
               label="Username"
-              v-model.trim="userName.value.value"
+              v-model.trim="userName"
               prepend-inner-icon="mdi-account"
               density="compact"
-              :error-messages="userName.errorMessage.value"
+              :rules="userNameRules"
             ></v-text-field>
           </v-row>
           <v-row>
             <v-text-field
               label="Password"
-              v-model.trim="password.value.value"
+              v-model.trim="password"
               :append-inner-icon="pswdVisible ? 'mdi-eye-off' : 'mdi-eye'"
               :type="pswdVisible ? 'text' : 'password'"
               density="compact"
               prepend-inner-icon="mdi-lock-outline"
               @click:append-inner="pswdVisible = !pswdVisible"
-              :error-messages="password.errorMessage.value"
+              :rules="passwordRules"
             ></v-text-field>
           </v-row>
           <v-row>
             <v-text-field
               label="Password Confirmation"
-              v-model.trim="passwordConfirmation.value.value"
+              v-model.trim="passwordConfirmation"
               :append-inner-icon="pswdConfVisible ? 'mdi-eye-off' : 'mdi-eye'"
               :type="pswdConfVisible ? 'text' : 'password'"
               density="compact"
               prepend-inner-icon="mdi-lock-outline"
               @click:append-inner="pswdConfVisible = !pswdConfVisible"
-              :error-messages="passwordConfirmation.errorMessage.value"
+              :rules="passwordConfirmationRules"
             ></v-text-field>
           </v-row>
           <v-row class="d-flex justify-center">
@@ -55,7 +55,7 @@
           </v-row>
         </v-col>
       </v-container>
-    </form>
+    </v-form>
   </v-card>
 </template>
 
@@ -65,37 +65,18 @@ import { useStore } from '../store/index.ts';
 import { useRouter } from 'vue-router';
 import { AuthRegisterRequest } from '../types/auth';
 import { useLoading } from 'vue-loading-overlay';
-import { useField, useForm } from 'vee-validate';
-import * as yup from 'yup';
+import {
+  requiredField,
+  passwordPattern,
+} from '../common/helpers/validationRules';
 
 const store = useStore();
 const router = useRouter();
 
-const validationSchema = yup.object().shape({
-  userName: yup.string().required('Username is required'),
-  password: yup
-    .string()
-    .matches(
-      /^(?=.*[A-Z])(?=.*\W).{8,}$/,
-      'Password must contain at least 8 characters including one non alphanumeric and one upper case character'
-    )
-    .required('Password is required'),
-  passwordConfirmation: yup
-    .string()
-    .oneOf([yup.ref('password')], 'Passwords must match'),
-});
-
-const { handleSubmit } = useForm({
-  validationSchema,
-});
-
-const userName = useField<string>('userName', validationSchema);
-const password = useField<string>('password', validationSchema);
-const passwordConfirmation = useField<string>(
-  'passwordConfirmation',
-  validationSchema
-);
-
+const userName = ref<string>('');
+const password = ref<string>('');
+const passwordConfirmation = ref<string>('');
+const form = ref();
 const pswdVisible = ref(false);
 const pswdConfVisible = ref(false);
 
@@ -105,23 +86,35 @@ const $loading = useLoading({
 
 const apiResponseError = ref('');
 
-const submitForm = handleSubmit(async () => {
-  const authCredentials: AuthRegisterRequest = {
-    userName: userName.value.value,
-    password: password.value.value,
-    confirmPassword: passwordConfirmation.value.value,
-  };
+const userNameRules = [(value: string) => requiredField(value, 'Username')];
+const passwordRules = [
+  (value: string) => requiredField(value, 'Password'),
+  (value: string) => passwordPattern(value),
+];
+const passwordConfirmationRules = [
+  (value: string) => value === password.value || 'Passwords must match',
+];
 
-  const loader = $loading.show();
-  try {
-    await store.dispatch('auth/register', authCredentials);
-    router.replace('/stock-positions');
-  } catch (error) {
-    apiResponseError.value = (error as any).response?.data?.error;
-  } finally {
-    loader.hide();
+async function submitForm() {
+  const { valid } = await form.value?.validate();
+  if (valid) {
+    const authCredentials: AuthRegisterRequest = {
+      userName: userName.value,
+      password: password.value,
+      confirmPassword: passwordConfirmation.value,
+    };
+
+    const loader = $loading.show();
+    try {
+      await store.dispatch('auth/register', authCredentials);
+      router.replace('/stock-positions');
+    } catch (error) {
+      apiResponseError.value = (error as any).response?.data?.error;
+    } finally {
+      loader.hide();
+    }
   }
-});
+}
 </script>
 
 <style scoped>
