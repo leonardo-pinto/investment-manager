@@ -43,7 +43,12 @@
             ></v-text-field>
           </v-row>
           <v-row class="d-flex justify-center">
-            <v-btn type="submit" class="w-50 mt-4" color="#06C">
+            <v-btn
+              type="submit"
+              class="w-50 mt-4"
+              color="#06C"
+              :loading="loading"
+            >
               Register
             </v-btn>
           </v-row>
@@ -64,7 +69,6 @@ import { ref } from 'vue';
 import { useStore } from '../store/index.ts';
 import { useRouter } from 'vue-router';
 import { AuthRegisterRequest } from '../types/auth';
-import { useLoading } from 'vue-loading-overlay';
 import {
   requiredField,
   passwordPattern,
@@ -79,11 +83,7 @@ const passwordConfirmation = ref<string>('');
 const form = ref();
 const pswdVisible = ref(false);
 const pswdConfVisible = ref(false);
-
-const $loading = useLoading({
-  color: '#ff6000',
-});
-
+const loading = ref(false);
 const apiResponseError = ref('');
 
 const userNameRules = [(value: string) => requiredField(value, 'Username')];
@@ -103,23 +103,15 @@ async function submitForm() {
       password: password.value,
       confirmPassword: passwordConfirmation.value,
     };
-
-    const loader = $loading.show();
     try {
+      loading.value = true;
       await store.dispatch('auth/register', authCredentials);
       router.replace('/stock-positions');
     } catch (error) {
       apiResponseError.value = (error as any).response?.data?.error;
     } finally {
-      loader.hide();
+      loading.value = false;
     }
   }
 }
 </script>
-
-<style scoped>
-.register a {
-  text-decoration: none;
-  color: #06c;
-}
-</style>

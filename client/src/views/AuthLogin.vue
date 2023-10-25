@@ -31,7 +31,14 @@
             ></v-text-field>
           </v-row>
           <v-row class="d-flex justify-center">
-            <v-btn type="submit" class="w-50 mt-4" color="#06C"> Log In </v-btn>
+            <v-btn
+              type="submit"
+              class="w-50 mt-4"
+              color="#06C"
+              :loading="loading"
+            >
+              Log In
+            </v-btn>
           </v-row>
           <v-row>
             <v-card-text class="register">
@@ -50,7 +57,6 @@ import { ref } from 'vue';
 import { AuthLoginRequest } from '../types/auth';
 import { useStore } from '../store';
 import { useRouter } from 'vue-router';
-import { useLoading } from 'vue-loading-overlay';
 import {
   requiredField,
   passwordPattern,
@@ -68,10 +74,7 @@ const passwordRules = [
   (value: string) => passwordPattern(value),
 ];
 
-const $loading = useLoading({
-  color: '#ff6000',
-});
-
+const loading = ref(false);
 const visible = ref(false);
 
 const apiResponseError = ref('');
@@ -83,22 +86,15 @@ async function submitForm() {
       userName: userName.value,
       password: password.value,
     };
-    const loader = $loading.show();
     try {
+      loading.value = true;
       await store.dispatch('auth/login', authCredentials);
       router.replace('/stock-positions');
     } catch (error) {
       apiResponseError.value = (error as any).response?.data?.error;
     } finally {
-      loader.hide();
+      loading.value = false;
     }
   }
 }
 </script>
-
-<style scoped>
-.register a {
-  text-decoration: none;
-  color: #06c;
-}
-</style>
