@@ -17,8 +17,7 @@ namespace InvestmentManager.ApplicationCore.DTO
         /// <summary>
         /// Unique user id
         /// </summary>
-        [Required(ErrorMessage = "User id can't be null or empty")]
-        public required string UserId { get; set; }
+        public string? UserId { get; set; }
 
         /// <summary>
         /// The number of shares of this stock position

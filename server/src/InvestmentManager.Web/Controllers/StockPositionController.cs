@@ -63,6 +63,7 @@ namespace InvestmentManager.Web.Controllers
         {
             try
             {
+                addStockPositionRequest.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
                 StockPositionResponse? stockPositionResponse = await _stockPositionService.CreateStockPosition(addStockPositionRequest);
 
                 if (stockPositionResponse == null)
@@ -95,6 +96,7 @@ namespace InvestmentManager.Web.Controllers
         {
             try
             {
+                updateStockPositionRequest.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
                 StockPositionResponse? stockPositionResponse = await _stockPositionService.UpdateStockPosition(updateStockPositionRequest);
 
                 if (stockPositionResponse == null)
