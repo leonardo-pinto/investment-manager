@@ -75,14 +75,12 @@ function formatDate(date: string | null): string {
 }
 
 function setAuthToLocalStorage(authResponse: AuthResponse): void {
-  const { id, accessToken, username } = authResponse;
-  localStorage.setItem('userId', id);
+  const { accessToken, username } = authResponse;
   localStorage.setItem('token', accessToken);
   localStorage.setItem('username', username);
 }
 
 function removeAuthFromLocalStorage() {
-  localStorage.removeItem('userId');
   localStorage.removeItem('token');
   localStorage.removeItem('username');
 }
