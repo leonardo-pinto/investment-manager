@@ -32,32 +32,6 @@ header {
   padding: 1rem 2.5rem;
 }
 
-header nav {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-}
-
-header ul {
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  list-style: none;
-}
-
-header a {
-  text-decoration: none;
-}
-
-li {
-  margin: 0 0.5rem;
-}
-
-a {
-  margin: 0;
-  padding: 0;
-}
-
 #logo {
   height: 5rem;
 }
