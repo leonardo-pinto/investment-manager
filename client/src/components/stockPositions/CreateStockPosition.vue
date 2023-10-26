@@ -1,172 +1,149 @@
 <template>
-  <BaseDialog
-    :show="props.show"
-    width="50%"
-    title="New stock position"
-    @close="handleClose"
-  >
-    <form class="w-70">
-      <div class="flex">
-        <div class="form-control" :class="{ invalid: errors.symbol }">
-          <label for="symbol">Stock Symbol</label>
-          <input
-            type="text"
-            id="symbol"
-            v-model.trim="stockPositionData.symbol"
-            @blur="validateEmptyField(stockPositionData.symbol, 'symbol')"
-          />
-          <p v-if="errors.symbol" class="error-message">
-            {{ errors.symbol }}
-          </p>
-        </div>
-        <div class="form-control" :class="{ invalid: errors.quantity }">
-          <label for="quantity">Quantity</label>
-          <input
-            type="number"
-            id="quantity"
-            min="1"
-            v-model="stockPositionData.quantity"
-            @blur="
-              validatePositiveValue(stockPositionData.quantity, 'quantity')
-            "
-          />
-          <p v-if="errors.quantity" class="error-message">
-            {{ errors.quantity }}
-          </p>
-        </div>
-      </div>
-      <div class="flex">
-        <div class="form-control" :class="{ invalid: errors.averagePrice }">
-          <label for="averagePrice">Average Price</label>
-          <input
-            type="number"
-            id="averagePrice"
-            min="0.01"
-            step=".01"
-            v-model="stockPositionData.averagePrice"
-            @blur="
-              validatePositiveValue(
-                stockPositionData.averagePrice,
-                'averagePrice'
-              )
-            "
-          />
-          <p v-if="errors.averagePrice" class="error-message">
-            {{ errors.averagePrice }}
-          </p>
-        </div>
-        <div class="form-control">
-          <label for="positionType">Type: </label>
-          <select
-            name="positionType"
-            id="positionType"
-            v-model="stockPositionData.positionType"
-          >
-            <option
-              v-for="(type, index) in validPositionTypes[props.tradingCountry]"
-              :key="index"
-              :value="type"
+  <v-row justify="center">
+    <v-dialog v-model="visible" width="512">
+      <template v-slot:activator="{ props }">
+        <v-btn
+          class="mt-5"
+          v-bind="props"
+          color="#00838f"
+          variant="flat"
+          size="large"
+        >
+          New Position
+        </v-btn>
+      </template>
+      <v-card>
+        <v-card-title class="text-h5 text-center mt-3">
+          <span>New Position</span>
+        </v-card-title>
+        <v-form
+          class="w-100"
+          ref="form"
+          validate-on="blur lazy"
+          @submit.prevent="submitForm"
+        >
+          <v-container class="w-100">
+            <v-col>
+              <v-row>
+                <v-text-field
+                  v-model.trim="symbol"
+                  label="Symbol"
+                  :rules="symbolRules"
+                >
+                </v-text-field>
+              </v-row>
+              <v-row>
+                <v-text-field
+                  v-model.number="quantity"
+                  type="number"
+                  label="Quantity"
+                  :rules="quantityRules"
+                >
+                </v-text-field>
+              </v-row>
+              <v-row>
+                <v-text-field
+                  v-model.number="price"
+                  type="number"
+                  label="Price"
+                  :rules="priceRules"
+                >
+                </v-text-field>
+              </v-row>
+              <v-row>
+                <v-select
+                  v-model="type"
+                  :items="validPositionTypes[positionsStore.currentCountry]"
+                  label="Type"
+                  :rules="typeRules"
+                >
+                </v-select>
+              </v-row>
+            </v-col>
+          </v-container>
+          <v-card-actions class="mb-4">
+            <v-btn
+              size="large"
+              @click="handleClose"
+              variant="outlined"
+              color="#00838f"
             >
-              {{ type }}
-            </option>
-          </select>
-        </div>
-      </div>
-    </form>
-    <template #actions>
-      <BaseButton @click="submitForm">Create</BaseButton>
-    </template>
-  </BaseDialog>
+              Close
+            </v-btn>
+            <v-btn
+              type="submit"
+              :loading="loading"
+              color="#00838f"
+              variant="flat"
+              size="large"
+            >
+              Save
+            </v-btn>
+          </v-card-actions>
+        </v-form>
+      </v-card>
+    </v-dialog>
+  </v-row>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useStore } from '../../store';
-import { CreateStockPositionRequest } from '../../types/stockPosition';
-import { PositionType, TradingCountry } from '../../enums';
-import useFormValidation from '../../common/composables/useFormValidation';
-import { useLoading } from 'vue-loading-overlay';
 import { validPositionTypes } from '../../common/helpers';
+import {
+  requiredField,
+  validatePositive,
+  validateInteger,
+} from '../../common/helpers/validationRules';
+import { CreateStockPositionRequest } from '../../types/stockPosition';
+import { usePositionsStore } from '../../stores/positionsStore';
 
-interface Props {
-  show: boolean;
-  tradingCountry: TradingCountry;
-}
+const positionsStore = usePositionsStore();
+const visible = ref(false);
+const symbol = ref<string>('');
+const quantity = ref<number>();
+const price = ref<number>();
+const type = ref();
+const form = ref();
+const loading = ref<boolean>(false);
 
-const store = useStore();
-const props = defineProps<Props>();
-const emit = defineEmits(['close']);
-const $loading = useLoading({
-  color: '#ff6000',
-});
+const symbolRules = [(value: string) => requiredField(value, 'Symbol')];
+const quantityRules = [
+  (value: number) => requiredField(value, 'Quantity'),
+  (value: number) => validatePositive(value, 'Quantity'),
+  (value: number) => validateInteger(value, 'Quantity'),
+];
+const priceRules = [
+  (value: number) => requiredField(value, 'Price'),
+  (value: number) => validatePositive(value, 'Price'),
+];
+const typeRules = [(value: string) => requiredField(value, 'Type')];
 
-const { errors, validateEmptyField, validatePositiveValue, isFormValid } =
-  useFormValidation();
-
-const stockPositionData = ref({
-  symbol: '',
-  quantity: 1,
-  averagePrice: 0.01,
-  positionType: PositionType.Stocks,
-});
-
-function clearFields() {
-  stockPositionData.value.symbol = '';
-  stockPositionData.value.quantity = 1;
-  stockPositionData.value.averagePrice = 0.01;
-}
-
-function handleClose(): void {
-  clearFields();
-  emit('close');
-}
-
-function validateAllFormFields() {
-  validateEmptyField(stockPositionData.value.symbol, 'symbol');
-  validatePositiveValue(stockPositionData.value.quantity, 'quantity');
-  validatePositiveValue(stockPositionData.value.averagePrice, 'averagePrice');
+function handleClose() {
+  visible.value = false;
+  form.value.reset();
 }
 
 async function submitForm() {
-  validateAllFormFields();
-  if (!isFormValid(stockPositionData.value)) {
-    return;
-  }
-
-  const createStockPositionRequest: CreateStockPositionRequest = {
-    symbol: stockPositionData.value.symbol,
-    userId: store.getters['auth/getUserId'],
-    quantity: stockPositionData.value.quantity,
-    averagePrice: stockPositionData.value.averagePrice,
-    dateAndTimeOfStockPosition: new Date().toISOString(),
-    tradingCountry: props.tradingCountry as TradingCountry,
-    type: stockPositionData.value.positionType,
-  };
-
-  const loader = $loading.show();
-  try {
-    await store.dispatch(
-      'stockPositions/createStockPosition',
-      createStockPositionRequest
-    );
-    await store.dispatch('stockPositions/getStockPositionQuotes');
-    handleClose();
-  } catch (error) {
-    errors['symbol'] = (error as any).response.data.error;
-  } finally {
-    loader.hide();
+  const { valid } = await form.value?.validate();
+  if (valid) {
+    const createStockPositionRequest: CreateStockPositionRequest = {
+      symbol: symbol.value,
+      quantity: quantity.value!,
+      averagePrice: price.value!,
+      dateAndTimeOfStockPosition: new Date().toISOString(),
+      tradingCountry: positionsStore.currentCountry,
+      type: type.value,
+    };
+    try {
+      loading.value = true;
+      await positionsStore.createPosition(createStockPositionRequest);
+      await positionsStore.getStockPositionQuotes();
+      handleClose();
+    } catch (error) {
+      //   errors['symbol'] = (error as any).response.data.error;
+    } finally {
+      loading.value = false;
+    }
   }
 }
 </script>
-
-<style scoped>
-select {
-  border: 1px solid #454545;
-  border-radius: 10px;
-  display: block;
-  font: inherit;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
-  width: 15rem;
-}
-</style>
