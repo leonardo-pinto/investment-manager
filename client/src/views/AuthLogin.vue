@@ -34,7 +34,7 @@
             <v-btn
               type="submit"
               class="w-50 mt-4"
-              color="#06C"
+              color="#00838f"
               :loading="loading"
             >
               Log In
@@ -54,16 +54,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { AuthLoginRequest, AuthResponse } from '../types/auth';
-import { useRouter } from 'vue-router';
+import { AuthLoginRequest } from '../types/auth';
 import {
   requiredField,
   passwordPattern,
 } from '../common/helpers/validationRules';
-import { loginUser } from '../api/auth.api';
-import { setAuthToLocalStorage } from '../common/helpers';
+import { useAuthStore } from '../stores/authStore';
 
-const router = useRouter();
+const authStore = useAuthStore();
 const userName = ref<string>('');
 const password = ref<string>('');
 const form = ref();
@@ -88,9 +86,7 @@ async function submitForm() {
     };
     try {
       loading.value = true;
-      const response: AuthResponse = await loginUser(authCredentials);
-      setAuthToLocalStorage(response);
-      router.replace('/stock-positions');
+      await authStore.login(authCredentials);
     } catch (error) {
       apiResponseError.value = (error as any).response?.data?.error;
     } finally {

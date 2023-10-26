@@ -1,49 +1,30 @@
 <template>
-  <header>
-    <nav>
-      <router-link to="/"
-        ><img id="logo" src="../assets/logo.png"
-      /></router-link>
-      <ul v-if="!isAuth">
-        <li>
-          <BaseButton link to="/register">Register</BaseButton>
-        </li>
-        <li>
-          <BaseButton mode="outline" link to="/login">Login</BaseButton>
-        </li>
-      </ul>
-      <ul v-else>
-        <li>
-          <BaseButton link to="/stock-positions">Stock Positions</BaseButton>
-        </li>
-        <li>
-          <BaseButton link to="/transactions">Transactions</BaseButton>
-        </li>
-        <li>
-          <BaseButton link to="/avg-price-calculator"
-            >Average Price Calculator</BaseButton
-          >
-        </li>
-        <li>
-          <BaseButton @click="logout" mode="outline">Logout</BaseButton>
-        </li>
-      </ul>
-    </nav>
-  </header>
+  <v-toolbar color="#FFFFFF">
+    <router-link to="/"><img id="logo" src="../assets/logo.png" /></router-link>
+    <v-spacer></v-spacer>
+    <div v-if="isAuth">
+      <v-btn class="text-cyan-darken-3" to="/stock-positions">
+        Positions
+      </v-btn>
+      <v-btn class="mx-6 text-cyan-darken-3" to="/transactions">
+        Transactions
+      </v-btn>
+      <v-btn class="mr-3 text-cyan-darken-3" to="/avg-price-calculator">
+        Price Calculator
+      </v-btn>
+      <v-btn class="text-cyan-darken-3" @click="authStore.logout"
+        >Log Out
+      </v-btn>
+    </div>
+  </v-toolbar>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { removeAuthFromLocalStorage } from '../common/helpers';
+import { useAuthStore } from '../stores/authStore';
 
-const router = useRouter();
-const isAuth = computed<boolean>(() => !!localStorage.getItem('token'));
-
-function logout() {
-  removeAuthFromLocalStorage();
-  router.replace('/login');
-}
+const authStore = useAuthStore();
+const isAuth = computed<boolean>(() => authStore.isAuthenticated);
 </script>
 
 <style scoped>

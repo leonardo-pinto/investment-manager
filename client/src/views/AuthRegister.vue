@@ -66,17 +66,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 import { AuthRegisterRequest } from '../types/auth';
 import {
   requiredField,
   passwordPattern,
 } from '../common/helpers/validationRules';
-import { registerUser } from '../api/auth.api';
-import { setAuthToLocalStorage } from '../common/helpers';
+import { useAuthStore } from '../stores/authStore';
 
-const router = useRouter();
-
+const authStore = useAuthStore();
 const userName = ref<string>('');
 const password = ref<string>('');
 const passwordConfirmation = ref<string>('');
@@ -105,9 +102,7 @@ async function submitForm() {
     };
     try {
       loading.value = true;
-      const response = await registerUser(authCredentials);
-      setAuthToLocalStorage(response);
-      router.replace('/stock-positions');
+      await authStore.register(authCredentials);
     } catch (error) {
       apiResponseError.value = (error as any).response?.data?.error;
     } finally {
