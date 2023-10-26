@@ -1,12 +1,13 @@
 <template>
-  <table>
+  <v-table>
     <thead>
       <tr>
-        <th id="table-title" colspan="5">Positions Summary</th>
-      </tr>
-      <tr>
         <th></th>
-        <th v-for="(type, index) in Object.keys(summaryData)" :key="index">
+        <th
+          v-for="(type, index) in Object.keys(summaryData)"
+          :key="index"
+          class="text-left"
+        >
           {{ type }}
         </th>
       </tr>
@@ -14,13 +15,21 @@
     <tbody>
       <tr>
         <th class="vertical-header">Cost</th>
-        <td v-for="(type, index) in Object.keys(summaryData)" :key="index">
+        <td
+          v-for="(type, index) in Object.keys(summaryData)"
+          :key="index"
+          class="text-left"
+        >
           {{ currencyFormatter.format(summaryData[type].cost) }}
         </td>
       </tr>
       <tr>
         <th class="vertical-header">Market value</th>
-        <td v-for="(type, index) in Object.keys(summaryData)" :key="index">
+        <td
+          v-for="(type, index) in Object.keys(summaryData)"
+          :key="index"
+          class="text-left"
+        >
           {{ currencyFormatter.format(summaryData[type].marketValue) }}
         </td>
       </tr>
@@ -30,6 +39,7 @@
           v-for="(type, index) in Object.keys(summaryData)"
           :key="index"
           :class="checkProfit(summaryData[type].monetaryGain.toString())"
+          class="text-left"
         >
           {{ currencyFormatter.format(summaryData[type].monetaryGain) }}
         </td>
@@ -40,12 +50,13 @@
           v-for="(type, index) in Object.keys(summaryData)"
           :key="index"
           :class="checkProfit(summaryData[type].percentageGain.toString())"
+          class="text-left"
         >
           {{ currencyFormatter.format(summaryData[type].percentageGain) }}%
         </td>
       </tr>
     </tbody>
-  </table>
+  </v-table>
 </template>
 <script setup lang="ts">
 import { PositionType, TradingCountry } from '../../enums';
@@ -58,7 +69,6 @@ import {
 
 interface Props {
   positions: StockPosition[];
-  currency: string;
   tradingCountry: TradingCountry;
 }
 
@@ -117,31 +127,12 @@ function checkProfit(value: string): string {
 
 const currencyFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
-  currency: props.currency === '$' ? 'USD' : 'BRL',
+  currency: props.tradingCountry === TradingCountry.US ? 'USD' : 'BRL',
   minimumFractionDigits: 2,
 });
 </script>
 
 <style scoped>
-table {
-  margin-bottom: 2rem;
-}
-
-#table-title {
-  border-bottom: 1px solid #dddddd;
-  text-align: center;
-}
-
-thead tr,
-td {
-  text-align: center;
-}
-
-table th,
-table td {
-  padding: 6px 8px;
-}
-
 .vertical-header {
   font-size: 0.9rem;
   width: 15%;
