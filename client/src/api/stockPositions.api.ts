@@ -21,12 +21,11 @@ const createStockPosition = async (
 };
 
 const getAllStockPositions = async (
-  userId: string,
   tradingCountry: TradingCountry
 ): Promise<StockPosition[]> => {
   return (
     await httpClient.get<StockPositions>(
-      `${STOCK_POSITION_ROUTE}/user-id/${userId}/trading-country/${tradingCountry}`
+      `${STOCK_POSITION_ROUTE}/trading-country/${tradingCountry}`
     )
   ).data.stockPositions;
 };
@@ -53,6 +52,6 @@ const updateStockPosition = async (
 export {
   createStockPosition,
   getAllStockPositions,
-  getStockPositionById,
+  // getStockPositionById,
   updateStockPosition,
 };
