@@ -20,17 +20,15 @@ export interface StockPositionsByCountry {
 
 export interface CreateStockPositionRequest {
   symbol: string;
-  userId: string;
   quantity: number;
   averagePrice: number;
   dateAndTimeOfStockPosition: string;
   tradingCountry: TradingCountry;
-  type: PositionType
+  type: PositionType;
 }
 
 export interface UpdateStockPositionRequest {
   positionId: string;
-  userId?: string;
   symbol: string;
   quantity: number;
   price: number;
