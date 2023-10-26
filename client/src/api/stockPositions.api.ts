@@ -30,14 +30,6 @@ const getAllStockPositions = async (
   ).data.stockPositions;
 };
 
-const getStockPositionById = async (
-  positionId: string
-): Promise<StockPosition> => {
-  return (
-    await httpClient.get<StockPosition>(`${STOCK_POSITION_ROUTE}/${positionId}`)
-  ).data;
-};
-
 const updateStockPosition = async (
   updateStockPosition: UpdateStockPositionRequest
 ): Promise<StockPosition> => {
