@@ -1,32 +1,25 @@
 <template>
-  <v-expansion-panels>
-    <v-expansion-panel>
-      <v-expansion-panel-title> {{ props.title }} </v-expansion-panel-title>
-      <v-expansion-panel-text>
-        <v-data-table
-          v-model:items-per-page="itemsPerPage"
-          :headers="headers"
-          :items="processedPositions"
-          class="mb-3"
-        >
-          <template v-slot:item.percentualGain="{ value }">
-            <td :style="{ color: getColor(value) }">{{ value }}</td>
-          </template>
-          <template v-slot:item.monetaryGain="{ value }">
-            <td :style="{ color: getColor(value) }">{{ value }}</td>
-          </template>
-          <template v-slot:item.actions="{ item }">
-            <UpdatePosition
-              v-for="(value, index) in Object.keys(TransactionType)"
-              :key="`${index}-${value}`"
-              :position="item"
-              :transaction-type="value"
-            ></UpdatePosition>
-          </template>
-        </v-data-table>
-      </v-expansion-panel-text>
-    </v-expansion-panel>
-  </v-expansion-panels>
+  <v-data-table
+    v-model:items-per-page="itemsPerPage"
+    :headers="headers"
+    :items="processedPositions"
+    class="mb-3"
+  >
+    <template v-slot:item.percentualGain="{ value }">
+      <td :style="{ color: getColor(value) }">{{ value }}</td>
+    </template>
+    <template v-slot:item.monetaryGain="{ value }">
+      <td :style="{ color: getColor(value) }">{{ value }}</td>
+    </template>
+    <template v-slot:item.actions="{ item }">
+      <UpdatePosition
+        v-for="(value, index) in Object.keys(TransactionType)"
+        :key="`${index}-${value}`"
+        :position="item"
+        :transaction-type="value"
+      ></UpdatePosition>
+    </template>
+  </v-data-table>
 </template>
 <script setup lang="ts">
 import type { VDataTable } from 'vuetify/lib/labs/components.mjs';
@@ -50,7 +43,6 @@ type ReadonlyDataTableHeader = UnwrapReadonlyArrayType<DT['headers']>;
 
 interface Props {
   filteredPositions: StockPosition[];
-  title: string;
   tradingCountry: TradingCountry;
 }
 const props = defineProps<Props>();
