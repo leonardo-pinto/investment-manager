@@ -45,19 +45,20 @@
         </v-card>
         <!-- :key is used here to force StockPositionsTable update -->
         <!-- Since the props change is not tracked -->
-        <ExpansionPanelsWrapper
-          :title="title"
-          v-for="({ data, title }, index) in mapPositionType"
-          :key="index"
-        >
-          <PositionsTable
+        <span v-for="({ data, title }, index) in mapPositionType" :key="index">
+          <ExpansionPanelsWrapper
             v-if="data.value.length"
-            :filteredPositions="data.value"
-            :key="`${data.value[0].positionId}-${filteredStockPositions.updatedAt}`"
-            :tradingCountry="positionsStore.currentCountry"
+            :title="title"
+            :key="`expansion-panel-${index}`"
           >
-          </PositionsTable>
-        </ExpansionPanelsWrapper>
+            <PositionsTable
+              :filteredPositions="data.value"
+              :key="`${data.value[0].positionId}-${filteredStockPositions.updatedAt}`"
+              :tradingCountry="positionsStore.currentCountry"
+            >
+            </PositionsTable>
+          </ExpansionPanelsWrapper>
+        </span>
       </v-card>
     </ExpansionPanelsWrapper>
   </v-card>
