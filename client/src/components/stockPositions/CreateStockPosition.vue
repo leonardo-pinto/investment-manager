@@ -1,9 +1,9 @@
 <template>
-  <v-row justify="center">
+  <v-row justify="start">
     <v-dialog v-model="visible" width="512">
       <template v-slot:activator="{ props }">
         <v-btn
-          class="mt-5"
+          class="my-5 ml-2"
           v-bind="props"
           color="#00838f"
           variant="flat"
@@ -14,7 +14,7 @@
       </template>
       <v-card>
         <v-card-title class="text-h5 text-center mt-3">
-          <span>New Position</span>
+          New Position
         </v-card-title>
         <v-form
           class="w-100"
@@ -59,14 +59,21 @@
                 >
                 </v-select>
               </v-row>
+              <v-row
+                v-if="apiResponseError"
+                class="error-api-response-message mb-2"
+              >
+                {{ apiResponseError }}
+              </v-row>
             </v-col>
           </v-container>
-          <v-card-actions class="mb-4">
+          <v-row class="d-flex justify-center mb-4">
             <v-btn
               size="large"
               @click="handleClose"
               variant="outlined"
               color="#00838f"
+              class="mr-3"
             >
               Close
             </v-btn>
@@ -79,7 +86,7 @@
             >
               Save
             </v-btn>
-          </v-card-actions>
+          </v-row>
         </v-form>
       </v-card>
     </v-dialog>
@@ -105,6 +112,7 @@ const price = ref<number>();
 const type = ref();
 const form = ref();
 const loading = ref<boolean>(false);
+const apiResponseError = ref('');
 
 const symbolRules = [(value: string) => requiredField(value, 'Symbol')];
 const quantityRules = [
@@ -140,7 +148,7 @@ async function submitForm() {
       await positionsStore.getStockPositionQuotes();
       handleClose();
     } catch (error) {
-      //   errors['symbol'] = (error as any).response.data.error;
+      apiResponseError.value = (error as any).response?.data?.error;
     } finally {
       loading.value = false;
     }
