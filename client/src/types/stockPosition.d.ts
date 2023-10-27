@@ -35,3 +35,16 @@ export interface UpdateStockPositionRequest {
   transactionType: TransactionType;
   tradingCountry: TradingCountry;
 }
+
+export interface PositionTableData {
+  positionId: string;
+  symbol: string;
+  quantity: number;
+  price: string;
+  averagePrice: string;
+  cost: string;
+  marketValue: string;
+  percentualGain: string;
+  monetaryGain: string;
+  positionWeight: string;
+}
