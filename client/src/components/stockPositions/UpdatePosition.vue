@@ -74,7 +74,7 @@ import {
   requiredField,
   validateInteger,
   validatePositive,
-} from '../../common/helpers/validationRules';
+} from '../../common/helpers';
 import { usePositionsStore } from '../../stores/positionsStore';
 import { TransactionType } from '../../enums';
 

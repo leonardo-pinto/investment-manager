@@ -70,12 +70,13 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { calculateAveragePrice } from '../common/helpers';
 import {
+  calculateAveragePrice,
   requiredField,
   validateInteger,
   validatePositive,
-} from '../common/helpers/validationRules';
+} from '../common/helpers';
+
 const form = ref();
 const firstQuantity = ref<number | null>(null);
 const firstPrice = ref<number | null>(null);

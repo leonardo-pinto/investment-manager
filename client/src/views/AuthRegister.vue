@@ -62,10 +62,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { AuthRegisterRequest } from '../types/auth';
-import {
-  requiredField,
-  passwordPattern,
-} from '../common/helpers/validationRules';
+import { requiredField, passwordPattern } from '../common/helpers';
 import { useAuthStore } from '../stores/authStore';
 
 const authStore = useAuthStore();

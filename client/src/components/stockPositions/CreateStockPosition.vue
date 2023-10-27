@@ -78,12 +78,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { validPositionTypes } from '../../common/helpers';
 import {
   requiredField,
   validatePositive,
   validateInteger,
-} from '../../common/helpers/validationRules';
+  validPositionTypes,
+} from '../../common/helpers';
 import { CreateStockPositionRequest } from '../../types/stockPosition';
 import { usePositionsStore } from '../../stores/positionsStore';
 
