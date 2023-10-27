@@ -6,10 +6,10 @@
     class="mb-3"
   >
     <template v-slot:item.percentualGain="{ value }">
-      <td :style="{ color: getColor(value) }">{{ value }}</td>
+      <td :style="{ color: getResultColor(value) }">{{ value }}</td>
     </template>
     <template v-slot:item.monetaryGain="{ value }">
-      <td :style="{ color: getColor(value) }">{{ value }}</td>
+      <td :style="{ color: getResultColor(value) }">{{ value }}</td>
     </template>
     <template v-slot:item.actions="{ item }">
       <UpdatePosition
@@ -25,10 +25,8 @@
 import type { VDataTable } from 'vuetify/lib/labs/components.mjs';
 import { StockPosition } from '../../types/stockPosition';
 import {
-  calculateGainMonetary,
-  calculateGainPercentage,
-  calculatePositionWeight,
-  calculateValue,
+  mapPositionToPositionTableData,
+  getResultColor,
 } from '../../common/helpers';
 import UpdatePosition from './UpdatePosition.vue';
 import { TradingCountry, TransactionType } from '../../enums';
@@ -75,49 +73,11 @@ const headers: ReadonlyDataTableHeader[] = [
   { title: 'Actions', key: 'actions', sortable: false, width: '15%' },
 ];
 
-type ProcessedPosition = {
-  positionId: string;
-  symbol: string;
-  quantity: number;
-  price: string;
-  averagePrice: string;
-  cost: string;
-  marketValue: string;
-  percentualGain: string;
-  monetaryGain: string;
-  positionWeight: string;
-};
-
-const currencyFormatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: props.tradingCountry === TradingCountry.US ? 'USD' : 'BRL',
-  minimumFractionDigits: 2,
-});
-
 const processedPositions = props.filteredPositions.map((p) => {
-  const position: ProcessedPosition = {
-    positionId: p.positionId,
-    symbol: p.symbol,
-    quantity: p.quantity,
-    price: currencyFormatter.format(p.price),
-    averagePrice: currencyFormatter.format(p.averagePrice),
-    cost: currencyFormatter.format(calculateValue(p.quantity, p.averagePrice)),
-    marketValue: currencyFormatter.format(calculateValue(p.quantity, p.price)),
-    percentualGain: currencyFormatter.format(
-      calculateGainPercentage(p.price, p.averagePrice)
-    ),
-    monetaryGain: currencyFormatter.format(
-      calculateGainMonetary(p.quantity, p.price, p.averagePrice)
-    ),
-    positionWeight: `${calculatePositionWeight(
-      p,
-      props.filteredPositions
-    ).toFixed(2)}%`,
-  };
-  return position;
+  return mapPositionToPositionTableData(
+    p,
+    props.filteredPositions,
+    props.tradingCountry
+  );
 });
-
-function getColor(value: string) {
-  return Number(value.substring(1)) > 0 ? 'green' : 'red';
-}
 </script>
