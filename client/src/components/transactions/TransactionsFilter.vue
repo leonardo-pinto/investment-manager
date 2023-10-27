@@ -6,7 +6,7 @@
       :items="transactionTypeOptions"
       item-title="name"
       v-model="filters.transactionType"
-      class="mr-2"
+      class="mx-2"
     >
     </v-select>
     <v-text-field v-model="filters.symbol" label="Symbol" density="comfortable">
@@ -24,18 +24,10 @@
     </v-text-field>
   </v-row>
   <v-row class="mb-1">
-    <v-btn
-      size="large"
-      @click="resetFilters"
-      variant="outlined"
-      color="#00838f"
-      class="mr-2"
-    >
+    <VBtnSecondary size="large" @click="resetFilters" class="mr-2">
       Reset Filter
-    </v-btn>
-    <v-btn @click="setFilters" color="#00838f" variant="flat" size="large">
-      Apply Filter
-    </v-btn>
+    </VBtnSecondary>
+    <VBtnPrimary @click="setFilters" size="large"> Apply Filter </VBtnPrimary>
   </v-row>
 </template>
 <script setup lang="ts">
