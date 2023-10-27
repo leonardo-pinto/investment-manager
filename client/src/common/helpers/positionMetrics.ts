@@ -1,5 +1,6 @@
 import { PositionType, TradingCountry } from '../../enums';
-import { StockPosition } from '../../types/stockPosition';
+import { PositionTableData, StockPosition } from '../../types/stockPosition';
+import { currencyFormatter } from './';
 
 function calculateValue(quantity: number, price: number) {
   return quantity * price;
@@ -67,6 +68,31 @@ function getResultColor(value: string) {
   return Number(value.substring(1)) > 0 ? 'green' : 'red';
 }
 
+function mapPositionToPositionTableData(
+  p: StockPosition,
+  allPositions: StockPosition[],
+  tradingCountry: TradingCountry
+) {
+  const formatter = currencyFormatter(tradingCountry);
+
+  return {
+    positionId: p.positionId,
+    symbol: p.symbol,
+    quantity: p.quantity,
+    price: formatter.format(p.price),
+    averagePrice: formatter.format(p.averagePrice),
+    cost: formatter.format(calculateValue(p.quantity, p.averagePrice)),
+    marketValue: formatter.format(calculateValue(p.quantity, p.price)),
+    percentualGain: formatter.format(
+      calculateGainPercentage(p.price, p.averagePrice)
+    ),
+    monetaryGain: formatter.format(
+      calculateGainMonetary(p.quantity, p.price, p.averagePrice)
+    ),
+    positionWeight: `${calculatePositionWeight(p, allPositions).toFixed(2)}%`,
+  } as PositionTableData;
+}
+
 export {
   calculateValue,
   calculateGainPercentage,
@@ -77,4 +103,5 @@ export {
   calculateCostSum,
   getResultColor,
   validPositionTypes,
+  mapPositionToPositionTableData
 };
