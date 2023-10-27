@@ -1,54 +1,56 @@
 <template>
-  <v-row justify="center">
-    <v-dialog width="512" v-model="visible">
-      <template v-slot:activator="{ props }">
-        <v-btn v-bind="props"> {{ $props.transactionType }} </v-btn>
-      </template>
-      <v-card>
-        <v-card-title class="text-h5 text-center mt-3">
-          <span>{{ props.transactionType }} Position</span>
-        </v-card-title>
-        <v-form
-          class="w-100"
-          ref="form"
-          validate-on="blur lazy"
-          @submit.prevent="submitForm"
-        >
-          <v-container class="w-100">
-            <v-col>
-              <v-row>
-                <v-text-field
-                  v-model="props.position!.symbol"
-                  label="Symbol"
-                  readonly
-                >
-                </v-text-field>
-              </v-row>
-              <v-row>
-                <v-text-field
-                  v-model.number="quantity"
-                  type="number"
-                  label="Quantity"
-                  :rules="quantityRules"
-                >
-                </v-text-field>
-              </v-row>
-              <v-row>
-                <v-text-field
-                  v-model.number="price"
-                  type="number"
-                  label="Price"
-                  :rules="priceRules"
-                >
-                </v-text-field>
-              </v-row>
-              <v-row v-if="apiResponseError">
-                {{ apiResponseError }}
-              </v-row>
-            </v-col>
-          </v-container>
-          <v-card-actions>
-            <v-spacer></v-spacer>
+  <v-dialog width="512" v-model="visible">
+    <template v-slot:activator="{ props }">
+      <v-btn v-bind:color="getColor()" class="mr-2" size="small" v-bind="props">
+        {{ $props.transactionType }}
+      </v-btn>
+    </template>
+    <v-card>
+      <v-card-title class="text-h5 text-center mt-3">
+        {{ props.transactionType }} Position
+      </v-card-title>
+      <v-form
+        class="w-100"
+        ref="form"
+        validate-on="blur lazy"
+        @submit.prevent="submitForm"
+      >
+        <v-container class="w-100">
+          <v-col>
+            <v-row>
+              <v-text-field
+                v-model="props.position!.symbol"
+                label="Symbol"
+                readonly
+              >
+              </v-text-field>
+            </v-row>
+            <v-row>
+              <v-text-field
+                v-model.number="quantity"
+                type="number"
+                label="Quantity"
+                :rules="quantityRules"
+              >
+              </v-text-field>
+            </v-row>
+            <v-row>
+              <v-text-field
+                v-model.number="price"
+                type="number"
+                label="Price"
+                :rules="priceRules"
+              >
+              </v-text-field>
+            </v-row>
+            <v-row v-if="apiResponseError" class="error-api-response-message">
+              {{ apiResponseError }}
+            </v-row>
+          </v-col>
+        </v-container>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-row class="mb-5">
             <v-btn
               size="large"
               @click="handleClose"
@@ -66,28 +68,29 @@
             >
               {{ props.transactionType }}
             </v-btn>
-          </v-card-actions>
-        </v-form>
-      </v-card>
-    </v-dialog>
-  </v-row>
+          </v-row>
+        </v-card-actions>
+      </v-form>
+    </v-card>
+  </v-dialog>
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
-import { TransactionType } from '../../enums';
 import {
   StockPosition,
   UpdateStockPositionRequest,
 } from '../../types/stockPosition';
 import {
+  requiredField,
   validateInteger,
   validatePositive,
 } from '../../common/helpers/validationRules';
 import { usePositionsStore } from '../../stores/positionsStore';
+import { TransactionType } from '../../enums';
 
 interface Props {
   position: StockPosition | null;
-  transactionType: TransactionType;
+  transactionType: string;
 }
 const props = defineProps<Props>();
 const positionsStore = usePositionsStore();
@@ -96,10 +99,14 @@ const form = ref();
 const quantity = ref<number>();
 const price = ref<number>();
 const quantityRules = [
+  (value: number) => requiredField(value, 'Quantity'),
   (value: number) => validatePositive(value, 'Quantity'),
   (value: number) => validateInteger(value, 'Quantity'),
 ];
-const priceRules = [(value: number) => validatePositive(value, 'Price')];
+const priceRules = [
+  (value: number) => requiredField(value, 'Price'),
+  (value: number) => validatePositive(value, 'Price'),
+];
 function handleClose() {
   visible.value = false;
 }
@@ -115,7 +122,8 @@ async function submitForm() {
       symbol: props.position?.symbol!,
       quantity: quantity.value!,
       price: price.value!,
-      transactionType: props.transactionType,
+      transactionType:
+        TransactionType[props.transactionType as keyof typeof TransactionType],
       tradingCountry: positionsStore.currentCountry,
     };
 
@@ -129,5 +137,9 @@ async function submitForm() {
       loading.value = false;
     }
   }
+}
+
+function getColor() {
+  return props.transactionType == TransactionType.Buy ? '#4CAF50' : '#F44336';
 }
 </script>
