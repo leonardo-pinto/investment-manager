@@ -20,7 +20,7 @@
           :key="index"
           class="text-left"
         >
-          {{ currencyFormatter.format(summaryData[type].cost) }}
+          {{ formatCurrency.format(summaryData[type].cost) }}
         </td>
       </tr>
       <tr>
@@ -30,7 +30,7 @@
           :key="index"
           class="text-left"
         >
-          {{ currencyFormatter.format(summaryData[type].marketValue) }}
+          {{ formatCurrency.format(summaryData[type].marketValue) }}
         </td>
       </tr>
       <tr>
@@ -38,10 +38,10 @@
         <td
           v-for="(type, index) in Object.keys(summaryData)"
           :key="index"
-          :class="checkProfit(summaryData[type].monetaryGain.toString())"
+          :style="{ color: getResultColor(summaryData[type].monetaryGain) }"
           class="text-left"
         >
-          {{ currencyFormatter.format(summaryData[type].monetaryGain) }}
+          {{ formatCurrency.format(summaryData[type].monetaryGain) }}
         </td>
       </tr>
       <tr>
@@ -49,10 +49,10 @@
         <td
           v-for="(type, index) in Object.keys(summaryData)"
           :key="index"
-          :class="checkProfit(summaryData[type].percentageGain.toString())"
+          :style="{ color: getResultColor(summaryData[type].percentageGain) }"
           class="text-left"
         >
-          {{ currencyFormatter.format(summaryData[type].percentageGain) }}%
+          {{ formatCurrency.format(summaryData[type].percentageGain) }}%
         </td>
       </tr>
     </tbody>
@@ -65,6 +65,8 @@ import {
   calculateMarketValueSum,
   calculateCostSum,
   validPositionTypes,
+  currencyFormatter,
+  getResultColor,
 } from '../../common/helpers';
 
 interface Props {
@@ -121,28 +123,9 @@ function calculateMonetaryGain(data: summaryDataProps) {
   return Number(data.marketValue) - Number(data.cost);
 }
 
-function checkProfit(value: string): string {
-  return Number(value) > 0 ? 'positive' : 'negative';
-}
-
-const currencyFormatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: props.tradingCountry === TradingCountry.US ? 'USD' : 'BRL',
-  minimumFractionDigits: 2,
-});
+const formatCurrency = currencyFormatter(props.tradingCountry);
 </script>
 
 <style scoped>
-.vertical-header {
-  font-size: 0.9rem;
-  width: 15%;
-}
 
-.positive {
-  color: #228b22;
-}
-
-.negative {
-  color: #ff0000;
-}
 </style>
