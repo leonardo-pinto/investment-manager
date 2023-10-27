@@ -19,7 +19,7 @@
         v-else
         :key="filteredTransactions.length"
         :transactions="filteredTransactions"
-        :currency="currency"
+        :currency="positionsStore.getCurrency"
       ></TransactionsTable>
     </ExpansionPanelsWrapper>
   </v-card>
@@ -39,9 +39,6 @@ const positionsStore = usePositionsStore();
 const transactionsStore = useTransactionsStore();
 const isLoading = ref(false);
 
-const currency = computed<string>(() => {
-  return selectedFilters.tradingCountry == TradingCountry.US ? '$' : 'R$';
-});
 
 const selectedFilters = reactive({
   tradingCountry: positionsStore.currentCountry,
@@ -121,7 +118,6 @@ const filteredTransactions = computed(() => {
     }
   );
 });
-
 
 const apiResponseError = ref('');
 
