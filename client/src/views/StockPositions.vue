@@ -2,24 +2,7 @@
   <v-card class="mx-auto w-95 mt-5">
     <ExpansionPanelsWrapper title="Filters">
       <v-row class="mt-3 w-20">
-        <v-select
-          label="Select trading country"
-          :items="countryOptions"
-          item-title="name"
-          item-value="value"
-          v-model="selectedTradingCountry"
-        >
-          <template #item="{ item, props }">
-            <v-list-item v-bind="props">
-              <template #title>
-                <span class="d-flex align-center"
-                  ><img class="mr-2" style="width: 32px" :src="item.raw.icon" />
-                  {{ item.raw.name }}</span
-                >
-              </template>
-            </v-list-item>
-          </template>
-        </v-select>
+        <SelectTradingCountry></SelectTradingCountry>
       </v-row>
     </ExpansionPanelsWrapper>
   </v-card>
@@ -86,27 +69,14 @@ import PositionsTable from '../components/stockPositions/PositionsTable.vue';
 import PositionsSummaryTable from '../components/stockPositions/PositionsSummaryTable.vue';
 import CreateStockPosition from '../components/stockPositions/CreateStockPosition.vue';
 import ExpansionPanelsWrapper from '../common/components/ExpansionPanelsWrapper.vue';
+import SelectTradingCountry from '../common/components/SelectTradingCountry.vue';
 import { PositionType, TradingCountry } from '../enums';
 import { StockPosition, StockPositionsByCountry } from '../types/stockPosition';
 import { formatDate } from '../common/helpers';
 import { usePositionsStore } from '../stores/positionsStore';
 
 const positionsStore = usePositionsStore();
-
 const isLoading = ref(false);
-
-const countryOptions = [
-  {
-    name: 'United States',
-    value: TradingCountry.US,
-    icon: 'src/assets/us-flag-icon.png',
-  },
-  {
-    name: 'Brazil',
-    value: TradingCountry.BR,
-    icon: 'src/assets/br-flag-icon.png',
-  },
-];
 
 const selectedTradingCountry = ref<TradingCountry>(
   positionsStore.currentCountry
