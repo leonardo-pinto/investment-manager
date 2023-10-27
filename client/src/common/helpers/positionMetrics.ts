@@ -64,8 +64,8 @@ const validPositionTypes: { [key: string]: string[] } = {
   ],
 };
 
-function getResultColor(value: string) {
-  return Number(value.substring(1)) > 0 ? 'green' : 'red';
+function getResultColor(value: string | number) {
+  return String(value).indexOf('-') ? 'green' : 'red';
 }
 
 function mapPositionToPositionTableData(
@@ -103,5 +103,5 @@ export {
   calculateCostSum,
   getResultColor,
   validPositionTypes,
-  mapPositionToPositionTableData
+  mapPositionToPositionTableData,
 };
