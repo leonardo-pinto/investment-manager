@@ -1,30 +1,27 @@
 <template>
-  <TransactionsFilter @changeFilters="setFilters" />
+  <v-card class="mx-auto w-95 mt-5">
+    <ExpansionPanelsWrapper title="Filters">
+      <TransactionsFilter @changeFilters="setFilters" />
+    </ExpansionPanelsWrapper>
+  </v-card>
   <v-card class="mx-auto w-95 mt-5 mb-5">
-    <v-expansion-panels>
-      <v-expansion-panel>
-        <v-expansion-panel-title>Transactions</v-expansion-panel-title>
-        <v-expansion-panel-text>
-          <v-card v-if="isLoading"
-            ><v-progress-circular indeterminate :size="40"></v-progress-circular
-          ></v-card>
-          <v-card
-            v-else-if="apiResponseError"
-            class="error-api-response-message"
-          >
-            {{ apiResponseError }}
-          </v-card>
-          <h3 v-else-if="!sortedTransactions.length" class="text-left">
-            There are no transactions for the selected filter.
-          </h3>
-          <TransactionsTable
-            v-else
-            :transactions="sortedTransactions"
-            :currency="currency"
-          ></TransactionsTable>
-        </v-expansion-panel-text>
-      </v-expansion-panel>
-    </v-expansion-panels>
+    <ExpansionPanelsWrapper title="Transactions">
+      <v-card v-if="isLoading"
+        ><v-progress-circular indeterminate :size="40"></v-progress-circular
+      ></v-card>
+      <v-card v-else-if="apiResponseError" class="error-api-response-message">
+        {{ apiResponseError }}
+      </v-card>
+      <h3 v-else-if="!filteredTransactions.length" class="text-left">
+        There are no transactions for the selected filter.
+      </h3>
+      <TransactionsTable
+        v-else
+        :key="filteredTransactions.length"
+        :transactions="filteredTransactions"
+        :currency="currency"
+      ></TransactionsTable>
+    </ExpansionPanelsWrapper>
   </v-card>
 </template>
 
@@ -32,8 +29,8 @@
 import { computed, ref, reactive } from 'vue';
 import TransactionsTable from '../components/transactions/TransactionsTable.vue';
 import TransactionsFilter from '../components/transactions/TransactionsFilter.vue';
+import ExpansionPanelsWrapper from '../common/components/ExpansionPanelsWrapper.vue';
 import { Transaction } from '../types/transactions';
-import { useLoading } from 'vue-loading-overlay';
 import { TradingCountry, TransactionType } from '../enums';
 import { usePositionsStore } from '../stores/positionsStore';
 import { useTransactionsStore } from '../stores/transactionsStore';
@@ -41,9 +38,6 @@ import { useTransactionsStore } from '../stores/transactionsStore';
 const positionsStore = usePositionsStore();
 const transactionsStore = useTransactionsStore();
 const isLoading = ref(false);
-const $loading = useLoading({
-  color: '#ff6000',
-});
 
 const currency = computed<string>(() => {
   return selectedFilters.tradingCountry == TradingCountry.US ? '$' : 'R$';
@@ -58,8 +52,7 @@ const selectedFilters = reactive({
 });
 
 function setFilters(filters: any) {
-  selectedFilters.tradingCountry = filters.tradingCountry;
-  positionsStore.setTradingCountry(selectedFilters.tradingCountry);
+  selectedFilters.tradingCountry = positionsStore.currentCountry;
   selectedFilters.transactionType = filters.transactionType;
   selectedFilters.symbol = filters.symbol;
   selectedFilters.startDate = filters.startDate;
@@ -129,20 +122,10 @@ const filteredTransactions = computed(() => {
   );
 });
 
-const sortedTransactions = computed(() => {
-  return filteredTransactions.value.sort((a, b) =>
-    a.dateAndTimeOfTransaction > b.dateAndTimeOfTransaction
-      ? -1
-      : b.dateAndTimeOfTransaction > a.dateAndTimeOfTransaction
-      ? 1
-      : 0
-  );
-});
 
 const apiResponseError = ref('');
 
 async function getTransactions() {
-  const loader = $loading.show();
   try {
     isLoading.value = true;
     await transactionsStore.getTransactions();
@@ -151,7 +134,6 @@ async function getTransactions() {
       'An error occurred while consulting stock positions. Please try again.';
   } finally {
     isLoading.value = false;
-    loader.hide();
   }
 }
 
