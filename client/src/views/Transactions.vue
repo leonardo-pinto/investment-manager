@@ -1,31 +1,45 @@
 <template>
-  <BaseCard width="80%">
-    <TransactionsFilter @changeFilters="setFilters" />
-    <div v-if="isLoading"></div>
-    <div v-else-if="apiResponseError" class="error-api-response-message">
-      {{ apiResponseError }}
-    </div>
-    <h2 v-else-if="!sortedTransactions.length">
-      There are no transactions for the selected filter.
-    </h2>
-    <TransactionsTable
-      v-else
-      :transactions="sortedTransactions"
-      :currency="currency"
-    ></TransactionsTable>
-  </BaseCard>
+  <TransactionsFilter @changeFilters="setFilters" />
+  <v-card class="mx-auto w-95 mt-5 mb-5">
+    <v-expansion-panels>
+      <v-expansion-panel>
+        <v-expansion-panel-title>Transactions</v-expansion-panel-title>
+        <v-expansion-panel-text>
+          <v-card v-if="isLoading"
+            ><v-progress-circular indeterminate :size="40"></v-progress-circular
+          ></v-card>
+          <v-card
+            v-else-if="apiResponseError"
+            class="error-api-response-message"
+          >
+            {{ apiResponseError }}
+          </v-card>
+          <h3 v-else-if="!sortedTransactions.length" class="text-left">
+            There are no transactions for the selected filter.
+          </h3>
+          <TransactionsTable
+            v-else
+            :transactions="sortedTransactions"
+            :currency="currency"
+          ></TransactionsTable>
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+    </v-expansion-panels>
+  </v-card>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, reactive } from 'vue';
-import { useStore } from '../store';
 import TransactionsTable from '../components/transactions/TransactionsTable.vue';
 import TransactionsFilter from '../components/transactions/TransactionsFilter.vue';
 import { Transaction } from '../types/transactions';
 import { useLoading } from 'vue-loading-overlay';
 import { TradingCountry, TransactionType } from '../enums';
+import { usePositionsStore } from '../stores/positionsStore';
+import { useTransactionsStore } from '../stores/transactionsStore';
 
-const store = useStore();
+const positionsStore = usePositionsStore();
+const transactionsStore = useTransactionsStore();
 const isLoading = ref(false);
 const $loading = useLoading({
   color: '#ff6000',
@@ -36,7 +50,7 @@ const currency = computed<string>(() => {
 });
 
 const selectedFilters = reactive({
-  tradingCountry: store.getters['stockPositions/getSelectedCountry'],
+  tradingCountry: positionsStore.currentCountry,
   transactionType: '',
   symbol: '',
   startDate: '',
@@ -45,10 +59,7 @@ const selectedFilters = reactive({
 
 function setFilters(filters: any) {
   selectedFilters.tradingCountry = filters.tradingCountry;
-  store.dispatch(
-    'stockPositions/setSelectedTradingCountry',
-    selectedFilters.tradingCountry
-  );
+  positionsStore.setTradingCountry(selectedFilters.tradingCountry);
   selectedFilters.transactionType = filters.transactionType;
   selectedFilters.symbol = filters.symbol;
   selectedFilters.startDate = filters.startDate;
@@ -97,12 +108,10 @@ function filterByDate(value: string): boolean {
 }
 
 const filteredTransactions = computed(() => {
-  const transactions: Transaction[] =
-    store.getters['transactions/getTransactions'];
+  const transactions: Transaction[] = transactionsStore.transactions;
   return transactions.filter(
     ({ tradingCountry, transactionType, symbol, dateAndTimeOfTransaction }) => {
       const formattedDate = dateAndTimeOfTransaction.split('T')[0];
-      console.log(transactions);
       if (!filterByTradingCountry(tradingCountry)) {
         return false;
       }
@@ -112,11 +121,9 @@ const filteredTransactions = computed(() => {
       if (!filterBySymbol(symbol)) {
         return false;
       }
-
       if (!filterByDate(formattedDate)) {
         return false;
       }
-
       return true;
     }
   );
@@ -134,11 +141,11 @@ const sortedTransactions = computed(() => {
 
 const apiResponseError = ref('');
 
-function getTransactions() {
+async function getTransactions() {
   const loader = $loading.show();
   try {
     isLoading.value = true;
-    store.dispatch('transactions/getTransactions');
+    await transactionsStore.getTransactions();
   } catch (_error) {
     apiResponseError.value =
       'An error occurred while consulting stock positions. Please try again.';
