@@ -1,103 +1,82 @@
 <template>
   <v-card class="mx-auto w-95 mt-5">
-    <v-expansion-panels>
-      <v-expansion-panel>
-        <v-expansion-panel-title> Filters </v-expansion-panel-title>
-        <v-expansion-panel-text>
-          <v-select
-            label="Select trading country"
-            :items="countryOptions"
-            item-title="name"
-            item-value="value"
-            v-model="selectedTradingCountry"
-            class="w-20"
-          >
-            <template #item="{ item, props }">
-              <v-list-item v-bind="props">
-                <template #title>
-                  <span class="d-flex align-center"
-                    ><img
-                      class="mr-2"
-                      style="width: 32px"
-                      :src="item.raw.icon"
-                    />
-                    {{ item.raw.name }}</span
-                  >
-                </template>
-              </v-list-item>
-            </template>
-          </v-select>
-        </v-expansion-panel-text>
-      </v-expansion-panel>
-    </v-expansion-panels>
+    <ExpansionPanelsWrapper title="Filters">
+      <v-row class="mt-3 w-20">
+        <v-select
+          label="Select trading country"
+          :items="countryOptions"
+          item-title="name"
+          item-value="value"
+          v-model="selectedTradingCountry"
+        >
+          <template #item="{ item, props }">
+            <v-list-item v-bind="props">
+              <template #title>
+                <span class="d-flex align-center"
+                  ><img class="mr-2" style="width: 32px" :src="item.raw.icon" />
+                  {{ item.raw.name }}</span
+                >
+              </template>
+            </v-list-item>
+          </template>
+        </v-select>
+      </v-row>
+    </ExpansionPanelsWrapper>
   </v-card>
   <v-card
     class="mx-auto w-95 mt-5"
     v-if="filteredStockPositions.stockPositions.length"
   >
-    <v-expansion-panels>
-      <v-expansion-panel>
-        <v-expansion-panel-title> Summary </v-expansion-panel-title>
-        <v-expansion-panel-text>
-          <PositionsSummaryTable
-            :positions="filteredStockPositions.stockPositions"
-            :trading-country="selectedTradingCountry"
-            :key="filteredStockPositions.updatedAt"
-          />
-        </v-expansion-panel-text>
-      </v-expansion-panel>
-    </v-expansion-panels>
+    <ExpansionPanelsWrapper title="Summary">
+      <PositionsSummaryTable
+        :positions="filteredStockPositions.stockPositions"
+        :trading-country="selectedTradingCountry"
+        :key="filteredStockPositions.updatedAt"
+      />
+    </ExpansionPanelsWrapper>
   </v-card>
   <v-card class="mx-auto w-95 mt-5 mb-5">
-    <v-expansion-panels>
-      <v-expansion-panel>
-        <v-expansion-panel-title> Positions </v-expansion-panel-title>
-        <v-expansion-panel-text>
-          <CreateStockPosition></CreateStockPosition>
-          <v-card v-if="isLoading">
-            <v-progress-circular indeterminate :size="40"></v-progress-circular>
-          </v-card>
-          <v-card
-            v-else-if="apiResponseError"
-            class="error-api-response-message"
+    <ExpansionPanelsWrapper title="Positions">
+      <CreateStockPosition></CreateStockPosition>
+      <v-card v-if="isLoading">
+        <v-progress-circular indeterminate :size="40"></v-progress-circular>
+      </v-card>
+      <v-card v-else-if="apiResponseError" class="error-api-response-message">
+        {{ apiResponseError }}
+      </v-card>
+      <v-card
+        class="mt-5"
+        variant="flat"
+        v-else-if="!filteredStockPositions.stockPositions.length"
+      >
+        <h3>There are no positions for the selected trading country</h3>
+        <p>Create a new position to get started!</p>
+      </v-card>
+      <v-card v-else variant="flat">
+        <v-card variant="flat" class="d-flex align-center justify-start mb-4">
+          <p>Last updated {{ formatDate(quoteUpdatedAt) }}</p>
+          <v-btn class="ml-2" variant="text" @click="getStockPositionQuotes">
+            <v-icon start icon="mdi-refresh"></v-icon>
+            Refresh
+          </v-btn>
+        </v-card>
+        <!-- :key is used here to force StockPositionsTable update -->
+        <!-- Since the props change is not tracked -->
+        <ExpansionPanelsWrapper
+          :title="title"
+          v-for="({ data, title }, index) in mapPositionType"
+          :key="index"
+        >
+          <PositionsTable
+            v-if="data.value.length"
+            :filteredPositions="data.value"
+            :key="`${data.value[0].positionId}-${filteredStockPositions.updatedAt}`"
+            :tradingCountry="positionsStore.currentCountry"
           >
-            {{ apiResponseError }}
-          </v-card>
-          <v-card
-            class="mt-5"
-            variant="flat"
-            v-else-if="!filteredStockPositions.stockPositions.length"
-          >
-            <h3>There are no positions for the selected trading country</h3>
-            <p>Create a new position to get started!</p>
-          </v-card>
-          <v-card v-else variant="text">
-            <v-card class="d-flex align-center justify-start mt-5">
-              <p>Last updated {{ formatDate(quoteUpdatedAt) }}</p>
-              <v-btn variant="text" @click="getStockPositionQuotes">
-                <v-icon start icon="mdi-refresh"></v-icon>
-                Refresh
-              </v-btn>
-            </v-card>
-            <!-- :key is used here to force StockPositionsTable update -->
-            <!-- Since the props change is not tracked -->
-            <span
-              v-for="({ data, title }, index) in mapPositionType"
-              :key="index"
-            >
-              <PositionsTable
-                v-if="data.value.length"
-                :filteredPositions="data.value"
-                :key="`${data.value[0].positionId}-${filteredStockPositions.updatedAt}`"
-                :tradingCountry="positionsStore.currentCountry"
-                :title="title"
-              >
-              </PositionsTable>
-            </span>
-          </v-card>
-        </v-expansion-panel-text>
-      </v-expansion-panel>
-    </v-expansion-panels>
+          </PositionsTable>
+        </ExpansionPanelsWrapper>
+      </v-card>
+    </ExpansionPanelsWrapper>
   </v-card>
 </template>
 
@@ -106,6 +85,7 @@ import { computed, ref, watch } from 'vue';
 import PositionsTable from '../components/stockPositions/PositionsTable.vue';
 import PositionsSummaryTable from '../components/stockPositions/PositionsSummaryTable.vue';
 import CreateStockPosition from '../components/stockPositions/CreateStockPosition.vue';
+import ExpansionPanelsWrapper from '../common/components/ExpansionPanelsWrapper.vue';
 import { PositionType, TradingCountry } from '../enums';
 import { StockPosition, StockPositionsByCountry } from '../types/stockPosition';
 import { formatDate } from '../common/helpers';
