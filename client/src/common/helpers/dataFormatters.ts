@@ -1,3 +1,5 @@
+import { TradingCountry } from "../../enums";
+
 function formatDate(date: string | null): string {
   if (!date) {
     return '';
@@ -17,4 +19,12 @@ function formatDate(date: string | null): string {
   }
 }
 
-export { formatDate };
+function currencyFormatter(value: TradingCountry) {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: value === TradingCountry.US ? 'USD' : 'BRL',
+    minimumFractionDigits: 2,
+  });
+}
+
+export { formatDate, currencyFormatter };
