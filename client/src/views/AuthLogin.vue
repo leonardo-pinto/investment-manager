@@ -31,11 +31,7 @@
             ></v-text-field>
           </v-row>
           <v-row class="d-flex justify-center">
-            <VBtnPrimary
-              type="submit"
-              class="w-50 mt-4"
-              :loading="loading"
-            >
+            <VBtnPrimary type="submit" class="w-50 mt-4" :loading="loading">
               Log In
             </VBtnPrimary>
           </v-row>
@@ -54,10 +50,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { AuthLoginRequest } from '../types/auth';
-import {
-  requiredField,
-  passwordPattern,
-} from '../common/helpers/validationRules';
+import { requiredField, passwordPattern } from '../common/helpers';
 import { useAuthStore } from '../stores/authStore';
 
 const authStore = useAuthStore();
