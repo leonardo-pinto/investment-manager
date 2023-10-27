@@ -26,7 +26,7 @@ import type { VDataTable } from 'vuetify/lib/labs/components.mjs';
 import { StockPosition } from '../../types/stockPosition';
 import {
   mapPositionToPositionTableData,
-  getResultColor,
+  getResultColor
 } from '../../common/helpers';
 import UpdatePosition from './UpdatePosition.vue';
 import { TradingCountry, TransactionType } from '../../enums';
@@ -74,10 +74,7 @@ const headers: ReadonlyDataTableHeader[] = [
 ];
 
 const processedPositions = props.filteredPositions.map((p) => {
-  return mapPositionToPositionTableData(
-    p,
-    props.filteredPositions,
-    props.tradingCountry
-  );
+  return mapPositionToPositionTableData(p, props.filteredPositions, props.tradingCountry);
 });
+
 </script>
