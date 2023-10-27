@@ -31,14 +31,13 @@
             ></v-text-field>
           </v-row>
           <v-row class="d-flex justify-center">
-            <v-btn
+            <VBtnPrimary
               type="submit"
               class="w-50 mt-4"
-              color="#00838f"
               :loading="loading"
             >
               Log In
-            </v-btn>
+            </VBtnPrimary>
           </v-row>
           <v-row>
             <v-card-text class="register">

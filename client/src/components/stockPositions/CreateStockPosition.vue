@@ -2,15 +2,9 @@
   <v-row justify="start">
     <v-dialog v-model="visible" width="512">
       <template v-slot:activator="{ props }">
-        <v-btn
-          class="my-5 ml-2"
-          v-bind="props"
-          color="#00838f"
-          variant="flat"
-          size="large"
-        >
+        <VBtnPrimary class="my-5 ml-2" v-bind="props" size="large">
           New Position
-        </v-btn>
+        </VBtnPrimary>
       </template>
       <v-card>
         <v-card-title class="text-h5 text-center mt-3">
@@ -46,6 +40,7 @@
                   v-model.number="price"
                   type="number"
                   label="Price"
+                  :prefix="positionsStore.getCurrency"
                   :rules="priceRules"
                 >
                 </v-text-field>
@@ -68,24 +63,12 @@
             </v-col>
           </v-container>
           <v-row class="d-flex justify-center mb-4">
-            <v-btn
-              size="large"
-              @click="handleClose"
-              variant="outlined"
-              color="#00838f"
-              class="mr-3"
-            >
+            <VBtnSecondary size="large" @click="handleClose" class="mr-3">
               Close
-            </v-btn>
-            <v-btn
-              type="submit"
-              :loading="loading"
-              color="#00838f"
-              variant="flat"
-              size="large"
-            >
+            </VBtnSecondary>
+            <VBtnPrimary type="submit" :loading="loading" size="large">
               Save
-            </v-btn>
+            </VBtnPrimary>
           </v-row>
         </v-form>
       </v-card>

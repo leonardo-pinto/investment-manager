@@ -21,6 +21,7 @@
               <v-text-field
                 type="number"
                 label="Price"
+                prefix="$"
                 v-model.number="firstPrice"
                 :rules="priceRules"
               >
@@ -41,6 +42,7 @@
               <v-text-field
                 label="Price"
                 type="number"
+                prefix="$"
                 v-model.number="secondPrice"
                 :rules="priceRules"
               >
@@ -50,12 +52,8 @@
         </v-form>
       </v-card-item>
       <v-card-actions class="d-flex justify-center mb-6">
-        <v-btn @click="clearFields" variant="outlined" color="#00838f"
-          >Clear</v-btn
-        >
-        <v-btn @click="doAverageCalculation" color="#00838f" variant="flat"
-          >Calculate</v-btn
-        >
+        <VBtnSecondary @click="clearFields">Clear</VBtnSecondary>
+        <VBtnPrimary @click="doAverageCalculation">Calculate</VBtnPrimary>
       </v-card-actions>
     </v-card>
     <v-card

@@ -39,6 +39,7 @@
                 v-model.number="price"
                 type="number"
                 label="Price"
+                :prefix="positionsStore.getCurrency"
                 :rules="priceRules"
               >
               </v-text-field>
@@ -51,23 +52,12 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-row class="mb-5">
-            <v-btn
-              size="large"
-              @click="handleClose"
-              variant="outlined"
-              color="#00838f"
-            >
+            <VBtnSecondary size="large" @click="handleClose">
               Close
-            </v-btn>
-            <v-btn
-              type="submit"
-              :loading="loading"
-              color="#00838f"
-              variant="flat"
-              size="large"
-            >
+            </VBtnSecondary>
+            <VBtnPrimary type="submit" :loading="loading" size="large">
               {{ props.transactionType }}
-            </v-btn>
+            </VBtnPrimary>
           </v-row>
         </v-card-actions>
       </v-form>
