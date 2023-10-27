@@ -1,56 +1,52 @@
 <template>
-  <div class="flex filter-row">
-    <label for="tradingCountry">Trading Country: </label>
-    <select
-      name="tradingCountry"
-      id="tradingCountry"
-      v-model="filters.tradingCountry"
-    >
-      <option :value="TradingCountry.US">US</option>
-      <option :value="TradingCountry.BR">BR</option>
-    </select>
-  </div>
-  <div class="flex filter-row">
-    <label for="transactionType">Transaction Type: </label>
-    <select
-      name="transactionType"
-      id="transactionType"
+  <v-row class="mt-3">
+    <SelectTradingCountry></SelectTradingCountry>
+    <v-select
+      label="Select transaction type"
+      :items="transactionTypeOptions"
+      item-title="name"
       v-model="filters.transactionType"
+      class="mr-2"
     >
-      <option value="">All transaction types</option>
-      <option :value="TransactionType.Buy">Buys</option>
-      <option :value="TransactionType.Sell">Sells</option>
-    </select>
-  </div>
-  <div class="flex filter-row">
-    <label for="symbol">Symbol: </label>
-    <input name="symbol" id="symbol" v-model="filters.symbol" />
-  </div>
-
-  <div class="flex filter-row">
-    <label for="startDate">Date Range: </label>
-    <input
+    </v-select>
+    <v-text-field v-model="filters.symbol" label="Symbol" density="comfortable">
+    </v-text-field>
+  </v-row>
+  <v-row class="w-30">
+    <v-text-field
+      class="mr-2"
+      label="Start Date"
       type="date"
-      name="startDate"
-      id="startDate"
       v-model="filters.startDate"
-    />
-    <label id="end-date-label" for="endDate">to:</label>
-    <input type="date" name="endDate" id="endDate" v-model="filters.endDate" />
-  </div>
-
-  <BaseButton @click="setFilters">Filter</BaseButton>
+    >
+    </v-text-field>
+    <v-text-field label="End Date" type="date" v-model="filters.endDate">
+    </v-text-field>
+  </v-row>
+  <v-row class="mb-1">
+    <v-btn
+      size="large"
+      @click="resetFilters"
+      variant="outlined"
+      color="#00838f"
+      class="mr-2"
+    >
+      Reset Filter
+    </v-btn>
+    <v-btn @click="setFilters" color="#00838f" variant="flat" size="large">
+      Apply Filter
+    </v-btn>
+  </v-row>
 </template>
-
 <script setup lang="ts">
 import { reactive } from 'vue';
-import { useStore } from '../../store';
-import { TransactionType, TradingCountry } from '../../enums';
+import { usePositionsStore } from '../../stores/positionsStore';
+import { TransactionType } from '../../enums';
+import SelectTradingCountry from '../../common/components/SelectTradingCountry.vue';
 
-const store = useStore();
-
+const positionsStore = usePositionsStore();
 const filters = reactive({
-  tradingCountry: store.getters['stockPositions/getSelectedCountry'],
+  tradingCountry: positionsStore.currentCountry,
   transactionType: '',
   symbol: '',
   startDate: '',
@@ -59,41 +55,21 @@ const filters = reactive({
 
 const emit = defineEmits(['changeFilters']);
 
+function resetFilters() {
+  filters.transactionType = '';
+  filters.symbol = '';
+  filters.startDate = '';
+  filters.endDate = '';
+  emit('changeFilters', filters);
+}
+
 function setFilters() {
   emit('changeFilters', filters);
 }
+
+const transactionTypeOptions = [
+  { name: 'All', value: '' },
+  { name: 'Buys', value: TransactionType.Buy },
+  { name: 'Sells', value: TransactionType.Sell },
+];
 </script>
-
-<style scoped>
-.filter-row {
-  margin: 1rem 0;
-  justify-content: left;
-  align-items: center;
-}
-
-label {
-  margin: 0 0.5rem;
-  width: 15%;
-}
-
-input {
-  border-radius: 5%;
-  font-size: 0.8rem;
-  margin-bottom: 0%;
-  width: 20%;
-}
-
-select,
-input {
-  padding: 0.3rem;
-}
-
-select:focus {
-  border-color: #ff6000;
-  outline: none;
-}
-
-#end-date-label {
-  width: 1rem;
-}
-</style>
