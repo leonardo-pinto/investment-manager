@@ -7,6 +7,7 @@
           v-model:items-per-page="itemsPerPage"
           :headers="headers"
           :items="processedPositions"
+          class="mb-3"
         >
           <template v-slot:item.percentualGain="{ value }">
             <td :style="{ color: getColor(value) }">{{ value }}</td>
@@ -16,12 +17,10 @@
           </template>
           <template v-slot:item.actions="{ item }">
             <UpdatePosition
+              v-for="(value, index) in Object.keys(TransactionType)"
+              :key="`${index}-${value}`"
               :position="item"
-              :transaction-type="TransactionType.Buy"
-            ></UpdatePosition>
-            <UpdatePosition
-              :position="item"
-              :transaction-type="TransactionType.Sell"
+              :transaction-type="value"
             ></UpdatePosition>
           </template>
         </v-data-table>
@@ -40,6 +39,7 @@ import {
 } from '../../common/helpers';
 import UpdatePosition from './UpdatePosition.vue';
 import { TradingCountry, TransactionType } from '../../enums';
+import { ref } from 'vue';
 // https://stackoverflow.com/questions/75991355/import-datatableheader-typescript-type-of-vuetify3-v-data-table
 // followed this solution to fix the headers type
 type UnwrapReadonlyArrayType<A> = A extends Readonly<Array<infer I>>
@@ -55,14 +55,14 @@ interface Props {
 }
 const props = defineProps<Props>();
 
-const itemsPerPage = 50;
+const itemsPerPage = ref(50);
 const headers: ReadonlyDataTableHeader[] = [
   {
     title: 'Symbol',
     align: 'start',
     key: 'symbol',
   },
-  { title: 'Quantity', align: 'start', key: 'quantity' },
+  { title: 'Quantity', align: 'start', key: 'quantity', width: '8%' },
   { title: 'Price', align: 'start', key: 'price', sortable: false },
   {
     title: 'Average Price',
@@ -80,7 +80,7 @@ const headers: ReadonlyDataTableHeader[] = [
   { title: 'Gain (%)', align: 'start', key: 'percentualGain' },
   { title: 'Gain ($)', align: 'start', key: 'monetaryGain' },
   { title: 'Position Weight', align: 'start', key: 'positionWeight' },
-  { title: 'Actions', key: 'actions' },
+  { title: 'Actions', key: 'actions', sortable: false, width: '15%' },
 ];
 
 type ProcessedPosition = {
