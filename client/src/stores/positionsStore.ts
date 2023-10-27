@@ -36,6 +36,9 @@ export const usePositionsStore = defineStore('positions', {
     symbolsByCountry(state) {
       return state[state.currentCountry].stockPositions.map((p) => p.symbol);
     },
+    getCurrency(state) {
+      return state.currentCountry === TradingCountry.US ? '$' : 'R$';
+    },
   },
   actions: {
     setTradingCountry(tradingCountry: TradingCountry) {
