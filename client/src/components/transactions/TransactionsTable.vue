@@ -35,17 +35,19 @@ interface Props {
 const props = defineProps<Props>();
 
 const itemsPerPage = ref(50);
-const sortBy: ReadonlySortItem[] = [{ key: 'dateAndTime', order: 'desc' }];
 
 const headers: ReadonlyDataTableHeader[] = [
   {
     title: 'Time/Date',
     align: 'start',
     key: 'dateAndTime',
+    sortable: false,
   },
   { title: 'Description', align: 'start', key: 'description', sortable: false },
-  { title: 'Amount', align: 'start', key: 'amount' },
+  { title: 'Amount', align: 'start', key: 'amount', sortable: false },
 ];
+
+const sortBy: ReadonlySortItem[] = [{ key: 'dateAndTime', order: 'desc' }];
 
 function getColor(value: string) {
   return Number(value.substring(1)) > 0 ? 'green' : 'red';
