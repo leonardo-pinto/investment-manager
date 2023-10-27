@@ -6,7 +6,7 @@
   </v-card>
   <v-card class="mx-auto w-95 mt-5 mb-5">
     <ExpansionPanelsWrapper title="Transactions">
-      <v-card v-if="isLoading"
+      <v-card v-if="isLoading" variant="flat"
         ><v-progress-circular indeterminate :size="40"></v-progress-circular
       ></v-card>
       <v-card v-else-if="apiResponseError" class="error-api-response-message">
@@ -38,7 +38,6 @@ import { useTransactionsStore } from '../stores/transactionsStore';
 const positionsStore = usePositionsStore();
 const transactionsStore = useTransactionsStore();
 const isLoading = ref(false);
-
 
 const selectedFilters = reactive({
   tradingCountry: positionsStore.currentCountry,
