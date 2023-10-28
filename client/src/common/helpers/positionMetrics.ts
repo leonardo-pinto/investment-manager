@@ -64,8 +64,8 @@ const validPositionTypes: { [key: string]: string[] } = {
   ],
 };
 
-function getResultColor(value: string | number) {
-  return String(value).indexOf('-') ? 'green' : 'red';
+function getResultColor(value: string) {
+  return value.charAt(0) === '-' ? 'red' : 'green';
 }
 
 function mapPositionToPositionTableData(
