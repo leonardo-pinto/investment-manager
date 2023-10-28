@@ -6,7 +6,7 @@
     :items="processedTransactions"
   >
     <template v-slot:item.amount="{ value }">
-      <td :style="{ color: getColor(value) }">{{ value }}</td>
+      <td :style="{ color: getResultColor(value) }">{{ value }}</td>
     </template>
   </v-data-table>
 </template>
@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import { VDataTable } from 'vuetify/lib/labs/VDataTable/index.mjs';
 import { Transaction } from '../../types/transactions';
-import { formatDate } from '../../common/helpers';
+import { formatDate, getResultColor } from '../../common/helpers';
 import { TransactionType } from '../../enums';
 import { ref } from 'vue';
 
@@ -48,10 +48,6 @@ const headers: ReadonlyDataTableHeader[] = [
 ];
 
 const sortBy: ReadonlySortItem[] = [{ key: 'dateAndTime', order: 'desc' }];
-
-function getColor(value: string) {
-  return Number(value.substring(1)) > 0 ? 'green' : 'red';
-}
 
 function buildDescription(transaction: Transaction): string {
   const { quantity, symbol, price } = transaction;
