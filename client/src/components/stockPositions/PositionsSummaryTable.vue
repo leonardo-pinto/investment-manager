@@ -38,7 +38,7 @@
         <td
           v-for="(type, index) in Object.keys(summaryData)"
           :key="index"
-          :style="{ color: getResultColor(summaryData[type].monetaryGain) }"
+          :style="{ color: getResultColor(summaryData[type].monetaryGain.toString()) }"
           class="text-left"
         >
           {{ formatCurrency.format(summaryData[type].monetaryGain) }}
@@ -49,7 +49,7 @@
         <td
           v-for="(type, index) in Object.keys(summaryData)"
           :key="index"
-          :style="{ color: getResultColor(summaryData[type].percentageGain) }"
+          :style="{ color: getResultColor(summaryData[type].percentageGain.toString()) }"
           class="text-left"
         >
           {{ formatCurrency.format(summaryData[type].percentageGain) }}%
