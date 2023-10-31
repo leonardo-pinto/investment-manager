@@ -12,22 +12,19 @@ namespace InvestmentManager.ApplicationCore.Services
 {
     public class StockPositionService : IStockPositionService
     {
-        private readonly IFinnhubService _finnhubService;
-        private readonly IBrApiService _brApiService;
+        private readonly IStockQuoteService _stockQuoteService;
         private readonly IStockPositionRepository _stockPositionRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<StockPositionService> _logger;
         private readonly IMemoryCache _memoryCache;
 
         public StockPositionService(
-            IFinnhubService finnhubService,
-            IBrApiService brApiService,
+            IStockQuoteService stockQuoteService,
             IStockPositionRepository stockPositionRepository,
             IMapper mapper, ILogger<StockPositionService> logger,
             IMemoryCache memoryCache)
         {
-            _finnhubService = finnhubService;
-            _brApiService = brApiService;
+            _stockQuoteService = stockQuoteService;
             _stockPositionRepository = stockPositionRepository;
             _mapper = mapper;
             _logger = logger;
@@ -45,14 +42,7 @@ namespace InvestmentManager.ApplicationCore.Services
             }
 
             bool isStockSymbolValid;
-            if (addStockPositionRequest.TradingCountry == TradingCountry.US)
-            {
-                isStockSymbolValid = await _finnhubService.IsStockSymbolValid(addStockPositionRequest.Symbol);
-            } 
-            else
-            {
-                isStockSymbolValid = await _brApiService.IsStockSymbolValid(addStockPositionRequest.Symbol);
-            }
+                isStockSymbolValid = await _stockQuoteService.IsStockSymbolValid(addStockPositionRequest.Symbol, addStockPositionRequest.TradingCountry.ToString());
 
             if (!isStockSymbolValid)
             {
@@ -74,7 +64,7 @@ namespace InvestmentManager.ApplicationCore.Services
         {
             StockPosition? stockPosition = await _stockPositionRepository.GetSingleStockPosition(positionId);
 
-            if (stockPosition == null)
+            if (stockPosition is null)
             {
                 _logger.LogError("Invalid stock position id - StockPositionId: {@PositionId}", positionId);
                 throw new ArgumentException("Stock position not found");
@@ -104,7 +94,7 @@ namespace InvestmentManager.ApplicationCore.Services
                 _memoryCache.Set(
                     cacheKey,
                     stockPositions,
-                    TimeSpan.FromMinutes(10));
+                    TimeSpan.FromMinutes(30));
             }
             return stockPositions.Select(e => _mapper.Map<StockPositionResponse>(e)).ToList();
         }
