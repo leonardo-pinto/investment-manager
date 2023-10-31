@@ -72,7 +72,7 @@ Since this is a personal project, security measures were not a priority for this
   {
 	...
 	"FinnhubAccessToken": "finnhub-access-token",
-	"BrApiAccessToken": "br-api-access-token
+	"BrApiAccessToken": "br-api-access-token"
 	...
   }
   ```
