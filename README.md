@@ -32,7 +32,8 @@ Since this is a personal project, security measures were not a priority for this
 * Vite
 * TypeScript
 * Vue 3
-* VueX
+* Pinia
+* Vuetify
 * Vue Router
 
 ### Server
@@ -62,14 +63,16 @@ Since this is a personal project, security measures were not a priority for this
 * Docker
 * .NET Core 7.0 SDK (optional)
 
-## :exclamation: Create a Finnhub API Token :exclamation:
+## :exclamation: Create Finnhub API and BrApi Tokens :exclamation:
 1. The server connects to Finnhub API to consume US stock price quotes.  Please register [here](https://finnhub.io/) to get an individual access token.
+2. The server connects to BrApi to consume Brazil stock price quotes. Please register [here](https://brapi.dev/) to get an individual access token.
 
-2. Add the token in the `appsettings.json` (investment-manager/server/src/InvestmentManager.Web/appsettings.json)
+3. Add both tokens in the `appsettings.json` (investment-manager/server/src/InvestmentManager.Web/appsettings.json)
 ```sh
   {
 	...
-	"FinnhubAccessToken": "my-created-token",
+	"FinnhubAccessToken": "finnhub-access-token",
+	"BrApiAccessToken": "br-api-access-token
 	...
   }
   ```
@@ -81,18 +84,18 @@ Both the server application and database can run inside a Docker container follo
 1. Run to following commands from the server folder where the .sln file is located (investment-manager/server)
 ```sh
   docker-compose build
-  docker-compose up
+  docker-compose up -d
 ```
 
 This command will create and run two containers:\
-a) **sql_server_db** which contains the Microsoft SQL Server database\
-b) **investment_manager_web** which contains the .NET application and connects to the database container
+a) **investmentmanager.db** which contains the Microsoft SQL Server database\
+b) **investmentmanager.web** which contains the .NET application and connects to the database container
 
 2. The application should be running on http://localhost:5000/api
 
 ## :star: Running only the database using Docker
 
-The application can be run without Docker, however, still using a container as an Microsoft SQL database following the steps below:
+The application can be run without Docker, however, still using a container as a Microsoft SQL database following the steps below:
 
 1. Ensure the tool EF is installed
 ```sh
@@ -106,8 +109,8 @@ The application can be run without Docker, however, still using a container as a
 
 3. Run to following commands from the server folder where the .sln file is located (investment-manager/server)
 ```sh
-  docker-compose build sql_server_db
-  docker-compose up sql_server_db
+  docker-compose build investmentmanager.db
+  docker-compose up investmentmanager.db -d
 ```
 
 This command will create and run a container only for the database.
@@ -145,6 +148,6 @@ If only the database is running in a Docker container, the URL must be https://l
   npm run dev
 ```
 
-:warning: Please remember to create and insert a [Finnhub token](https://finnhub.io/) before using the application.
+:warning: Please remember to create and insert [Finnhub token](https://finnhub.io/) and [BrApi token](https://brapi.dev/) before using the application.
 
 
