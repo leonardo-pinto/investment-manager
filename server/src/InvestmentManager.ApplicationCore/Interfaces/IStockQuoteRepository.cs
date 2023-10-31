@@ -1,10 +1,6 @@
 ﻿namespace InvestmentManager.ApplicationCore.Interfaces
 {
-    /// <summary>
-    /// Represents service that implements the business logic to interact with finnhub.io
-    /// https://finnhub.io/docs/api/introduction
-    /// </summary>
-    public interface IFinnhubRepository
+    public interface IStockQuoteRepository
     {
         /// <summary>
         /// Get a stock current price quote

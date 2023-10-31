@@ -11,44 +11,20 @@ namespace InvestmentManager.Web.Controllers
     [ApiController]
     public class StockQuotesController : ControllerBase
     {
-        private readonly IFinnhubService _finnhubService;
-        private readonly IBrApiService _brApiService;
+        private readonly IStockQuoteService _stockQuoteService;
 
-        public StockQuotesController(IFinnhubService finnhubService, IBrApiService brApiService)
+        public StockQuotesController(IStockQuoteService stockQuoteService)
         {
-            _finnhubService = finnhubService;
-            _brApiService = brApiService;
+            _stockQuoteService = stockQuoteService;
         }
 
         /// <summary>
-        /// Get update price quote for brazilian stocks
+        /// Get updated stock quote for a given trading country
         /// </summary>
-        /// <param name="symbols"></param>
-        /// <returns></returns>
         [HttpGet]
-        [Route("br")]
-        public async Task<ActionResult<StockQuotesResponse>> GetBrStockQuotes([FromQuery, BindRequired] string symbols)
+        async public Task<ActionResult<StockQuotesResponse>> GetStockQuotes([FromQuery, BindRequired] string symbols, [FromQuery, BindRequired] string tradingCountry)
         {
-            var stockQuotes = await _brApiService.GetStocksPriceQuote(symbols);
-
-            return Ok(new StockQuotesResponse()
-            {
-                StockQuotes = stockQuotes,
-                UpdatedAt = DateTimeOffset.Now
-            });
-        }
-
-        /// <summary>
-        /// Get update price quote for us stocks
-        /// </summary>
-        /// <param name="symbols"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("us")]
-        public async Task<ActionResult<StockQuotesResponse>> GetUsStockQuotes([FromQuery, BindRequired] string symbols) 
-        {
-            string[] symbolsArr = symbols.Split(",");
-            var stockQuotes = await _finnhubService.GetMultipleStockPriceQuote(symbolsArr);
+            var stockQuotes = await _stockQuoteService.GetStockPriceQuote(symbols, tradingCountry);
 
             return Ok(new StockQuotesResponse()
             {

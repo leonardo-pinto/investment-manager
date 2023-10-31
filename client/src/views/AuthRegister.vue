@@ -1,189 +1,105 @@
 <template>
-  <BaseCard width="40%">
-    <h2>Register</h2>
-    <form @submit.prevent="submitForm" class="w-50">
-      <div class="form-control" :class="{ invalid: errors.username }">
-        <label for="username">Username</label>
-        <input
-          type="text"
-          id="username"
-          v-model.trim="registerData.username"
-          @blur="validateEmptyField(registerData.username, 'username')"
-        />
-        <p v-if="errors.username" class="error-message">
-          {{ errors.username }}
-        </p>
-      </div>
-      <div class="form-control" :class="{ invalid: errors.password }">
-        <label for="password">Password</label>
-        <input
-          :type="passwordType"
-          id="password"
-          v-model.trim="registerData.password"
-          @blur="validatePassword(registerData.password)"
-        />
-        <font-awesome-icon
-          v-if="passwordType == 'password'"
-          id="eye-icon"
-          icon="fa-solid fa-eye-slash"
-          @click="togglePasswordType"
-        />
-        <font-awesome-icon
-          v-else
-          id="eye-icon"
-          icon="fa-solid fa-eye"
-          @click="togglePasswordType"
-        />
-        <p v-if="errors.password" class="error-message">
-          {{ errors.password }}
-        </p>
-      </div>
-      <div
-        class="form-control"
-        :class="{ invalid: errors.passwordConfirmation }"
-      >
-        <label for="passwordConfirmation">Confirmation</label>
-        <input
-          :type="passwordConfType"
-          id="passwordConfirmation"
-          v-model="registerData.passwordConfirmation"
-          @blur="
-            validatePasswordConfirmation(
-              registerData.password,
-              registerData.passwordConfirmation
-            )
-          "
-        />
-        <font-awesome-icon
-          v-if="passwordConfType == 'password'"
-          id="eye-icon"
-          icon="fa-solid fa-eye-slash"
-          @click="togglePasswordConfType"
-        />
-        <font-awesome-icon
-          v-else
-          id="eye-icon"
-          icon="fa-solid fa-eye"
-          @click="togglePasswordConfType"
-        />
-        <p v-if="errors.passwordConfirmation" class="error-message">
-          {{ errors.passwordConfirmation }}
-        </p>
-      </div>
-      <div v-if="apiResponseError" class="error-api-response-message">
-        {{ apiResponseError }}
-      </div>
-      <BaseButton class="register-btn">Register</BaseButton>
-    </form>
-    <div class="register flex">
-      <p>
-        Are you a member already?
-        <router-link to="/login"> Login here.</router-link>
-      </p>
-    </div>
-  </BaseCard>
+  <v-card
+    title="Register to Investment Manager"
+    class="mx-auto mt-5 text-center"
+    elevation="8"
+    max-width="448"
+    rounded="lg"
+  >
+    <v-form ref="form" validate-on="blur lazy" @submit.prevent="submitForm">
+      <v-container>
+        <v-col>
+          <v-row>
+            <v-text-field
+              label="Username"
+              v-model.trim="userName"
+              prepend-inner-icon="mdi-account"
+              density="compact"
+              :rules="userNameRules"
+            ></v-text-field>
+          </v-row>
+          <v-row>
+            <v-text-field
+              label="Password"
+              v-model.trim="password"
+              :append-inner-icon="pswdVisible ? 'mdi-eye-off' : 'mdi-eye'"
+              :type="pswdVisible ? 'text' : 'password'"
+              density="compact"
+              prepend-inner-icon="mdi-lock-outline"
+              @click:append-inner="pswdVisible = !pswdVisible"
+              :rules="passwordRules"
+            ></v-text-field>
+          </v-row>
+          <v-row>
+            <v-text-field
+              label="Password Confirmation"
+              v-model.trim="passwordConfirmation"
+              :append-inner-icon="pswdConfVisible ? 'mdi-eye-off' : 'mdi-eye'"
+              :type="pswdConfVisible ? 'text' : 'password'"
+              density="compact"
+              prepend-inner-icon="mdi-lock-outline"
+              @click:append-inner="pswdConfVisible = !pswdConfVisible"
+              :rules="passwordConfirmationRules"
+            ></v-text-field>
+          </v-row>
+          <v-row class="d-flex justify-center">
+            <VBtnPrimary type="submit" class="w-50 mt-4" :loading="loading">
+              Register
+            </VBtnPrimary>
+          </v-row>
+          <v-row>
+            <v-card-text class="register">
+              Are you a member already?
+              <router-link to="/login"> Log in here</router-link>
+            </v-card-text>
+          </v-row>
+        </v-col>
+      </v-container>
+    </v-form>
+  </v-card>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useStore } from '../store/index.ts';
-import { useRouter } from 'vue-router';
 import { AuthRegisterRequest } from '../types/auth';
-import useFormValidation from '../common/composables/useFormValidation.ts';
-import { useLoading } from 'vue-loading-overlay';
+import { requiredField, passwordPattern } from '../common/helpers';
+import { useAuthStore } from '../stores/authStore';
 
-const store = useStore();
-const router = useRouter();
-const {
-  errors,
-  isFormValid,
-  validateEmptyField,
-  validatePassword,
-  validatePasswordConfirmation,
-} = useFormValidation();
-
-const registerData = ref({
-  username: '',
-  password: '',
-  passwordConfirmation: '',
-});
-
-const passwordType = ref<string>('password');
-const passwordConfType = ref<string>('password');
-
-function togglePasswordType() {
-  if (passwordType.value == 'password') {
-    passwordType.value = 'text';
-  } else {
-    passwordType.value = 'password';
-  }
-};
-
-function togglePasswordConfType() {
-  if (passwordConfType.value == 'password') {
-    passwordConfType.value = 'text';
-  } else {
-    passwordConfType.value = 'password';
-  }
-};
-
-const $loading = useLoading({
-  color: '#ff6000',
-});
-
-function validateAllFormFields() {
-  validateEmptyField(registerData.value.username, 'username');
-  validatePassword(registerData.value.password);
-  validatePasswordConfirmation(
-    registerData.value.password,
-    registerData.value.passwordConfirmation
-  );
-};
-
+const authStore = useAuthStore();
+const userName = ref<string>('');
+const password = ref<string>('');
+const passwordConfirmation = ref<string>('');
+const form = ref();
+const pswdVisible = ref(false);
+const pswdConfVisible = ref(false);
+const loading = ref(false);
 const apiResponseError = ref('');
 
+const userNameRules = [(value: string) => requiredField(value, 'Username')];
+const passwordRules = [
+  (value: string) => requiredField(value, 'Password'),
+  (value: string) => passwordPattern(value),
+];
+const passwordConfirmationRules = [
+  (value: string) => value === password.value || 'Passwords must match',
+];
+
 async function submitForm() {
-  validateAllFormFields();
-  if (!isFormValid(registerData.value)) {
-    return;
+  const { valid } = await form.value?.validate();
+  if (valid) {
+    const authCredentials: AuthRegisterRequest = {
+      userName: userName.value,
+      password: password.value,
+      confirmPassword: passwordConfirmation.value,
+    };
+    try {
+      loading.value = true;
+      await authStore.register(authCredentials);
+    } catch (error) {
+      apiResponseError.value = (error as any).response?.data?.error;
+    } finally {
+      loading.value = false;
+    }
   }
-
-  const authCredentials: AuthRegisterRequest = {
-    userName: registerData.value.username,
-    password: registerData.value.password,
-    confirmPassword: registerData.value.passwordConfirmation,
-  };
-
-  const loader = $loading.show();
-  try {
-    await store.dispatch('auth/register', authCredentials);
-    router.replace('/stock-positions');
-  } catch (error) {
-    apiResponseError.value = (error as any).response?.data?.error;
-  } finally {
-    loader.hide();
-  }
-};
+}
 </script>
-
-<style scoped>
-p {
-  text-align: center;
-}
-
-.register-btn {
-  width: 10rem;
-  margin-top: 1.25rem;
-}
-
-.register {
-  margin-top: 2rem;
-  justify-content: center;
-  align-items: center;
-}
-
-.register a {
-  text-decoration: none;
-  color: #ff6000;
-}
-</style>

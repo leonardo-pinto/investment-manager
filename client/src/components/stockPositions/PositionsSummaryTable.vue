@@ -1,12 +1,13 @@
 <template>
-  <table>
+  <v-table>
     <thead>
       <tr>
-        <th id="table-title" colspan="5">Positions Summary</th>
-      </tr>
-      <tr>
         <th></th>
-        <th v-for="(type, index) in Object.keys(summaryData)" :key="index">
+        <th
+          v-for="(type, index) in Object.keys(summaryData)"
+          :key="index"
+          class="text-left"
+        >
           {{ type }}
         </th>
       </tr>
@@ -14,14 +15,22 @@
     <tbody>
       <tr>
         <th class="vertical-header">Cost</th>
-        <td v-for="(type, index) in Object.keys(summaryData)" :key="index">
-          {{ currencyFormatter.format(summaryData[type].cost) }}
+        <td
+          v-for="(type, index) in Object.keys(summaryData)"
+          :key="index"
+          class="text-left"
+        >
+          {{ formatCurrency.format(summaryData[type].cost) }}
         </td>
       </tr>
       <tr>
         <th class="vertical-header">Market value</th>
-        <td v-for="(type, index) in Object.keys(summaryData)" :key="index">
-          {{ currencyFormatter.format(summaryData[type].marketValue) }}
+        <td
+          v-for="(type, index) in Object.keys(summaryData)"
+          :key="index"
+          class="text-left"
+        >
+          {{ formatCurrency.format(summaryData[type].marketValue) }}
         </td>
       </tr>
       <tr>
@@ -29,9 +38,10 @@
         <td
           v-for="(type, index) in Object.keys(summaryData)"
           :key="index"
-          :class="checkProfit(summaryData[type].monetaryGain.toString())"
+          :style="{ color: getResultColor(summaryData[type].monetaryGain.toString()) }"
+          class="text-left"
         >
-          {{ currencyFormatter.format(summaryData[type].monetaryGain) }}
+          {{ formatCurrency.format(summaryData[type].monetaryGain) }}
         </td>
       </tr>
       <tr>
@@ -39,13 +49,14 @@
         <td
           v-for="(type, index) in Object.keys(summaryData)"
           :key="index"
-          :class="checkProfit(summaryData[type].percentageGain.toString())"
+          :style="{ color: getResultColor(summaryData[type].percentageGain.toString()) }"
+          class="text-left"
         >
-          {{ currencyFormatter.format(summaryData[type].percentageGain) }}%
+          {{ formatCurrency.format(summaryData[type].percentageGain) }}%
         </td>
       </tr>
     </tbody>
-  </table>
+  </v-table>
 </template>
 <script setup lang="ts">
 import { PositionType, TradingCountry } from '../../enums';
@@ -54,11 +65,12 @@ import {
   calculateMarketValueSum,
   calculateCostSum,
   validPositionTypes,
+  currencyFormatter,
+  getResultColor,
 } from '../../common/helpers';
 
 interface Props {
   positions: StockPosition[];
-  currency: string;
   tradingCountry: TradingCountry;
 }
 
@@ -111,47 +123,9 @@ function calculateMonetaryGain(data: summaryDataProps) {
   return Number(data.marketValue) - Number(data.cost);
 }
 
-function checkProfit(value: string): string {
-  return Number(value) > 0 ? 'positive' : 'negative';
-}
-
-const currencyFormatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: props.currency === '$' ? 'USD' : 'BRL',
-  minimumFractionDigits: 2,
-});
+const formatCurrency = currencyFormatter(props.tradingCountry);
 </script>
 
 <style scoped>
-table {
-  margin-bottom: 2rem;
-}
 
-#table-title {
-  border-bottom: 1px solid #dddddd;
-  text-align: center;
-}
-
-thead tr,
-td {
-  text-align: center;
-}
-
-table th,
-table td {
-  padding: 6px 8px;
-}
-
-.vertical-header {
-  font-size: 0.9rem;
-  width: 15%;
-}
-
-.positive {
-  color: #228b22;
-}
-
-.negative {
-  color: #ff0000;
-}
 </style>

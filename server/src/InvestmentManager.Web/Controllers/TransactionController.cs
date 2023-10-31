@@ -2,6 +2,7 @@
 using InvestmentManager.ApplicationCore.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace InvestmentManager.Web.Controllers
 {
@@ -18,12 +19,12 @@ namespace InvestmentManager.Web.Controllers
         }
 
         /// <summary>
-        /// Get all transactions for a user id
+        /// Get all transactions
         /// </summary>
         [HttpGet]
-        [Route("user-id/{userId}")]
-        async public Task<ActionResult<TransactionsResponse>> GetAllTransactionsByUserId(string userId)
+        async public Task<ActionResult<TransactionsResponse>> GetAllTransactions()
         {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             IEnumerable<TransactionResponse> transactionHistory = await _transactionService.GetAllTransactionsByUserId(userId);
 
             return Ok(new TransactionsResponse() { Transactions = transactionHistory });

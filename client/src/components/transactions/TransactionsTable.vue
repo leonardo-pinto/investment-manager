@@ -1,32 +1,31 @@
 <template>
-  <table id="transactions-table">
-    <thead>
-      <tr>
-        <th>Date/Time</th>
-        <th>Description</th>
-        <th>Amount</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(transaction, index) in props.transactions" :key="index">
-        <td id="date-column">
-          {{ formatDate(transaction.dateAndTimeOfTransaction) }}
-        </td>
-        <td>{{ buildDescription(transaction) }}</td>
-        <td :style="{ color: isBuy(transaction) }">
-          {{ props.currency }}
-          {{ calculateAmount(transaction) }}
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <v-data-table
+    v-model:sort-by="sortBy"
+    v-model:items-per-page="itemsPerPage"
+    :headers="headers"
+    :items="processedTransactions"
+  >
+    <template v-slot:item.amount="{ value }">
+      <td :style="{ color: getResultColor(value) }">{{ value }}</td>
+    </template>
+  </v-data-table>
 </template>
 
 <script setup lang="ts">
-// import { ref } from 'vue';
+import { VDataTable } from 'vuetify/lib/labs/VDataTable/index.mjs';
 import { Transaction } from '../../types/transactions';
+import { formatDate, getResultColor } from '../../common/helpers';
 import { TransactionType } from '../../enums';
-import { formatDate } from '../../common/helpers';
+import { ref } from 'vue';
+
+// https://stackoverflow.com/questions/75991355/import-datatableheader-typescript-type-of-vuetify3-v-data-table
+// followed this solution to fix the headers type
+type UnwrapReadonlyArrayType<A> = A extends Readonly<Array<infer I>>
+  ? UnwrapReadonlyArrayType<I>
+  : A;
+type DT = InstanceType<typeof VDataTable>;
+type ReadonlyDataTableHeader = UnwrapReadonlyArrayType<DT['headers']>;
+type ReadonlySortItem = UnwrapReadonlyArrayType<DT['sortBy']>;
 
 interface Props {
   transactions: Transaction[];
@@ -34,6 +33,21 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+const itemsPerPage = ref(50);
+
+const headers: ReadonlyDataTableHeader[] = [
+  {
+    title: 'Time/Date',
+    align: 'start',
+    key: 'dateAndTime',
+    sortable: false,
+  },
+  { title: 'Description', align: 'start', key: 'description', sortable: false },
+  { title: 'Amount', align: 'start', key: 'amount', sortable: false },
+];
+
+const sortBy: ReadonlySortItem[] = [{ key: 'dateAndTime', order: 'desc' }];
 
 function buildDescription(transaction: Transaction): string {
   const { quantity, symbol, price } = transaction;
@@ -53,19 +67,17 @@ function calculateAmount(transaction: Transaction): string {
   return transactionType == TransactionType.Buy ? `-${amount}` : amount;
 }
 
-function isBuy(transaction: Transaction): string {
-  return transaction.transactionType == TransactionType.Sell
-    ? '#228B22'
-    : '#FF0000';
-}
+type ProcessedTransactions = {
+  dateAndTime: string;
+  description: string;
+  amount: string;
+};
+
+const processedTransactions = props.transactions.map((t) => {
+  return {
+    dateAndTime: formatDate(t.dateAndTimeOfTransaction),
+    description: buildDescription(t),
+    amount: `${props.currency}${calculateAmount(t)}`,
+  } as ProcessedTransactions;
+});
 </script>
-
-<style scoped>
-#transactions-table {
-  margin-top: 25px;
-}
-
-#date-column {
-  width: 30%;
-}
-</style>

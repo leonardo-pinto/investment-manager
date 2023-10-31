@@ -1,81 +1,35 @@
 <template>
-  <header>
-    <nav>
-      <router-link to="/"
-        ><img id="logo" src="../assets/logo.png"
-      /></router-link>
-      <ul v-if="!isAuth">
-        <li>
-          <BaseButton link to="/register">Register</BaseButton>
-        </li>
-        <li>
-          <BaseButton mode="outline" link to="/login">Login</BaseButton>
-        </li>
-      </ul>
-      <ul v-else>
-        <li>
-          <BaseButton link to="/stock-positions">Stock Positions</BaseButton>
-        </li>
-        <li>
-          <BaseButton link to="/transactions">Transactions</BaseButton>
-        </li>
-        <li>
-          <BaseButton link to="/avg-price-calculator"
-            >Average Price Calculator</BaseButton
-          >
-        </li>
-        <li>
-          <BaseButton @click="logout" mode="outline">Logout</BaseButton>
-        </li>
-      </ul>
-    </nav>
-  </header>
+  <v-toolbar color="#FFFFFF">
+    <router-link to="/"><img id="logo" src="../assets/logo.png" /></router-link>
+    <v-spacer></v-spacer>
+    <div v-if="isAuth">
+      <v-btn class="text-cyan-darken-3" to="/stock-positions">
+        Positions
+      </v-btn>
+      <v-btn class="mx-6 text-cyan-darken-3" to="/transactions">
+        Transactions
+      </v-btn>
+      <v-btn class="mr-3 text-cyan-darken-3" to="/avg-price-calculator">
+        Price Calculator
+      </v-btn>
+      <v-btn class="text-cyan-darken-3" @click="authStore.logout"
+        >Log Out
+      </v-btn>
+    </div>
+  </v-toolbar>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useStore } from '../store';
-import { useRouter } from 'vue-router';
+import { useAuthStore } from '../stores/authStore';
 
-const store = useStore();
-const router = useRouter();
-const isAuth = computed<boolean>(() => store.getters['auth/isAuthenticated']);
-
-function logout() {
-  store.dispatch('auth/logout');
-  router.replace('/login');
-}
+const authStore = useAuthStore();
+const isAuth = computed<boolean>(() => authStore.isAuthenticated);
 </script>
 
 <style scoped>
 header {
   padding: 1rem 2.5rem;
-}
-
-header nav {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-}
-
-header ul {
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  list-style: none;
-}
-
-header a {
-  text-decoration: none;
-}
-
-li {
-  margin: 0 0.5rem;
-}
-
-a {
-  margin: 0;
-  padding: 0;
 }
 
 #logo {

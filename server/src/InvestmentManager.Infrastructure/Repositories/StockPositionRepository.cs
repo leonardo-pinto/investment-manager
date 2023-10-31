@@ -31,7 +31,7 @@ namespace InvestmentManager.Infrastructure.Repositories
             StockPosition? matchingStockPositon =
                 await _db.StockPositions.FirstOrDefaultAsync(e => e.PositionId == stockPosition.PositionId);
 
-            if (matchingStockPositon != null)
+            if (matchingStockPositon is not null)
             {
                 matchingStockPositon.Quantity = stockPosition.Quantity;
                 matchingStockPositon.AveragePrice = stockPosition.AveragePrice;
@@ -51,7 +51,7 @@ namespace InvestmentManager.Infrastructure.Repositories
             StockPosition? stockPosition = await _db.StockPositions
                 .FirstOrDefaultAsync(e => e.Symbol.ToUpper() == symbol.ToUpper() && e.UserId == userId && e.Quantity != 0);
 
-            return stockPosition != null;
+            return stockPosition is not null;
         }
 
         public async Task<IEnumerable<StockPosition>> GetAllStockPositionsByUserIdAndTradingCountry(string userId, string tradingCountry)

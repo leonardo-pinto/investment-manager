@@ -20,20 +20,31 @@ export interface StockPositionsByCountry {
 
 export interface CreateStockPositionRequest {
   symbol: string;
-  userId: string;
   quantity: number;
   averagePrice: number;
   dateAndTimeOfStockPosition: string;
   tradingCountry: TradingCountry;
-  type: PositionType
+  type: PositionType;
 }
 
 export interface UpdateStockPositionRequest {
   positionId: string;
-  userId?: string;
   symbol: string;
   quantity: number;
   price: number;
   transactionType: TransactionType;
   tradingCountry: TradingCountry;
+}
+
+export interface PositionTableData {
+  positionId: string;
+  symbol: string;
+  quantity: number;
+  price: string;
+  averagePrice: string;
+  cost: string;
+  marketValue: string;
+  percentualGain: string;
+  monetaryGain: string;
+  positionWeight: string;
 }

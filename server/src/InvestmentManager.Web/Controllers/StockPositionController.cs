@@ -4,6 +4,7 @@ using InvestmentManager.ApplicationCore.Exceptions;
 using InvestmentManager.ApplicationCore.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace InvestmentManager.Web.Controllers
 {
@@ -24,13 +25,13 @@ namespace InvestmentManager.Web.Controllers
         }
 
         /// <summary>
-        /// Gets all stock positions traded in a country for a given user id
+        /// Gets all stock positions by trading country
         /// </summary>
         [HttpGet]
-        [Route("user-id/{userId}/trading-country/{tradingCountry}")]
-        async public Task<ActionResult<StockPositionsResponse>> GetAllStockPositionsByUserIdAndTradingCountry(
-            string userId, string tradingCountry)
+        [Route("trading-country/{tradingCountry}")]
+        async public Task<ActionResult<StockPositionsResponse>> GetAllStockPositionsByTradingCountry(string tradingCountry)
         {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             IEnumerable<StockPositionResponse> stockPositionResponse = await _stockPositionService.GetAllStockPositionsByUserIdAndTradingCountry(userId, tradingCountry);
 
             return Ok(new StockPositionsResponse() { StockPositions = stockPositionResponse });
@@ -43,6 +44,7 @@ namespace InvestmentManager.Web.Controllers
         [Route("{id}")]
         public async Task<ActionResult<StockPositionResponse>> GetSingleStockPosition(Guid id)
         {
+
             StockPositionResponse? stockPositionResponse = await _stockPositionService.GetSingleStockPosition(id);
 
             if (stockPositionResponse == null)
@@ -61,6 +63,7 @@ namespace InvestmentManager.Web.Controllers
         {
             try
             {
+                addStockPositionRequest.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
                 StockPositionResponse? stockPositionResponse = await _stockPositionService.CreateStockPosition(addStockPositionRequest);
 
                 if (stockPositionResponse == null)
@@ -86,13 +89,14 @@ namespace InvestmentManager.Web.Controllers
         }
 
         /// <summary>
-        /// Updated a stock position
+        /// Updates a stock position
         /// </summary>
         [HttpPut]
         public async Task<ActionResult<StockPositionResponse>> UpdateStockPosition(UpdateStockPositionRequest updateStockPositionRequest)
         {
             try
             {
+                updateStockPositionRequest.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
                 StockPositionResponse? stockPositionResponse = await _stockPositionService.UpdateStockPosition(updateStockPositionRequest);
 
                 if (stockPositionResponse == null)

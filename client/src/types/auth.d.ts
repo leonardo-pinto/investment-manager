@@ -10,7 +10,6 @@ export interface AuthRegisterRequest {
 }
 
 export interface AuthResponse {
-  id: string;
   username: string;
   accessToken: string;
 }

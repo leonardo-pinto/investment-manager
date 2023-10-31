@@ -107,17 +107,16 @@ namespace InvestmentManager
             services.AddMemoryCache();
             services.AddAutoMapper(typeof(MappingProfile));
 
-            services.AddScoped<IBrApiRepository, BrApiRepository>();
-            services.AddScoped<IBrApiService, BrApiService>();
+            services.AddScoped<IStockQuoteService, StockQuoteService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IStockPositionService, StockPositionService>();
             services.AddScoped<ITransactionService, TransactionService>();
-            services.AddScoped<IFinnhubService, FinnhubService>();
             services.AddScoped<IStockPositionRepository, StockPositionRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
-            services.AddScoped<IFinnhubRepository, FinnhubRepository>();
+            services.AddScoped<IStockQuoteService, StockQuoteService>();
+            services.AddScoped<IRepositoryFactory, RepositoryFactory>();
 
             return services;
         }

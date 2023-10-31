@@ -4,8 +4,8 @@ import {
   RouteLocationNormalized,
   NavigationGuardNext,
 } from 'vue-router';
-import { store } from '../store';
 import checkAuth from '../middlewares/checkAuth';
+import { useAuthStore } from '../stores/authStore';
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -54,11 +54,7 @@ const router = createRouter({
 
 router.beforeEach(
   (to: RouteLocationNormalized, _from, next: NavigationGuardNext) => {
-    checkAuth(
-      next,
-      to.meta.requiresAuth,
-      store.getters['auth/isAuthenticated']
-    );
+    checkAuth(next, to.meta.requiresAuth, useAuthStore().isAuthenticated);
   }
 );
 

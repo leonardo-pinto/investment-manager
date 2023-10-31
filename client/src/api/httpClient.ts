@@ -1,7 +1,7 @@
 import axios from 'axios';
 import router from '../router';
 import { notify } from '@kyvg/vue3-notification';
-import { store } from '../store';
+import { useAuthStore } from '../stores/authStore';
 
 const httpClient = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
@@ -32,7 +32,7 @@ const errorInterceptor = (error: any) => {
     error?.response?.status === 401 &&
     router.currentRoute.value.meta.requiresAuth
   ) {
-    store.dispatch('auth/logout');
+    useAuthStore().logout();
     notify({
       title: 'Session expired',
       type: 'error',
