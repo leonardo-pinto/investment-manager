@@ -31,7 +31,7 @@
         </member>
         <member name="M:InvestmentManager.Web.Controllers.StockPositionController.UpdateStockPosition(InvestmentManager.ApplicationCore.DTO.UpdateStockPositionRequest)">
             <summary>
-            Updated a stock position
+            Updates a stock position
             </summary>
         </member>
         <member name="M:InvestmentManager.Web.Controllers.StockPositionController.DeleteStockPosition(System.Guid)">
@@ -39,19 +39,10 @@
             Deletes a stock position
             </summary>
         </member>
-        <member name="M:InvestmentManager.Web.Controllers.StockQuotesController.GetBrStockQuotes(System.String)">
+        <member name="M:InvestmentManager.Web.Controllers.StockQuotesController.GetStockQuotes(System.String,System.String)">
             <summary>
-            Get update price quote for brazilian stocks
+            Get updated stock quote for a given trading country
             </summary>
-            <param name="symbols"></param>
-            <returns></returns>
-        </member>
-        <member name="M:InvestmentManager.Web.Controllers.StockQuotesController.GetUsStockQuotes(System.String)">
-            <summary>
-            Get update price quote for us stocks
-            </summary>
-            <param name="symbols"></param>
-            <returns></returns>
         </member>
         <member name="M:InvestmentManager.Web.Controllers.TransactionController.GetAllTransactions">
             <summary>
