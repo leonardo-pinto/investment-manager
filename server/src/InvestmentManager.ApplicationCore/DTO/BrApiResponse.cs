@@ -12,7 +12,7 @@ namespace InvestmentManager.ApplicationCore.DTO
         public Result[]? Results { get; set; }
 
         [JsonPropertyName("error")]
-        public string? Error { get; set; }
+        public bool? Error { get; set; }
     }
 
 
