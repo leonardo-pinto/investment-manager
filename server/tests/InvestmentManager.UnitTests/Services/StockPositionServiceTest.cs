@@ -17,8 +17,7 @@ namespace InvestmentManager.UnitTests.Services
     public class StockPositionServiceTest
     {
         private readonly StockPositionService _sut;
-        private readonly Mock<IFinnhubService> _finnhubServiceMock;
-        private readonly Mock<IBrApiService> _brApiServiceMock;
+        private readonly Mock<IStockQuoteService> _stockQuoteService;
         private readonly Mock<IStockPositionRepository> _stockPositionRepositoryMock;
         private readonly Mock<ILogger<StockPositionService>> _loggerMock;
         private readonly Mock<IMemoryCache> _memoryCacheMock;
@@ -28,15 +27,13 @@ namespace InvestmentManager.UnitTests.Services
         {
             MapperConfiguration? autoMapperConfig = new(cfg => cfg.AddProfile(new MappingProfile()));
             IMapper mapper = new Mapper(autoMapperConfig);
-            _finnhubServiceMock = new Mock<IFinnhubService>(MockBehavior.Strict);
-            _brApiServiceMock = new Mock<IBrApiService>(MockBehavior.Strict);
+            _stockQuoteService = new Mock<IStockQuoteService>(MockBehavior.Strict);
             _stockPositionRepositoryMock = new Mock<IStockPositionRepository>(MockBehavior.Strict);
             _loggerMock = new Mock<ILogger<StockPositionService>>(MockBehavior.Loose);
             _memoryCacheMock = new Mock<IMemoryCache>(MockBehavior.Loose);
 
             _sut = new StockPositionService(
-                _finnhubServiceMock.Object,
-                _brApiServiceMock.Object,
+                _stockQuoteService.Object,
                 _stockPositionRepositoryMock.Object,
                 mapper,
                 _loggerMock.Object,
@@ -61,8 +58,8 @@ namespace InvestmentManager.UnitTests.Services
                 .Setup(m => m.StockSymbolAlreadyExists(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(false);
 
-            _finnhubServiceMock
-                .Setup(temp => temp.IsStockSymbolValid(It.IsAny<string>()))
+            _stockQuoteService
+                .Setup(temp => temp.IsStockSymbolValid(It.IsAny<string>(), "US"))
                 .ReturnsAsync(false);
 
             // Act
@@ -114,8 +111,8 @@ namespace InvestmentManager.UnitTests.Services
                 .Setup(m => m.StockSymbolAlreadyExists(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(false);
 
-            _finnhubServiceMock
-                .Setup(temp => temp.IsStockSymbolValid(It.IsAny<string>()))
+            _stockQuoteService
+                .Setup(temp => temp.IsStockSymbolValid(It.IsAny<string>(), "US"))
                 .ReturnsAsync(true);
 
             _stockPositionRepositoryMock
