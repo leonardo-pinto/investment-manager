@@ -89,7 +89,7 @@ namespace InvestmentManager.Web.Controllers
         }
 
         /// <summary>
-        /// Updated a stock position
+        /// Updates a stock position
         /// </summary>
         [HttpPut]
         public async Task<ActionResult<StockPositionResponse>> UpdateStockPosition(UpdateStockPositionRequest updateStockPositionRequest)
