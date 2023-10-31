@@ -86,6 +86,7 @@ import {
 } from '../../common/helpers';
 import { CreateStockPositionRequest } from '../../types/stockPosition';
 import { usePositionsStore } from '../../stores/positionsStore';
+import { useNotification } from '@kyvg/vue3-notification';
 
 const positionsStore = usePositionsStore();
 const visible = ref(false);
@@ -96,6 +97,7 @@ const type = ref();
 const form = ref();
 const loading = ref<boolean>(false);
 const apiResponseError = ref('');
+const { notify } = useNotification();
 
 const symbolRules = [(value: string) => requiredField(value, 'Symbol')];
 const quantityRules = [
@@ -129,6 +131,11 @@ async function submitForm() {
       loading.value = true;
       await positionsStore.createPosition(createStockPositionRequest);
       await positionsStore.getStockPositionQuotes();
+      notify({
+        title: 'Position Created',
+        text: `${symbol.value} position was created successfully!`,
+        type: 'success',
+      });
       handleClose();
     } catch (error) {
       apiResponseError.value = (error as any).response?.data?.error;

@@ -77,6 +77,7 @@ import {
 } from '../../common/helpers';
 import { usePositionsStore } from '../../stores/positionsStore';
 import { TransactionType } from '../../enums';
+import { useNotification } from '@kyvg/vue3-notification';
 
 interface Props {
   position: StockPosition | null;
@@ -102,6 +103,7 @@ function handleClose() {
 }
 const loading = ref<boolean>(false);
 const apiResponseError = ref('');
+const { notify } = useNotification();
 
 async function submitForm() {
   const { valid } = await form.value?.validate();
@@ -120,6 +122,11 @@ async function submitForm() {
     loading.value = true;
     try {
       await positionsStore.updatePosition(updatePosition);
+      notify({
+        title: 'Position Updated',
+        text: `${updatePosition.symbol} position was updated successfully!`,
+        type: "success"
+      });
       handleClose();
     } catch (error) {
       apiResponseError.value = (error as any).response?.data?.error;
