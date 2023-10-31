@@ -2,10 +2,11 @@
 using Microsoft.Extensions.Configuration;
 using System.Text.Json;
 using InvestmentManager.ApplicationCore.DTO;
+using InvestmentManager.ApplicationCore.Exceptions;
 
 namespace InvestmentManager.Infrastructure.Repositories
 {
-    public class FinnhubRepository : IFinnhubRepository
+    public class FinnhubRepository : IStockQuoteRepository
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
@@ -29,14 +30,15 @@ namespace InvestmentManager.Infrastructure.Repositories
 
             if (finnhubResponse == null)
             {
-                throw new InvalidOperationException("No response from server");
+                throw new FinnhubException("No response from Finnhub API");
             }
 
             if (finnhubResponse.Error != null)
             {
-                throw new InvalidOperationException(finnhubResponse.Error);
+                throw new FinnhubException($"Finnhub API error: {finnhubResponse.Error}");
             }
 
+            // finnhub api returns 0 if the stock symbol is invalid, instead of returning an error
             return finnhubResponse.CurrentPrice;
         }
     }
