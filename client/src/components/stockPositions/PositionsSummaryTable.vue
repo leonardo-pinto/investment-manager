@@ -38,7 +38,9 @@
         <td
           v-for="(type, index) in Object.keys(summaryData)"
           :key="index"
-          :style="{ color: getResultColor(summaryData[type].monetaryGain.toString()) }"
+          :style="{
+            color: getProfitColor(summaryData[type].monetaryGain.toString()),
+          }"
           class="text-left"
         >
           {{ formatCurrency.format(summaryData[type].monetaryGain) }}
@@ -49,7 +51,9 @@
         <td
           v-for="(type, index) in Object.keys(summaryData)"
           :key="index"
-          :style="{ color: getResultColor(summaryData[type].percentageGain.toString()) }"
+          :style="{
+            color: getProfitColor(summaryData[type].percentageGain.toString()),
+          }"
           class="text-left"
         >
           {{ formatCurrency.format(summaryData[type].percentageGain) }}%
@@ -66,7 +70,7 @@ import {
   calculateCostSum,
   validPositionTypes,
   currencyFormatter,
-  getResultColor,
+  getProfitColor,
 } from '../../common/helpers';
 
 interface Props {
@@ -126,6 +130,4 @@ function calculateMonetaryGain(data: summaryDataProps) {
 const formatCurrency = currencyFormatter(props.tradingCountry);
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

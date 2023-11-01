@@ -7,10 +7,10 @@
     class="mb-3"
   >
     <template v-slot:item.percentualGain="{ value }">
-      <td :style="{ color: getResultColor(value) }">{{ value }}</td>
+      <td :style="{ color: getProfitColor(value) }">{{ value }}</td>
     </template>
     <template v-slot:item.monetaryGain="{ value }">
-      <td :style="{ color: getResultColor(value) }">{{ value }}</td>
+      <td :style="{ color: getProfitColor(value) }">{{ value }}</td>
     </template>
     <template v-slot:item.actions="{ item }">
       <UpdatePosition
@@ -27,7 +27,7 @@ import type { VDataTable } from 'vuetify/lib/labs/components.mjs';
 import { StockPosition } from '../../types/stockPosition';
 import {
   mapPositionToPositionTableData,
-  getResultColor,
+  getProfitColor,
 } from '../../common/helpers';
 import UpdatePosition from './UpdatePosition.vue';
 import { TradingCountry, TransactionType } from '../../enums';
