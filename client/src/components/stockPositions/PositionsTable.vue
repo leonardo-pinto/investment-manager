@@ -1,6 +1,7 @@
 <template>
   <v-data-table
-    v-model:items-per-page="itemsPerPage"
+    :items-per-page="itemsPerPage"
+    :sort-by="sortBy"
     :headers="headers"
     :items="processedPositions"
     class="mb-3"
@@ -26,7 +27,7 @@ import type { VDataTable } from 'vuetify/lib/labs/components.mjs';
 import { StockPosition } from '../../types/stockPosition';
 import {
   mapPositionToPositionTableData,
-  getResultColor
+  getResultColor,
 } from '../../common/helpers';
 import UpdatePosition from './UpdatePosition.vue';
 import { TradingCountry, TransactionType } from '../../enums';
@@ -38,6 +39,7 @@ type UnwrapReadonlyArrayType<A> = A extends Readonly<Array<infer I>>
   : A;
 type DT = InstanceType<typeof VDataTable>;
 type ReadonlyDataTableHeader = UnwrapReadonlyArrayType<DT['headers']>;
+type ReadonlySortItem = UnwrapReadonlyArrayType<DT['sortBy']>;
 
 interface Props {
   filteredPositions: StockPosition[];
@@ -46,6 +48,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const itemsPerPage = ref(50);
+const sortBy: ReadonlySortItem[] = [{ key: 'symbol', order: 'asc' }];
 const headers: ReadonlyDataTableHeader[] = [
   {
     title: 'Symbol',
@@ -74,7 +77,10 @@ const headers: ReadonlyDataTableHeader[] = [
 ];
 
 const processedPositions = props.filteredPositions.map((p) => {
-  return mapPositionToPositionTableData(p, props.filteredPositions, props.tradingCountry);
+  return mapPositionToPositionTableData(
+    p,
+    props.filteredPositions,
+    props.tradingCountry
+  );
 });
-
 </script>
