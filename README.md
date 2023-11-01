@@ -22,9 +22,12 @@ Since this is a personal project, security measures were not a priority for this
 * Average price calculator to simulate transactions
 
 
-![](./img-demo/img-demo-1.jpg)
+![](./img-demo/positions.png)
 
-![](./img-demo/img-demo-2.jpg)
+![](./img-demo/transactions.png)
+
+![](./img-demo/avg-price-calculator.png)
+
 
 ## Technologies
 
