@@ -79,8 +79,8 @@ import { usePositionsStore } from '../stores/positionsStore';
 const positionsStore = usePositionsStore();
 const isLoading = ref(false);
 
-const selectedTradingCountry = ref<TradingCountry>(
-  positionsStore.currentCountry
+const selectedTradingCountry = computed<TradingCountry>(
+  () => positionsStore.currentCountry
 );
 
 watch(selectedTradingCountry, (value) => {
