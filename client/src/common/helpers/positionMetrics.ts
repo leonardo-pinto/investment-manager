@@ -64,8 +64,12 @@ const validPositionTypes: { [key: string]: string[] } = {
   ],
 };
 
-function getResultColor(value: string) {
+function getProfitColor(value: string) {
   return value.charAt(0) === '-' ? 'red' : 'green';
+}
+
+function getTransactionColor(value: string) {
+  return value.charAt(0) === '-' ? 'green' : 'red';
 }
 
 function mapPositionToPositionTableData(
@@ -101,7 +105,8 @@ export {
   calculateAveragePrice,
   calculateMarketValueSum,
   calculateCostSum,
-  getResultColor,
+  getProfitColor,
+  getTransactionColor,
   validPositionTypes,
   mapPositionToPositionTableData,
 };
