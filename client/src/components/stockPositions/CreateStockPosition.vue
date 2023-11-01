@@ -38,7 +38,6 @@
               <v-row>
                 <v-text-field
                   v-model.number="price"
-                  type="number"
                   label="Price"
                   :prefix="positionsStore.getCurrency"
                   :rules="priceRules"

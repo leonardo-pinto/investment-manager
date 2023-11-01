@@ -19,7 +19,6 @@
               >
               </v-text-field>
               <v-text-field
-                type="number"
                 label="Price"
                 prefix="$"
                 v-model.number="firstPrice"
@@ -41,7 +40,6 @@
 
               <v-text-field
                 label="Price"
-                type="number"
                 prefix="$"
                 v-model.number="secondPrice"
                 :rules="priceRules"
