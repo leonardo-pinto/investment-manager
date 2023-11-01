@@ -83,9 +83,9 @@ function mapPositionToPositionTableData(
     averagePrice: formatter.format(p.averagePrice),
     cost: formatter.format(calculateValue(p.quantity, p.averagePrice)),
     marketValue: formatter.format(calculateValue(p.quantity, p.price)),
-    percentualGain: formatter.format(
-      calculateGainPercentage(p.price, p.averagePrice)
-    ),
+    percentualGain: `${calculateGainPercentage(p.price, p.averagePrice).toFixed(
+      2
+    )}%`,
     monetaryGain: formatter.format(
       calculateGainMonetary(p.quantity, p.price, p.averagePrice)
     ),
