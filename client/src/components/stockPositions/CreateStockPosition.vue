@@ -112,6 +112,7 @@ const typeRules = [(value: string) => requiredField(value, 'Type')];
 
 function handleClose() {
   visible.value = false;
+  apiResponseError.value = '';
   form.value.reset();
 }
 

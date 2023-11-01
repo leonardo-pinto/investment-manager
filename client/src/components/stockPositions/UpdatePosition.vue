@@ -98,6 +98,8 @@ const priceRules = [
   (value: number) => validatePositive(value, 'Price'),
 ];
 function handleClose() {
+  apiResponseError.value = '';
+  form.value.reset();
   visible.value = false;
 }
 const loading = ref<boolean>(false);
@@ -124,7 +126,7 @@ async function submitForm() {
       notify({
         title: 'Position Updated',
         text: `${updatePosition.symbol} position was updated successfully!`,
-        type: "success"
+        type: 'success',
       });
       handleClose();
     } catch (error) {
