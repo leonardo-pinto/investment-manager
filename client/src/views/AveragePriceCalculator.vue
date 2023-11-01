@@ -61,7 +61,6 @@
     >
       <p class="font-weight-bold">Average price: ${{ averagePrice }}</p>
       <p class="font-weight-bold">Total Quantity: {{ totalQuantity }}</p>
-      <p class="font-weight-bold">Total Amount: ${{ totalAmount }}</p>
     </v-card>
   </v-card>
 </template>
@@ -115,8 +114,5 @@ function clearFields() {
 
 const totalQuantity = computed<number>(
   () => firstQuantity.value! + secondQuantity.value!
-);
-const totalAmount = computed<number>(
-  () => firstPrice.value! + secondPrice.value!
 );
 </script>
