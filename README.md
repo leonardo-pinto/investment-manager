@@ -7,17 +7,17 @@ The idea was to develop an easy-to-use application to check your position quotes
 
 ## :computer: Software Engineer point-of-view
 By identifying a way to improve my daily tasks as an investor through the use of technology, I decided to practice my Full Stack Software Engineering skills through the development of this application.\
-The client was developed using Vue3 and VueX for state management, and I tried to keep a minimum number of dependencies to practice developing custom reusable components.\
-The server was developed using .NET and C#, leveraging Entity Framework Core to manage an MS SQL database. I could practice writing unit/integration tests using xUNIT, and also implementing containerization to run the application.\
-The clean-architecture used in the server development enable the easy addition of another countries in the future!\
+The client was developed using Vue3, Pinia for state management, and Vuetify for UI components.\
+The server was developed using .NET and C#, leveraging Entity Framework Core to manage an MS SQL database, and Microsoft Identity to handle authentication. I could practice writing unit/integration tests using xUNIT, and also implementing containerization to run the application.\
+The clean architecture used in the server development together with the Factory design pattern enables the easy addition of other countries in the future!\
 Since this is a personal project, security measures were not a priority for this project in terms of storing environment variables and database credentials.
 
 ## Features
 
-* Register a new stock positions for United States and Brazil as trading countries
-* Real time stock quote prices for United States and Brazil stocks
-* Edit a position (buy/sell) and automatically updates metrics such as average price, gain/loss and position weight
-* Dynamic summary based on trading country and stock types
+* Register a new position for United States and Brazil as trading country
+* Real-time stock quote prices for United States and Brazil stocks
+* Edit a position (buy/sell) and automatically update metrics such as average price, gain/loss, and position weight
+* Dynamic summary based on the trading country and position types
 * List of all transactions performed, which may be filtered by type, date, and symbol
 * Average price calculator to simulate transactions
 
